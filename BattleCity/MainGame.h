@@ -1,11 +1,22 @@
 #pragma once
 #include "GameEntity.h"
 
+
 class Image;
+class Collider;
+class Physcis;
+
 class MainGame : public GameEntity
 {
 private:
 	HANDLE hTimer;
+
+	Collider* collider1;
+	Collider* collider2;
+	Collider* collider3;
+
+	Physcis* physcis;
+
 
 	int mousePosX;
 	int mousePosY;
