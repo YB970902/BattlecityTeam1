@@ -34,6 +34,9 @@
     <Filter Include="2DFrameWork\MainGame">
       <UniqueIdentifier>{b026991b-6559-4116-92df-e3404aab7758}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\MapEditor">
+      <UniqueIdentifier>{83657699-6580-419c-89e1-27a94d1eb828}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -65,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="MainGame.cpp">
       <Filter>2DFrameWork\MainGame</Filter>
+    </ClCompile>
+    <ClCompile Include="MapEditor.cpp">
+      <Filter>2DFrameWork\MapEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Singleton.h">
       <Filter>2DFrameWork\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MapEditor.h">
+      <Filter>2DFrameWork\MapEditor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

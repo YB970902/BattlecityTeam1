@@ -4,6 +4,7 @@
 enum class eImageTag
 {
 	None,
+	Tile,
 };
 
 class Image;
