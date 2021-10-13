@@ -2,6 +2,8 @@
 #include "MainGame.h"
 #include "Image.h"
 
+#include "MapEditor.h"
+
 HRESULT MainGame::Init()
 {
 	KEY_MGR->Init();
@@ -21,6 +23,9 @@ HRESULT MainGame::Init()
 	backBuffer = new Image();
 	backBuffer->Init("Image/mapImage.bmp", WIN_SIZE_X, WIN_SIZE_Y);
 
+	mapEditor = new MapEditor;
+	mapEditor->Init();
+
 	return S_OK;
 }
 
@@ -29,6 +34,8 @@ void MainGame::Update()
 	TIMER_MGR->Update();
 
 	SCENE_MGR->Update();
+
+	mapEditor->Update();
 
 	KEY_MGR->Update();
 
@@ -42,6 +49,8 @@ void MainGame::Render(HDC hdc)
 	SCENE_MGR->Render(hBackBufferDC);
 
 	TIMER_MGR->Render(hBackBufferDC);
+
+	mapEditor->Render(hBackBufferDC);
 
 	backBuffer->Render(hdc);
 }
@@ -61,6 +70,8 @@ void MainGame::Release()
 
 	SCENE_MGR->Release();
 	SCENE_MGR->ReleaseSingleton();
+
+	mapEditor->Release();
 
 	KillTimer(g_hWnd, 0);
 }

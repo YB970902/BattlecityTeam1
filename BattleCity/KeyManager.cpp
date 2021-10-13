@@ -18,11 +18,11 @@ void KeyManager::Update()
 {
 	for (int i = 0; i < KEY_MAX_COUNT; i++)
 	{
-		if (keyUp[i] && keyDown[i])
+		/*if (keyUp[i] && keyDown[i])
 		{
 			if (GetAsyncKeyState(i) & 0x8000) { keyUp[i] = false; }
 			else { keyDown[i] = false; }
-		}
+		}*/
 	}
 }
 
@@ -35,7 +35,11 @@ bool KeyManager::IsOnceKeyDown(int key)
 			keyDown[key] = true;
 			return true;
 		}
-		else if (keyDown[key] && keyUp[key]) { return true; }
+		/*else if (keyDown[key] && keyUp[key]) { return true; }*/
+	}
+	else
+	{
+		keyDown[key] = false;
 	}
 	return false;
 }
@@ -44,12 +48,21 @@ bool KeyManager::IsOnceKeyUp(int key)
 {
 	if ((GetAsyncKeyState(key) & 0x8000) == false)
 	{
+		/*if (keyUp[key] == false)
+		{
+			keyUp[key] = true;
+			return true;
+		}*/
+		/*else if (keyUp[key] && keyDown[key]) { return true; }*/
 		if (keyUp[key] == false)
 		{
 			keyUp[key] = true;
 			return true;
 		}
-		else if (keyUp[key] && keyDown[key]) { return true; }
+	}
+	else
+	{
+		keyUp[key] = false;
 	}
 	return false;
 }

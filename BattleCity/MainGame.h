@@ -1,6 +1,7 @@
 #pragma once
 #include "GameEntity.h"
 
+class MapEditor;
 class Image;
 class MainGame : public GameEntity
 {
@@ -13,6 +14,8 @@ private:
 	int clickedMousePosY;
 
 	Image* backBuffer;
+
+	MapEditor* mapEditor;
 
 public:
 	HRESULT Init();

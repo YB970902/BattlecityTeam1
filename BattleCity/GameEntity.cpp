@@ -2,6 +2,7 @@
 
 HRESULT GameEntity::Init()
 {
+
 	return S_OK;
 }
 
