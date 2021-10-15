@@ -5,6 +5,10 @@ enum class eImageTag
 {
 	None,
 	Tile,
+	TileBackground,
+	TileBackgroundInner,
+	TileButton,
+	EnemyOrderBox,
 };
 
 class Image;

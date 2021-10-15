@@ -5,6 +5,7 @@
 GameEntity* SceneManager::currScene = nullptr;
 GameEntity* SceneManager::readyScene = nullptr;
 GameEntity* SceneManager::loadingScene = nullptr;
+GameEntity* SceneManager::MapEditorScene = nullptr;
 
 DWORD CALLBACK LoadingThread(LPVOID pvParam)
 {
@@ -21,6 +22,7 @@ DWORD CALLBACK LoadingThread(LPVOID pvParam)
 
 void SceneManager::Init()
 {
+
 }
 
 void SceneManager::Release()
