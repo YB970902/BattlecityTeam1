@@ -1,7 +1,11 @@
 #pragma once
 #include "GameEntity.h"
 
+
 class Image;
+class Collider;
+class Physcis;
+
 class MainGame : public GameEntity
 {
 private:

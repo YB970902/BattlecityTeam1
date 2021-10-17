@@ -2,6 +2,8 @@
 #include "MainGame.h"
 #include "Image.h"
 
+#include "PhyscisScene.h"
+
 HRESULT MainGame::Init()
 {
 	KEY_MGR->Init();
@@ -20,6 +22,12 @@ HRESULT MainGame::Init()
 
 	backBuffer = new Image();
 	backBuffer->Init("Image/mapImage.bmp", WIN_SIZE_X, WIN_SIZE_Y);
+
+	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
+	SCENE_MGR->ChangeScene(eSceneTag::PhysicsScene);
+
+	SCENE_MGR->Init();
+
 
 	return S_OK;
 }
@@ -44,6 +52,7 @@ void MainGame::Render(HDC hdc)
 	TIMER_MGR->Render(hBackBufferDC);
 
 	backBuffer->Render(hdc);
+
 }
 
 void MainGame::Release()
