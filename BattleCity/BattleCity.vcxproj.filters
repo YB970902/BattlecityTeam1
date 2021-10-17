@@ -38,7 +38,7 @@
       <UniqueIdentifier>{f9f63800-9f7b-4793-a8e1-5298bf7b5786}</UniqueIdentifier>
     </Filter>
     <Filter Include="2DFrameWork\Scene">
-      <UniqueIdentifier>{9db1db41-b951-4e0a-89ae-912307c101a4}</UniqueIdentifier>
+      <UniqueIdentifier>{d64dc70e-91e0-4f9c-8962-dd39fb1d82b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,11 +75,11 @@
     <ClCompile Include="Collider.cpp">
       <Filter>2DFrameWork\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp">
-      <Filter>2DFrameWork\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Physcis.cpp">
       <Filter>2DFrameWork\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="PhyscisScene.cpp">
+      <Filter>2DFrameWork\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,10 +122,13 @@
     <ClInclude Include="Collider.h">
       <Filter>2DFrameWork\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="TestScene.h">
+    <ClInclude Include="Physcis.h">
+      <Filter>2DFrameWork\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="PhyscisScene.h">
       <Filter>2DFrameWork\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Physcis.h">
+    <ClInclude Include="CollisionChecker.h">
       <Filter>2DFrameWork\Collider</Filter>
     </ClInclude>
   </ItemGroup>

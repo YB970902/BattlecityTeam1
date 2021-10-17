@@ -2,8 +2,7 @@
 #include "MainGame.h"
 #include "Image.h"
 
-#include "Collider.h"
-#include "Physcis.h"
+#include "PhyscisScene.h"
 
 HRESULT MainGame::Init()
 {
@@ -24,14 +23,10 @@ HRESULT MainGame::Init()
 	backBuffer = new Image();
 	backBuffer->Init("Image/mapImage.bmp", WIN_SIZE_X, WIN_SIZE_Y);
 
-	
-	//collider1 = new Collider;
-	//collider->Init();
-	physcis = new Physcis;
-	collider1 = physcis->CreateCollider({ 100,100 }, 50);
-	collider2 = physcis->CreateCollider({ 200,100 }, 50);
-	collider3 = physcis->CreateCollider({ 200,150 }, 50);
+	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
+	SCENE_MGR->ChangeScene(eSceneTag::PhysicsScene);
 
+	SCENE_MGR->Init();
 
 
 	return S_OK;
@@ -45,25 +40,6 @@ void MainGame::Update()
 
 	KEY_MGR->Update();
 
-	if (KEY_MGR->IsStayKeyDown('D'))
-	{
-		collider2->SetPlayerPos({ 1, 0 });
-	}
-	if (KEY_MGR->IsStayKeyDown('A'))
-	{
-		collider2->SetPlayerPos({ -1, 0 });
-	}
-	if (KEY_MGR->IsStayKeyDown('W'))
-	{
-		collider2->SetPlayerPos({ 0, -1 });
-	}
-	if (KEY_MGR->IsStayKeyDown('S'))
-	{
-		collider2->SetPlayerPos({ 0, 1 });
-	}
-
-	physcis->CheckCollider(collider2);
-
 	InvalidateRect(g_hWnd, NULL, false);
 }
 
@@ -74,8 +50,6 @@ void MainGame::Render(HDC hdc)
 	SCENE_MGR->Render(hBackBufferDC);
 
 	TIMER_MGR->Render(hBackBufferDC);
-
-	physcis->Render(hBackBufferDC);
 
 	backBuffer->Render(hdc);
 

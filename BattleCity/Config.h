@@ -34,9 +34,27 @@ using namespace std;
 #define SCENE_MGR SceneManager::GetSingleton()
 #define IMG_MGR ImageManager::GetSingleton()
 
-#define DELTA_TIME TIME_MGR->GetDeltaTime()
+#define DELTA_TIME TIMER_MGR->GetDeltaTime()
 
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
+
+enum class eCollisionDir
+{
+    Left,
+    Right,
+    Top,
+    Bottom,
+};
+
+enum class eCollisionTag
+{
+    PlayerTank,
+    PlayerAmmo,
+    EnemyTank,
+    EnemyAmmo,
+    Water,
+    Block,
+};
 
 extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;

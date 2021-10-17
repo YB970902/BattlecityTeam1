@@ -1,11 +1,19 @@
 #include "Config.h"
 #include "Collider.h"
+#include "Physcis.h"
+#include "CollisionChecker.h"
 
-HRESULT Collider::Init(POINTFLOAT pos, float bodySize)
+HRESULT Collider::Init(POINTFLOAT pos, float bodySize, Physcis* physcis, CollisionChecker* obj, eCollisionTag tag)
 {
+	mPhyscis = physcis;
 	mPlayerBodySize = bodySize;
 
 	mPlayerPos = pos;
+	mTag = tag;
+	pObj = obj;
+	pFunc = &CollisionChecker::OnCollided;
+
+
 	UpdateBodySize();
 
 	return S_OK;
@@ -26,7 +34,29 @@ void Collider::Render(HDC hdc)
 
 void Collider::SetPlayerPos(POINTFLOAT movePos)
 {
-	this->mPlayerPos.x += movePos.x;
-	this->mPlayerPos.y += movePos.y;
+	this->mPlayerPos.x = movePos.x;
+	this->mPlayerPos.y = movePos.y;
 	UpdateBodySize();
+}
+
+void Collider::AddPlayerPos(POINTFLOAT addPos)
+{
+	this->mPlayerPos.x += addPos.x;
+	this->mPlayerPos.y += addPos.y;
+	UpdateBodySize();
+}
+
+void Collider::MoveTo(POINTFLOAT dir, float moveSpeed)
+{
+	POINTFLOAT oldPos = this->mPlayerPos;
+	this->mPlayerPos.x += dir.x * moveSpeed;
+	this->mPlayerPos.y += dir.y * moveSpeed;
+	UpdateBodySize();
+
+	mPhyscis->CheckCollider(this, dir, oldPos);
+}
+
+void Collider::OnCollided(eCollisionDir dir, eCollisionTag tag)
+{
+	if (pObj != nullptr) { (pObj->*pFunc)(dir, tag); }
 }
