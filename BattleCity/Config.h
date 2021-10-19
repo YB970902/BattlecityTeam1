@@ -13,7 +13,7 @@ using namespace std;
 
 #define WIN_START_POS_X	400
 #define WIN_START_POS_Y	100
-#define WIN_SIZE_X	600
+#define WIN_SIZE_X	1200
 #define WIN_SIZE_Y	800
 
 #define PI 3.14159265357989
@@ -36,6 +36,10 @@ using namespace std;
 
 #define DELTA_TIME TIMER_MGR->GetDeltaTime()
 
+
+#define TILE_COUNT_X 26
+#define TILE_COUNT_Y 26
+
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
 
 enum class eCollisionDir
@@ -54,6 +58,18 @@ enum class eCollisionTag
     EnemyAmmo,
     Water,
     Block,
+};
+
+
+enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagPlayer };
+
+struct TagTile
+{
+	RECT		TileShape;
+	POINT		TilePos;
+	eTerrain	Terrain;
+	int			TileState;
+	int			CollisionCount = 0;
 };
 
 extern HWND g_hWnd;

@@ -10,7 +10,9 @@ enum class eSceneTag
 	MapToolScene,
 };
 
+
 class GameEntity;
+class MapEditorScene;
 class SceneManager : public Singleton<SceneManager>
 {
 private:
@@ -21,6 +23,8 @@ public:
 	static GameEntity* currScene;		// 현재 출력 중인 씬
 	static GameEntity* readyScene;		// 준비 중인 씬
 	static GameEntity* loadingScene;	// 로딩 씬
+
+
 
 	void Init();
 	void Release();

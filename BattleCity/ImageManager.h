@@ -4,6 +4,13 @@
 enum class eImageTag
 {
 	None, BackGround
+	Tile,
+	TileBackground,
+	TileBackgroundInner,
+	TileButton,
+	EnemyOrderBox,
+	BattleSceneGrayBG,
+	BattleSceneBlackBG,
 };
 
 class Image;
