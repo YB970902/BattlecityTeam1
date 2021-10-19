@@ -1,5 +1,4 @@
 #include "MapEditor.h"
-#include "Config.h"
 #include "CommonFunction.h"
 #include "Image.h"
 
@@ -24,7 +23,8 @@ HRESULT MapEditor::Init()
 			SetRect(&(mTileInfo[i * TILE_COUNT_X + j].TileShape), j * TILE_SIZE, i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE, i * TILE_SIZE + TILE_SIZE);
 			mTileInfo[i * TILE_COUNT_X + j].TilePos.x = 1;
 			mTileInfo[i * TILE_COUNT_X + j].TilePos.y = 0;
-			mTileInfo[i * TILE_COUNT_X + j].Terrain = eTerrain::None;
+			mTileInfo[i * TILE_COUNT_X + j].TileState = 0;
+			mTileInfo[i * TILE_COUNT_X + j].Terrain = eTerrain::Wall;
 		}
 	}
 
@@ -57,6 +57,7 @@ HRESULT MapEditor::Init()
 			}
 			else if (i == 4 || i == 5)
 			{
+				if (j == 0 || j == 1 || j == 2) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::Wall; }
 				if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagPlayer; }
 			}
 			else
@@ -90,12 +91,53 @@ HRESULT MapEditor::Init()
 	mEnemyOrderInfo.EnemyOrderPos = { TILE_SIZE , mDrawingArea.bottom + ENEMY_TILE_SIZE };
 	mEnemyOrderInfo.EnemyOrderTypeImage = 0;
 
+
+	mEasySaveIndex = 0;
 	return S_OK;
+
 
 }
 
 void MapEditor::Update()
 {
+	if (KEY_MGR->IsStayKeyDown('Q'))
+	{
+		if (KEY_MGR->IsOnceKeyDown('0'))
+		{
+			mEasySaveIndex = '0';
+			cout << mEasySaveIndex << endl;
+		}
+		if (KEY_MGR->IsOnceKeyDown('1'))
+		{
+			mEasySaveIndex = '1';
+			cout << mEasySaveIndex << endl;
+		}
+		if (KEY_MGR->IsOnceKeyDown('2'))
+		{
+			mEasySaveIndex = '2';
+			cout << mEasySaveIndex << endl;
+		}
+		if (KEY_MGR->IsOnceKeyDown('3'))
+		{
+			mEasySaveIndex = '3';
+			cout << mEasySaveIndex << endl;
+		}
+
+		for (int i = 0; i < TILE_COUNT_Y; i++)
+		{
+			for (int j = 0; j < TILE_COUNT_X; j++)
+			{
+				if (PtInRect(&(mTileInfo[i * TILE_COUNT_X + j].TileShape), g_ptMouse))
+				{
+					if (KEY_MGR->IsOnceKeyDown(VK_LBUTTON))
+					{
+						cout << (int)mTileInfo[i * TILE_COUNT_X + j].Terrain << endl;
+
+					}
+				}
+			}
+		}
+	}
 
 	if (KEY_MGR->IsOnceKeyDown(VK_LBUTTON))
 	{
@@ -177,10 +219,38 @@ void MapEditor::Update()
 					if (mEnemyOrderInfo.EnemyCount > 0) { ENEMY_INFO_BOX[mEnemyOrderInfo.EnemyCount - 1] = NULL; mEnemyOrderInfo.EnemyCount--; }
 					break;
 				case 5:
-					SaveMap();
+					switch (mEasySaveIndex)
+					{
+					case '0':
+						SaveMap(0);
+						break;
+					case '1':
+						SaveMap(1);
+						break;
+					case '2':
+						SaveMap(2);
+						break;
+					case '3':
+						SaveMap(3);
+						break;
+					}
 					break;
 				case 6:
-					LoadMap();
+					switch (mEasySaveIndex)
+					{
+					case '0':
+						LoadMap(0);
+						break;
+					case '1':
+						LoadMap(1);
+						break;
+					case '2':
+						LoadMap(2);
+						break;
+					case '3':
+						LoadMap(3);
+						break;
+					}
 					break;
 				case 7:
 					SaveEnemyOrder();

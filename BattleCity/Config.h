@@ -38,6 +38,20 @@ using namespace std;
 
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
 
+#define TILE_COUNT_X 26
+#define TILE_COUNT_Y 26
+
+enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagPlayer };
+
+struct TagTile
+{
+	RECT		TileShape;
+	POINT		TilePos;
+	eTerrain	Terrain;
+	int			TileState;
+	int			CollisionCount = 0;
+};
+
 extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;
 extern POINT g_ptMouse;

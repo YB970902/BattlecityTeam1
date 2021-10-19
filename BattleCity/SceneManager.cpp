@@ -1,11 +1,11 @@
 #include "Config.h"
 #include "SceneManager.h"
 #include "GameEntity.h"
+#include "MapEditorScene.h"
 
 GameEntity* SceneManager::currScene = nullptr;
 GameEntity* SceneManager::readyScene = nullptr;
 GameEntity* SceneManager::loadingScene = nullptr;
-GameEntity* SceneManager::MapEditorScene = nullptr;
 
 DWORD CALLBACK LoadingThread(LPVOID pvParam)
 {
@@ -17,12 +17,12 @@ DWORD CALLBACK LoadingThread(LPVOID pvParam)
 	SceneManager::loadingScene = nullptr;
 	SceneManager::readyScene = nullptr;
 
+	
 	return 0;
 }
 
 void SceneManager::Init()
 {
-
 }
 
 void SceneManager::Release()

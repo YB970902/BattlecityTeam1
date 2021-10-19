@@ -8,9 +8,6 @@ public:
 #define BUTTON_SIZE 30
 #define ENEMY_TILE_SIZE	32
 
-#define TILE_COUNT_X 26
-#define TILE_COUNT_Y 26
-
 #define SAMPLETILE_COUNT_X 10
 #define SAMPLETILE_COUNT_Y 6
 
@@ -24,8 +21,6 @@ public:
 
 #define ENEMY_INFO_BOX mEnemyOrderInfo.EnemyOrderBox
 
-enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagPlayer };
-
 struct SampleAreaMouse
 {
 	POINT Start;
@@ -38,12 +33,6 @@ struct SampleAreaMouse
 	}
 };
 
-struct TagTile
-{
-	RECT		TileShape;
-	POINT		TilePos;
-	eTerrain	Terrain;
-};
 
 struct TagButton
 {
@@ -59,7 +48,7 @@ struct TagEnemyOrderInfo
 	int EnemyCount = 0;
 };
 
-private:
+protected:
 	Image* mBackground;
 	Image* mBackgroundInner;
 	Image* mButtonImage;
@@ -84,6 +73,8 @@ private:
 
 	TagEnemyOrderInfo mEnemyOrderInfo;
 
+	char mEasySaveIndex;
+
 public:
 	HRESULT Init() override;
 	void Update() override;
@@ -95,4 +86,22 @@ public:
 
 	void SaveEnemyOrder(int saveIndex = 0);
 	void LoadEnemyOrder(int loadIndex = 0);
+
+	Image* GetTileImage() { return this->mTileImage; }
+	void SetTileImage(Image* mTileImage) { this->mTileImage = mTileImage; };
+
+	/*TagTile GetTileInfo() { return this->mTileInfo; }
+	void SetTileInfo(TagTile mTileInfo, int length)
+	{
+		for(int j = 0; j < length; j++)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				this->mTileInfo[i *] = mTileInfo;
+			}
+		}
+		
+		
+	};*/
+
 };

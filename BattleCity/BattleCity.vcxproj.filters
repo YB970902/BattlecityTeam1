@@ -37,6 +37,9 @@
     <Filter Include="2DFrameWork\MapEditor">
       <UniqueIdentifier>{83657699-6580-419c-89e1-27a94d1eb828}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\MainGame\BattleScene">
+      <UniqueIdentifier>{b4bb4f77-4807-4e74-9b8a-270cc0e38671}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,6 +74,12 @@
     </ClCompile>
     <ClCompile Include="MapEditor.cpp">
       <Filter>2DFrameWork\MapEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="MapEditorScene.cpp">
+      <Filter>2DFrameWork\MapEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleScene.cpp">
+      <Filter>2DFrameWork\MainGame\BattleScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +121,12 @@
     </ClInclude>
     <ClInclude Include="MapEditor.h">
       <Filter>2DFrameWork\MapEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="MapEditorScene.h">
+      <Filter>2DFrameWork\MapEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleScene.h">
+      <Filter>2DFrameWork\MainGame\BattleScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
