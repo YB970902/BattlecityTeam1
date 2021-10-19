@@ -39,6 +39,11 @@
     </Filter>
     <Filter Include="2DFrameWork\MainGame\BattleScene">
       <UniqueIdentifier>{b4bb4f77-4807-4e74-9b8a-270cc0e38671}</UniqueIdentifier>
+    <Filter Include="2DFrameWork\Collider">
+      <UniqueIdentifier>{f9f63800-9f7b-4793-a8e1-5298bf7b5786}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DFrameWork\Scene">
+      <UniqueIdentifier>{d64dc70e-91e0-4f9c-8962-dd39fb1d82b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +85,14 @@
     </ClCompile>
     <ClCompile Include="BattleScene.cpp">
       <Filter>2DFrameWork\MainGame\BattleScene</Filter>
+    <ClCompile Include="Collider.cpp">
+      <Filter>2DFrameWork\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Physcis.cpp">
+      <Filter>2DFrameWork\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="PhyscisScene.cpp">
+      <Filter>2DFrameWork\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +140,17 @@
     </ClInclude>
     <ClInclude Include="BattleScene.h">
       <Filter>2DFrameWork\MainGame\BattleScene</Filter>
+    <ClInclude Include="Collider.h">
+      <Filter>2DFrameWork\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Physcis.h">
+      <Filter>2DFrameWork\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="PhyscisScene.h">
+      <Filter>2DFrameWork\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionChecker.h">
+      <Filter>2DFrameWork\Collider</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

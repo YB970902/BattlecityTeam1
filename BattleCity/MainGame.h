@@ -3,6 +3,9 @@
 
 class MapEditor;
 class Image;
+class Collider;
+class Physcis;
+
 class MainGame : public GameEntity
 {
 private:

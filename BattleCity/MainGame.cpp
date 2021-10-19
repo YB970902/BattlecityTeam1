@@ -4,6 +4,8 @@
 #include "MapEditorScene.h"
 #include "BattleScene.h"
 
+#include "PhyscisScene.h"
+
 HRESULT MainGame::Init()
 {
 	KEY_MGR->Init();
@@ -23,9 +25,9 @@ HRESULT MainGame::Init()
 	backBuffer = new Image();
 	backBuffer->Init("Image/mapImage.bmp", WIN_SIZE_X, WIN_SIZE_Y);
 
+	SCENE_MGR->Init();
 	SCENE_MGR->AddScene(eSceneTag::MapToolScene, new MapEditorScene);
-	SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
-
+	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
 	SCENE_MGR->AddScene(eSceneTag::TestScene, new BattleScene);
 	SCENE_MGR->ChangeScene(eSceneTag::TestScene);
 
@@ -52,6 +54,7 @@ void MainGame::Render(HDC hdc)
 	TIMER_MGR->Render(hBackBufferDC);
 
 	backBuffer->Render(hdc);
+
 }
 
 void MainGame::Release()

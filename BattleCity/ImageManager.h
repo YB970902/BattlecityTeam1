@@ -3,7 +3,7 @@
 
 enum class eImageTag
 {
-	None,
+	None, BackGround
 	Tile,
 	TileBackground,
 	TileBackgroundInner,
