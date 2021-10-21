@@ -10,10 +10,16 @@ Collider* Physcis::CreateCollider(POINTFLOAT pos, float bodySize, CollisionCheck
 	return newCol;
 }
 
+
 void Physcis::DestoryCollider(Collider* col1)
 {
 	mVecCollider.erase(mVecCollider.begin());
 }
+
+//void Physcis::DestoryCollider(int col1)
+//{
+//	mVecCollider.erase(mVecCollider.begin());
+//}
 
 void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 {

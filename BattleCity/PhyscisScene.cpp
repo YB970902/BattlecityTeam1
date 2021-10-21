@@ -44,6 +44,6 @@ void PhyscisScene::Update()
 	}
 	if (KEY_MGR->IsOnceKeyDown(VK_ESCAPE))
 	{
-		mPhyscis->DestoryCollider(mCurCollider);
+		//mPhyscis->DestoryCollider(mCurCollider);
 	}
 }

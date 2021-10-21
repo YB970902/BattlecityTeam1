@@ -63,6 +63,7 @@ public:
 
 	void Render(HDC hdc);
 	void Render(HDC hdc, int destX, int destY);
+	void Render(HDC hdc, int destX, int destY, float scale);
 	void Render(HDC hdc, int destX, int destY, int frameX, int frameY, float scale = 1.0f);
 	void Render(HDC hdc, int destX, int destY, int frameX, int frameY, float divide, float scale = 1.0f);
 
