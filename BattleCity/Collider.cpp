@@ -15,6 +15,7 @@ HRESULT Collider::Init(POINTFLOAT pos, float bodySize, Physcis* physcis, Collisi
 
 
 	UpdateBodySize();
+	UpdatePointGrid();
 
 	return S_OK;
 }
@@ -25,11 +26,20 @@ void Collider::UpdateBodySize()
 	mPlayerBody.top = mPlayerPos.y - (mPlayerBodySize / 2);
 	mPlayerBody.right = mPlayerBody.left + mPlayerBodySize;
 	mPlayerBody.bottom = mPlayerBody.top + mPlayerBodySize;
+
 }
 
 void Collider::Render(HDC hdc)
 {
 	Rectangle(hdc, mPlayerBody.left, mPlayerBody.top, mPlayerBody.right, mPlayerBody.bottom);
+}
+
+void Collider::UpdatePointGrid()
+{
+	mPointGrid[0] = { mPlayerBody.left / 64, mPlayerBody.top / 64 };
+	mPointGrid[1] = { mPlayerBody.right / 64, mPlayerBody.top / 64 };
+	mPointGrid[2] = { mPlayerBody.left / 64, mPlayerBody.bottom / 64 };
+	mPointGrid[3] = { mPlayerBody.right / 64, mPlayerBody.bottom / 64 };
 }
 
 void Collider::SetPlayerPos(POINTFLOAT movePos)
