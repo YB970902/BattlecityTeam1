@@ -46,6 +46,9 @@
     <Filter Include="2DFrameWork\Scene">
       <UniqueIdentifier>{d64dc70e-91e0-4f9c-8962-dd39fb1d82b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\GameObject\Tank">
+      <UniqueIdentifier>{8b3a1657-d8f5-4b5b-9311-5b1c97671083}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -97,6 +100,15 @@
       <Filter>2DFrameWork\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Tile.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank.cpp">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClCompile>
+    <ClCompile Include="TankScene.cpp">
+      <Filter>2DFrameWork\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TankController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -159,6 +171,15 @@
       <Filter>2DFrameWork\Collider</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank.h">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="TankScene.h">
+      <Filter>2DFrameWork\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TankController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

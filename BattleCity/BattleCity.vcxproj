@@ -153,6 +153,9 @@
     <ClCompile Include="PhyscisScene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="MapEditor.cpp" />
+    <ClCompile Include="Tank.cpp" />
+    <ClCompile Include="TankController.cpp" />
+    <ClCompile Include="TankScene.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
@@ -175,6 +178,9 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="MapEditor.h" />
+    <ClInclude Include="Tank.h" />
+    <ClInclude Include="TankController.h" />
+    <ClInclude Include="TankScene.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
