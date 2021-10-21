@@ -29,6 +29,7 @@ HRESULT MainGame::Init()
 	SCENE_MGR->AddScene(eSceneTag::MapToolScene, new MapEditorScene);
 	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
 	SCENE_MGR->AddScene(eSceneTag::TestScene, new BattleScene);
+	SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
 	SCENE_MGR->ChangeScene(eSceneTag::TestScene);
 
 	return S_OK;

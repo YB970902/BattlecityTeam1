@@ -1,5 +1,7 @@
 #pragma once
 #include "GameEntity.h"
+
+
 class Image;
 class MapEditor : public GameEntity
 {
@@ -32,7 +34,6 @@ struct SampleAreaMouse
 		End = { 0 , 0 };
 	}
 };
-
 
 struct TagButton
 {
@@ -89,19 +90,5 @@ public:
 
 	Image* GetTileImage() { return this->mTileImage; }
 	void SetTileImage(Image* mTileImage) { this->mTileImage = mTileImage; };
-
-	/*TagTile GetTileInfo() { return this->mTileInfo; }
-	void SetTileInfo(TagTile mTileInfo, int length)
-	{
-		for(int j = 0; j < length; j++)
-		{
-			for (int i = 0; i < length; i++)
-			{
-				this->mTileInfo[i *] = mTileInfo;
-			}
-		}
-		
-		
-	};*/
 
 };

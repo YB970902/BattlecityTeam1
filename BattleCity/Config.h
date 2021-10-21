@@ -59,17 +59,15 @@ enum class eCollisionTag
     Water,
     Block,
 };
-
-
 enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagPlayer };
 
 struct TagTile
 {
-	RECT		TileShape;
-	POINT		TilePos;
-	eTerrain	Terrain;
-	int			TileState;
-	int			CollisionCount = 0;
+    RECT		TileShape;
+    POINT		TilePos;
+    eTerrain	Terrain;
+    int			TileState;
+    int			CollisionCount = 0;
 };
 
 extern HWND g_hWnd;

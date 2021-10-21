@@ -149,6 +149,49 @@ void Image::Render(HDC hdc, int destX, int destY)
 
 }
 
+void Image::Render(HDC hdc, int destX, int destY, float scale)
+{
+	StretchBlt(hdc,
+		destX - (imageInfo->width * scale / 2),
+		destY - (imageInfo->height * scale / 2),
+		imageInfo->width * scale,
+		imageInfo->height * scale,
+		imageInfo->hMemDc,
+		0, 0,
+		imageInfo->width,
+		imageInfo->height,
+		SRCCOPY);
+
+	//if (isTransparent)
+	//{
+	//	GdiTransparentBlt(
+	//		hdc,
+	//		destX - (imageInfo->width / 2),
+	//		destY - (imageInfo->height / 2),
+	//		imageInfo->width * scale,
+	//		imageInfo->height * scale,	// 전체 프레임 수
+	//
+	//		imageInfo->hMemDc,
+	//		imageInfo->width,
+	//		imageInfo->height,
+	//		0, 0,
+	//		transColor
+	//	);
+	//}
+	//else
+	//{
+	//	BitBlt(hdc,
+	//		destX - (imageInfo->width / 2),
+	//		destY - (imageInfo->height / 2),
+	//		imageInfo->width * scale,
+	//		imageInfo->height * scale,
+	//		imageInfo->hMemDc,
+	//		0,
+	//		0,
+	//		SRCCOPY);
+	//}
+}
+
 void Image::Render(HDC hdc, int destX, int destY, int frameX, int frameY, float scale/* = 1.0f*/)
 {
 	if (isTransparent)
