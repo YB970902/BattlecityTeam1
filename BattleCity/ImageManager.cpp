@@ -4,6 +4,7 @@
 
 void ImageManager::Init()
 {
+
 }
 
 void ImageManager::Release()
