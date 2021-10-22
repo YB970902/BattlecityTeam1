@@ -58,11 +58,6 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 	{
 		arrOldVertex[i] = col->GetPointGrid()[i];
 	}
-	//cout << "--------------------------" << endl;
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	cout << i << "count X : " << arrOldVertex[i].x << "  Y : " << arrOldVertex[i].y << endl;
-	//}			// 소속그리드 확인구문
 
 	for (int i = 0; i < 4; i++)
 	{
