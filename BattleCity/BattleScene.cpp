@@ -73,6 +73,7 @@ void BattleScene::Update()
 			{
 				Tile* temp = (*itY).second;
 				itY = (*itX).second.erase(itY);
+				mPhyscis->DestroyCollider(temp->GetCollider());
 				SAFE_RELEASE(temp);
 			}
 			else { itY++; }

@@ -24,5 +24,8 @@ public:
 	bool IsCollided(Collider* col);
 	void PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& addedForce, POINTFLOAT dir, POINTFLOAT& oldOverlapped);
 
-	void Render(HDC hdc);
+	void Render(HDC hdc)override;
+	void Release()override;
+
+	virtual ~Physcis() {}
 };

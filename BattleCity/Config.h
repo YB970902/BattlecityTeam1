@@ -52,12 +52,16 @@ enum class eCollisionDir
 
 enum class eCollisionTag
 {
-    PlayerTank,
-    PlayerAmmo,
-    EnemyTank,
-    EnemyAmmo,
-    Water,
-    Block,
+    PlayerTank             =0b0000101,  //5
+    PlayerAmmo             =0b0000011,  //3
+    PlayerSpecialAmmo      =0b0010011,  //19
+    EnemyTank              =0b0000100,  //4
+    EnemyAmmo              =0b0000010,  //2
+    EnemySpecialAmmo       =0b0010010,  //18
+    Water                  =0b0100000,  //32
+    Block                  =0b0001000,  //8
+    SpecialBlock           =0b0011000,  //24
+    NexusBlock             =0b1000000   //64
 };
 enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagPlayer };
 
