@@ -21,8 +21,8 @@ HRESULT MapEditor::Init()
 		for (int j = 0; j < TILE_COUNT_X; j++)
 		{
 			SetRect(&(mTileInfo[i * TILE_COUNT_X + j].TileShape), j * TILE_SIZE, i * TILE_SIZE, j * TILE_SIZE + TILE_SIZE, i * TILE_SIZE + TILE_SIZE);
-			mTileInfo[i * TILE_COUNT_X + j].TilePos.x = 1;
-			mTileInfo[i * TILE_COUNT_X + j].TilePos.y = 0;
+			mTileInfo[i * TILE_COUNT_X + j].TilePos.x = 4;
+			mTileInfo[i * TILE_COUNT_X + j].TilePos.y = 4;
 			mTileInfo[i * TILE_COUNT_X + j].TileState = 0;
 			mTileInfo[i * TILE_COUNT_X + j].Terrain = eTerrain::Wall;
 		}
@@ -88,13 +88,13 @@ HRESULT MapEditor::Init()
 		mButtonInfo[i].bButtonOn = false;
 	}
 	
-	mEnemyOrderInfo.EnemyOrderPos = { TILE_SIZE , mDrawingArea.bottom + ENEMY_TILE_SIZE };
-	mEnemyOrderInfo.EnemyOrderTypeImage = 0;
-
+	for (int i = 0; i < ENEMY_MAX_COUNT; i++)
+	{
+		mEnemyInfo.mEnemyOrderType[i] = { eTankType::None};
+	}
 
 	mEasySaveIndex = 0;
 	return S_OK;
-
 
 }
 
@@ -189,6 +189,31 @@ void MapEditor::Update()
 					mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].TilePos.y = mClickedStartIndex.y + y;
 					mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].Terrain =
 						mTileInfoSample[(mClickedStartIndex.y + y) * SAMPLETILE_COUNT_X + (mClickedStartIndex.x + x)].Terrain;
+					if (mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].Terrain == eTerrain::Nexus)
+					{
+						if (mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].TilePos.x == NEXUS_AROUNDTILE_LEFT)
+						{
+							if (mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].TilePos.y == NEXUS_AROUNDTILE_TOP)
+							{
+								SetNexusAroundTile(x, y, clickedPos.x, clickedPos.y, NEXUS_AROUNDTILE_LEFT, NEXUS_AROUNDTILE_TOP);
+							}
+							else if (mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].TilePos.y == NEXUS_AROUNDTILE_BOTTOM)
+							{
+								SetNexusAroundTile(x, y, clickedPos.x, clickedPos.y, NEXUS_AROUNDTILE_LEFT, NEXUS_AROUNDTILE_BOTTOM);
+							}
+						}
+						else if (mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].TilePos.x == NEXUS_AROUNDTILE_RIGHT)
+						{
+							if (mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].TilePos.y == NEXUS_AROUNDTILE_TOP)
+							{
+								SetNexusAroundTile(x, y, clickedPos.x, clickedPos.y, NEXUS_AROUNDTILE_RIGHT, NEXUS_AROUNDTILE_TOP);
+							}
+							else if (mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].TilePos.y == NEXUS_AROUNDTILE_BOTTOM)
+							{
+								SetNexusAroundTile(x, y, clickedPos.x, clickedPos.y, NEXUS_AROUNDTILE_RIGHT, NEXUS_AROUNDTILE_BOTTOM);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -204,19 +229,29 @@ void MapEditor::Update()
 				switch (i)
 				{
 				case 0:
-					if (mEnemyOrderInfo.EnemyCount < ENEMY_MAX_COUNT)ENEMY_INFO_BOX[mEnemyOrderInfo.EnemyCount++] = ENEMY_ORDERBOX_ENEMY1;
+					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::NormalTank;
+					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 1:
-					if (mEnemyOrderInfo.EnemyCount < ENEMY_MAX_COUNT)ENEMY_INFO_BOX[mEnemyOrderInfo.EnemyCount++] = ENEMY_ORDERBOX_ENEMY2;
+					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::FastSpeedTank;
+					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 2:
-					if (mEnemyOrderInfo.EnemyCount < ENEMY_MAX_COUNT)ENEMY_INFO_BOX[mEnemyOrderInfo.EnemyCount++] = ENEMY_ORDERBOX_ENEMY3;
+					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::FastAmmoTank;
+					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 3:
-					if (mEnemyOrderInfo.EnemyCount < ENEMY_MAX_COUNT)ENEMY_INFO_BOX[mEnemyOrderInfo.EnemyCount++] = ENEMY_ORDERBOX_ENEMY4;
+					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::TankerTank;
+					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 4:
-					if (mEnemyOrderInfo.EnemyCount > 0) { ENEMY_INFO_BOX[mEnemyOrderInfo.EnemyCount - 1] = NULL; mEnemyOrderInfo.EnemyCount--; }
+					if (mEnemyInfo.mEnemyOrderCount <= 0) break;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount-1] = eTankType::None;
+					mEnemyInfo.mEnemyOrderCount--;
 					break;
 				case 5:
 					switch (mEasySaveIndex)
@@ -253,11 +288,43 @@ void MapEditor::Update()
 					}
 					break;
 				case 7:
-					SaveEnemyOrder();
+					switch (mEasySaveIndex)
+					{
+					case '0':
+						SaveEnemyOrder(0);
+						break;
+					case '1':
+						SaveEnemyOrder(1);
+						break;
+					case '2':
+						SaveEnemyOrder(2);
+						break;
+					case '3':
+						SaveEnemyOrder(3);
+						break;
+					}
 					break;
 				case 8:
-					LoadEnemyOrder();
+					switch (mEasySaveIndex)
+					{
+					case '0':
+						LoadEnemyOrder(0);
+						break;
+					case '1':
+						LoadEnemyOrder(1);
+						break;
+					case '2':
+						LoadEnemyOrder(2);
+						break;
+					case '3':
+						LoadEnemyOrder(3);
+						break;
+					}
 					break;
+				}
+				for (int i = 0; i < ENEMY_MAX_COUNT; i++)
+				{
+					cout << (int)mEnemyInfo.mEnemyOrderType[i] << endl;
 				}
 			}
 			if (KEY_MGR->IsOnceKeyUp(VK_LBUTTON))
@@ -269,13 +336,6 @@ void MapEditor::Update()
 		{
 			mButtonInfo[i].bButtonOn = false;
 		}
-	}
-	
-	// 디버깅 용
-	if(KEY_MGR->IsOnceKeyDown(VK_SPACE))
-	{
-		for (int i = 0; i < mEnemyOrderInfo.EnemyCount; i++)
-			cout << mEnemyOrderInfo.EnemyOrderBox[mEnemyOrderInfo.EnemyCount] << endl;
 	}
 }
 
@@ -316,29 +376,25 @@ void MapEditor::Render(HDC hdc)
 			0 + i);
 	}
 
-	for (int i = 0; i < mEnemyOrderInfo.EnemyCount; i++)
+	for (int i = 0; i < ENEMY_MAX_COUNT; i++)
 	{
-		switch (mEnemyOrderInfo.EnemyOrderBox[i])
+		switch (mEnemyInfo.mEnemyOrderType[i])
 		{
-		case ENEMY_ORDERBOX_ENEMY1:
-			mEnemyOrderInfo.EnemyOrderTypeImage = 0;
+		case eTankType::NormalTank :
+			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 0);
 			break;
-		case ENEMY_ORDERBOX_ENEMY2:
-			mEnemyOrderInfo.EnemyOrderTypeImage = 1;
+		case eTankType::FastSpeedTank:
+			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 1);
 			break;
-		case ENEMY_ORDERBOX_ENEMY3:
-			mEnemyOrderInfo.EnemyOrderTypeImage = 2;
+		case eTankType::FastAmmoTank:
+			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 2);
 			break;
-		case ENEMY_ORDERBOX_ENEMY4:
-			mEnemyOrderInfo.EnemyOrderTypeImage = 3;
+		case eTankType::TankerTank:
+			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 3);
+			break;
+		default:
 			break;
 		}
-
-		mEnemyOrderBoxImage->Render(hdc,
-			mEnemyOrderInfo.EnemyOrderPos.x + ((i % 10) * ENEMY_TILE_SIZE),
-			mEnemyOrderInfo.EnemyOrderPos.y + ((i / 10) * ENEMY_TILE_SIZE),
-			0,
-			mEnemyOrderInfo.EnemyOrderTypeImage);
 	}
 }
 
@@ -350,31 +406,28 @@ void MapEditor::Release()
 void MapEditor::SaveMap(int saveIndex)
 {
 	string saveFileName = "Save/saveMapData_" + (to_string(saveIndex)) + ".map";
-	/*saveFileName += ".map";*/
+
 
 	HANDLE hFile = CreateFile(saveFileName.c_str(),
-		GENERIC_WRITE,          // 읽기, 쓰기
-		NULL, NULL,                // 공유, 보안 모드
-		CREATE_ALWAYS,          // 파일 만들거나 읽을 때 옵션
-		FILE_ATTRIBUTE_NORMAL,  // 파일 속성(읽기 전용, 숨김 등등)
+		GENERIC_WRITE,
+		NULL, NULL, 
+		CREATE_ALWAYS,     
+		FILE_ATTRIBUTE_NORMAL, 
 		NULL);
 
-	// 쓰기
 	DWORD mapSaveTileInfo = sizeof(TagTile) * TILE_COUNT_X * TILE_COUNT_Y;
 
 	DWORD writtenByte;
-	if (WriteFile(hFile,    // 파일 핸들
-		mTileInfo,       // 메모리 시작주소
-		mapSaveTileInfo,  // 메모리 크기
-		&writtenByte,   // 실제 쓰여진 파일 용량
-		NULL) == false)          // ???
+	if (WriteFile(hFile, 
+		mTileInfo,       
+		mapSaveTileInfo,  
+		&writtenByte,   
+		NULL) == false)  
 	{
 		MessageBox(g_hWnd, "맵 데이터 저장에 실패했습니다.", "에러", MB_OK);
 	}
 
 	CloseHandle(hFile);
-
-	//(parsing)  .ini, .json, html
 }
 
 
@@ -386,13 +439,12 @@ void MapEditor::LoadMap(int loadIndex)
 	DWORD mapSaveTileInfo = sizeof(TagTile) * TILE_COUNT_X * TILE_COUNT_Y;
 
 	HANDLE hFile = CreateFile(loadFileName.c_str(),
-		GENERIC_READ,           // 읽기, 쓰기
-		0, NULL,                // 공유, 보안 모드
-		OPEN_EXISTING,          // 파일 만들거나 읽을 때 옵션
-		FILE_ATTRIBUTE_NORMAL,  // 파일 속성(읽기 전용, 숨김 등등)
+		GENERIC_READ,       
+		0, NULL,              
+		OPEN_EXISTING,       
+		FILE_ATTRIBUTE_NORMAL,  
 		NULL);
-
-	// 읽기
+	
 	DWORD readByte;
 	if (ReadFile(hFile, mTileInfo, mapSaveTileInfo,
 		&readByte, NULL) == false)
@@ -409,26 +461,24 @@ void MapEditor::SaveEnemyOrder(int saveIndex)
 	saveFileName += ".map";
 
 	HANDLE hFile = CreateFile(saveFileName.c_str(),
-		GENERIC_WRITE,          // 읽기, 쓰기
-		0, NULL,                // 공유, 보안 모드
-		CREATE_ALWAYS,          // 파일 만들거나 읽을 때 옵션
-		FILE_ATTRIBUTE_NORMAL,  // 파일 속성(읽기 전용, 숨김 등등)
+		GENERIC_WRITE,         
+		0, NULL,              
+		CREATE_ALWAYS,         
+		FILE_ATTRIBUTE_NORMAL, 
 		NULL);
 
 	// 쓰기
 	DWORD writtenByte;
-	if (WriteFile(hFile,    // 파일 핸들
-		&mEnemyOrderInfo,       // 메모리 시작주소
-		sizeof(TagEnemyOrderInfo),  // 메모리 크기
-		&writtenByte,   // 실제 쓰여진 파일 용량
-		NULL) == false)          // ???
+	if (WriteFile(hFile,   
+		&mEnemyInfo,       
+		sizeof(mEnemyInfo),
+		&writtenByte, 
+		NULL) == false)    
 	{
 		MessageBox(g_hWnd, "맵 데이터 저장에 실패했습니다.", "에러", MB_OK);
 	}
-
 	CloseHandle(hFile);
 
-	//(parsing)  .ini, .json, html
 }
 
 void MapEditor::LoadEnemyOrder(int loadIndex)
@@ -437,19 +487,85 @@ void MapEditor::LoadEnemyOrder(int loadIndex)
 	loadFileName += ".map";
 
 	HANDLE hFile = CreateFile(loadFileName.c_str(),
-		GENERIC_READ,           // 읽기, 쓰기
-		0, NULL,                // 공유, 보안 모드
-		OPEN_EXISTING,          // 파일 만들거나 읽을 때 옵션
-		FILE_ATTRIBUTE_NORMAL,  // 파일 속성(읽기 전용, 숨김 등등)
+		GENERIC_READ,          
+		0, NULL,               
+		OPEN_EXISTING,         
+		FILE_ATTRIBUTE_NORMAL, 
 		NULL);
 
-	// 읽기
 	DWORD readByte;
-	if (ReadFile(hFile, &mEnemyOrderInfo, sizeof(TagEnemyOrderInfo),
+	if (ReadFile(hFile, &mEnemyInfo, sizeof(mEnemyInfo),
 		&readByte, NULL) == false)
 	{
 		MessageBox(g_hWnd, "맵 데이터 로드에 실패했습니다.", "에러", MB_OK);
 	}
 
 	CloseHandle(hFile);
+}
+
+void MapEditor::SetNexusAroundTile(int x, int y, int clickedPosX, int clickedPosY, int NEXUS_AROUNDTILE_POS_X, int NEXUS_AROUNDTILE_POS_Y)
+{
+	int nexusAroundTilePos = 1;
+	if (NEXUS_AROUNDTILE_POS_X == NEXUS_AROUNDTILE_LEFT) {
+		if (NEXUS_AROUNDTILE_POS_Y == NEXUS_AROUNDTILE_TOP)
+		{
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].TilePos = mTileInfoSample[0].TilePos;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].Terrain = eTerrain::Wall;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].NexusAroundTile = true;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].NexusAroundTile = true;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].NexusAroundTile = true;
+		}
+		else if (NEXUS_AROUNDTILE_POS_Y == NEXUS_AROUNDTILE_BOTTOM)
+		{
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].TilePos = mTileInfoSample[0].TilePos;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].Terrain = eTerrain::Wall;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].NexusAroundTile = true;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].NexusAroundTile = true;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].NexusAroundTile = true;
+		}
+	}
+	else if(NEXUS_AROUNDTILE_POS_X == NEXUS_AROUNDTILE_RIGHT)
+	{
+		if (NEXUS_AROUNDTILE_POS_Y == NEXUS_AROUNDTILE_TOP)
+		{
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].TilePos = mTileInfoSample[0].TilePos;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].Terrain = eTerrain::Wall;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].NexusAroundTile = true;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].NexusAroundTile = true;
+			mTileInfo[((clickedPosY - nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].NexusAroundTile = true;
+		}
+		else if (NEXUS_AROUNDTILE_POS_Y == NEXUS_AROUNDTILE_BOTTOM)
+		{
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].TilePos = mTileInfoSample[0].TilePos;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].Terrain = eTerrain::Wall;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+
+			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].NexusAroundTile = true;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].NexusAroundTile = true;
+			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].NexusAroundTile = true;
+		}
+	}
+	
 }

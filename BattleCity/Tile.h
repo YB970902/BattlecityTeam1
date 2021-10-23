@@ -15,8 +15,7 @@ private:
 	Image* mImg;
 	TagTile mTileInfo;
 	Collider* mCollider;
-	POINT mPos;
-
+	POINT mPos = {};
 	bool mbIsBroken = false;
 
 public:
@@ -30,10 +29,13 @@ public:
 	Collider* GetCollider() { return this->mCollider; }
 	POINT GetPosition() { return this->mPos; }
 
+	void SetImagePos(POINT pos) { this->GetTileInfo()->TilePos = pos; }
+
 	bool IsWater() { return mTileInfo.Terrain == eTerrain::Water; }
 	bool IsBroken() { return mbIsBroken; }
 
 	TagTile* GetTileInfo() { return &mTileInfo; }
+
 private:
 	void CalcBroken(eCollisionDir dir);
 };
