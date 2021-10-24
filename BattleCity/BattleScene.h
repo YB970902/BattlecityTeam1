@@ -1,6 +1,5 @@
 #pragma once
 #include "GameEntity.h"
-#include "CollisionChecker.h"
 
 #define CHANGE_WATER_TILE_TIME 1
 
@@ -14,22 +13,20 @@ enum class eBrokenStyle
 	BrokenBottom
 };
 
+
 class Image;
-class MapEditor;
 class Physcis;
+class MapEditor;
+struct TagEnemyInfo;
 class BattleScene : public GameEntity
 {
 private:
-	Image* mBackgroundGray = nullptr;
-	Image* mBackgroundBlack = nullptr;
+	Image* mBackgroundGray;
+	Image* mBackgroundBlack;
+	Image* mForResize;
 
-	Image* mForResize = nullptr;
-	Physcis* mPhyscis = nullptr;
-
-	HDC mResizeHDC = {};
+	HDC mResizeHDC;
 	float mScale = 1.0f;
-
-	/*TagTile mBattleTile[TILE_COUNT_X * TILE_COUNT_Y];*/
 	
 	POINT mStartPos = {};
 
@@ -37,12 +34,15 @@ private:
 	bool mbChangeBlock = false;
 	float  mChangeWaterTileTime = 0.0f;
 
-	// 콜라이더
-	//Collider* mCollider;
+	Physcis* mPhyscis = nullptr;
 
-	map<int, map<int, Tile*>> mMapTile;
+	map<int, map<int, Tile*>> mMapTile = {};
 
-	bool mDebugMode;
+	bool mbItemBlock = 0;
+	float mItemTime = 0;
+
+	TagEnemyInfo* mEnemyInfo;
+
 
 public:
 	virtual ~BattleScene() = default;
@@ -54,6 +54,8 @@ public:
 
 	void LoadMap(int loadIndex = 0);
 
-	void ChangeBlock();
+	void ClearTileMap();
+
+	void LoadEnemyOrder(int loadIndex = 0);
 };
 

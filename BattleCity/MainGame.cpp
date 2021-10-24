@@ -3,7 +3,8 @@
 #include "Image.h"
 #include "MapEditorScene.h"
 #include "BattleScene.h"
-#include "CollisionChecker.h"
+#include "CommonFunction.h"
+
 #include "PhyscisScene.h"
 #include "TankScene.h"
 
@@ -29,6 +30,9 @@ HRESULT MainGame::Init()
 	SCENE_MGR->AddScene(eSceneTag::MapToolScene, new MapEditorScene);
 	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
 	SCENE_MGR->AddScene(eSceneTag::TestScene, new BattleScene);
+
+	SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
+	SCENE_MGR->ChangeScene(eSceneTag::TestScene);
 	SCENE_MGR->AddScene(eSceneTag::TankScene, new TankScene);
 
 	//map<int, GameEntity*> mapForTest;
@@ -90,6 +94,9 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 {
 	switch (iMessage)
 	{
+	case WM_SIZE:
+		SetWindowSize(WIN_START_POS_X, WIN_START_POS_Y, WIN_SIZE_X, WIN_SIZE_Y);
+		break;
 	case WM_LBUTTONDOWN:
 		clickedMousePosX = LOWORD(lParam);
 		clickedMousePosY = HIWORD(lParam);

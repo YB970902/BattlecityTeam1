@@ -36,4 +36,6 @@ public:
 	inline float GetPlayerBodySize() { return this->mPlayerBodySize; }
 	inline RECT GetPlayerBody() { return this->mPlayerBody; }
 	inline POINT* GetPointGrid() { return this->mPointGrid; }
+
+	virtual ~Collider() {}
 };
