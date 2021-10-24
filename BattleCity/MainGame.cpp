@@ -30,19 +30,10 @@ HRESULT MainGame::Init()
 	SCENE_MGR->AddScene(eSceneTag::MapToolScene, new MapEditorScene);
 	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
 	SCENE_MGR->AddScene(eSceneTag::TestScene, new BattleScene);
-
+	SCENE_MGR->AddScene(eSceneTag::TankScene, new TankScene);
 	SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
 	SCENE_MGR->ChangeScene(eSceneTag::TestScene);
-	SCENE_MGR->AddScene(eSceneTag::TankScene, new TankScene);
-
-	//map<int, GameEntity*> mapForTest;
-	//mapForTest[0] = new BattleScene;
-	//SAFE_DELETE(mapForTest[0]);
-	//mapForTest.erase(0);
-
-	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
-	//SCENE_MGR->ChangeScene(eSceneTag::TestScene);
-	SCENE_MGR->ChangeScene(eSceneTag::TankScene);
+	//SCENE_MGR->ChangeScene(eSceneTag::TankScene);
 
 	return S_OK;
 }
