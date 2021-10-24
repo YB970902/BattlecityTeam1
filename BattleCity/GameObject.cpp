@@ -27,6 +27,6 @@ void GameObject::Render()
 {
 }
 
-void GameObject::OnCollided(eCollisionDir dir, eCollisionTag tag)
+void GameObject::OnCollided(eCollisionDir dir, int tag)
 {
 }

@@ -18,7 +18,9 @@ private:
 	TankSpawner* mPlayerTankSpawner = nullptr;
 	AITankSpawner* mAISpawner = nullptr;
 
-	Physcis* mPhysics;
+	Physcis* mPhysics = nullptr;
+
+	bool mbIsDebugMode = false;
 public:
 	HRESULT Init() override;
 	void Release() override;

@@ -10,7 +10,7 @@ private:
 	eCollisionTag mTag;
 
 
-	void (CollisionChecker::* pFunc)(eCollisionDir dir, eCollisionTag tag);
+	void (CollisionChecker::* pFunc)(eCollisionDir dir, int tag);
 
 	POINTFLOAT mPlayerPos;
 	RECT mPlayerBody;
@@ -29,7 +29,7 @@ public:
 	void AddPlayerPos(POINTFLOAT addPos);
 	void MoveTo(POINTFLOAT dir, float moveSpeed);
 
-	void OnCollided(eCollisionDir dir, eCollisionTag tag);
+	void OnCollided(eCollisionDir dir, int tag);
 
 	inline eCollisionTag GetTag() { return this->mTag; }
 	inline POINTFLOAT GetPlayerPos() { return this->mPlayerPos; }

@@ -26,6 +26,7 @@ void AITankSpawner::Release()
 	for (vector<Tank*>::iterator it = mVecTank.begin(); it != mVecTank.end();)
 	{
 		tank = (*it);
+		if (tank == nullptr) { cout << "AITank is nullptr" << endl; }
 		it = mVecTank.erase(it);
 		mPhysics->DestroyCollider(tank->GetCollider());
 		SAFE_RELEASE(tank);
@@ -49,24 +50,12 @@ void AITankSpawner::Update()
 		mVecTankController[i]->Update();
 	}
 
-	// 탱크 테스트중 맵 밖으로 나가는거 막기위한 코드
-
-	for (int i = 0; i < mVecTank.size(); i++)
-	{
-		if (mVecTank[i]->GetPosition().x < 0) { mVecTankController[i]->OnCollided(eCollisionDir::Left, eCollisionTag::Block); }
-		else if (mVecTank[i]->GetPosition().x > WIN_SIZE_X) { mVecTankController[i]->OnCollided(eCollisionDir::Right, eCollisionTag::Block); }
-		else if (mVecTank[i]->GetPosition().y < 0) { mVecTankController[i]->OnCollided(eCollisionDir::Top, eCollisionTag::Block); }
-		else if (mVecTank[i]->GetPosition().y > WIN_SIZE_Y) { mVecTankController[i]->OnCollided(eCollisionDir::Bottom, eCollisionTag::Block); }
-	}
-
-	// 테스트 끝나면 꼭 지웁시당
-
 	for(vector<Tank*>::iterator tankIt = mVecTank.begin(); tankIt != mVecTank.end();)
 	{
 		if ((*tankIt)->IsDead())
 		{
 			Tank* delTank = (*tankIt);
-			mPhysics->DestroyCollider((*tankIt)->GetCollider());
+			mPhysics->DestroyCollider(delTank->GetCollider());
 			tankIt = mVecTank.erase(tankIt);
 
 			for (vector<AITankController*>::iterator ctrlIt = mVecTankController.begin(); ctrlIt != mVecTankController.end(); ++ctrlIt)
