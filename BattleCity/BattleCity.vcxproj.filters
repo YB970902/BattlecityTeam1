@@ -37,14 +37,14 @@
     <Filter Include="2DFrameWork\MapEditor">
       <UniqueIdentifier>{83657699-6580-419c-89e1-27a94d1eb828}</UniqueIdentifier>
     </Filter>
-    <Filter Include="2DFrameWork\MainGame\BattleScene">
-      <UniqueIdentifier>{b4bb4f77-4807-4e74-9b8a-270cc0e38671}</UniqueIdentifier>
-    </Filter>
     <Filter Include="2DFrameWork\Collider">
       <UniqueIdentifier>{f9f63800-9f7b-4793-a8e1-5298bf7b5786}</UniqueIdentifier>
     </Filter>
     <Filter Include="2DFrameWork\Scene">
       <UniqueIdentifier>{d64dc70e-91e0-4f9c-8962-dd39fb1d82b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DFrameWork\Scene\BattleScene">
+      <UniqueIdentifier>{b4bb4f77-4807-4e74-9b8a-270cc0e38671}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -85,7 +85,7 @@
       <Filter>2DFrameWork\MapEditor</Filter>
     </ClCompile>
     <ClCompile Include="BattleScene.cpp">
-      <Filter>2DFrameWork\MainGame\BattleScene</Filter>
+      <Filter>2DFrameWork\Scene\BattleScene</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
       <Filter>2DFrameWork\Collider</Filter>
@@ -97,7 +97,7 @@
       <Filter>2DFrameWork\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Tile.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>2DFrameWork\MapEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +144,7 @@
       <Filter>2DFrameWork\MapEditor</Filter>
     </ClInclude>
     <ClInclude Include="BattleScene.h">
-      <Filter>2DFrameWork\MainGame\BattleScene</Filter>
+      <Filter>2DFrameWork\Scene\BattleScene</Filter>
     </ClInclude>
     <ClInclude Include="Collider.h">
       <Filter>2DFrameWork\Collider</Filter>
@@ -159,7 +159,7 @@
       <Filter>2DFrameWork\Collider</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>2DFrameWork\MapEditor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
