@@ -9,12 +9,16 @@ private:
 	POINTFLOAT mPos;
 	float mBodySize;
 
-	vector<Collider*> mVecCollider;
+
+	map<int, map<int, vector<Collider*>>> mGridMap;
+
+
+	POINT mCheckGrid[4];
 
 public:
+	HRESULT Init();
 	Collider* CreateCollider(POINTFLOAT pos, float bodySize, CollisionChecker* obj, eCollisionTag tag);
-	void DestoryCollider(Collider* col1);
-	//void DestoryCollider(int col1);
+	void DestroyCollider(Collider* col);
 	void CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos);
 	bool IsCollided(Collider* col1, Collider* col2);
 	bool IsCollided(Collider* col);

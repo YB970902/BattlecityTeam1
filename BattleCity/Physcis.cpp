@@ -2,42 +2,82 @@
 #include "Physcis.h"
 #include "Collider.h"
 
+HRESULT Physcis::Init()
+{
+	return S_OK;
+}
+
 Collider* Physcis::CreateCollider(POINTFLOAT pos, float bodySize, CollisionChecker* obj, eCollisionTag tag)
 {
 	Collider* newCol = new Collider();
 	newCol->Init(pos, bodySize, this, obj, tag);
-	mVecCollider.push_back(newCol);
+
+	POINT prevPoint = newCol->GetPointGrid()[0];
+	if (prevPoint.x == -1 || prevPoint.y == -1) { return nullptr; } // 생성실패!
+
+	mGridMap[prevPoint.x][prevPoint.y].push_back(newCol);
+
+	for (int i = 1; i < 4; i++)
+	{
+		if (newCol->GetPointGrid()[i].x == -1 || newCol->GetPointGrid()[i].y == -1)
+		{
+			break;
+		}
+
+		if (newCol->GetPointGrid()[i].x != prevPoint.x || newCol->GetPointGrid()[i].y != prevPoint.y)
+		{
+			prevPoint = newCol->GetPointGrid()[i];
+			mGridMap[prevPoint.x][prevPoint.y].push_back(newCol);
+		}
+	}
 	return newCol;
 }
 
-
-void Physcis::DestoryCollider(Collider* col1)
+void Physcis::DestroyCollider(Collider* col)
 {
-	mVecCollider.erase(mVecCollider.begin());
+	for (int i = 0; i < 4; i++)
+	{
+		vector<Collider*>::iterator it = find(mGridMap[col->GetPointGrid()[i].x][col->GetPointGrid()[i].y].begin(),
+			mGridMap[col->GetPointGrid()[i].x][col->GetPointGrid()[i].y].end(),
+			col);
+		if (it != mGridMap[col->GetPointGrid()[i].x][col->GetPointGrid()[i].y].end())
+		{
+			mGridMap[col->GetPointGrid()[i].x][col->GetPointGrid()[i].y].erase(it);
+		}
+	}
+	SAFE_DELETE(col);
 }
-
-//void Physcis::DestoryCollider(int col1)
-//{
-//	mVecCollider.erase(mVecCollider.begin());
-//}
 
 void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 {
 	POINTFLOAT addedForce = { 0,0 };
 	POINTFLOAT oldOverlapped = { 0,0 };
 
-
-	for (int i = 0; i < mVecCollider.size(); i++)
+	POINT arrOldVertex[4];
+	for (int i = 0; i < 4; i++)
 	{
-		if (mVecCollider[i] == col) { continue; }
-		PreventOverlapped(col, mVecCollider[i], addedForce, dir, oldOverlapped);
+		arrOldVertex[i] = col->GetPointGrid()[i];
+	}
+	cout << "--------------------------" << endl;
+	for (int i = 0; i < 4; i++)
+	{
+		cout << i << "count X : " << arrOldVertex[i].x << "  Y : " << arrOldVertex[i].y << endl;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+		{
+			if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
+			PreventOverlapped(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j], addedForce, dir, oldOverlapped);
+		}
 	}
 	if ((dir.x > 0 && addedForce.x < 0) || (dir.x < 0 && addedForce.x > 0))
 	{
 		addedForce.y = 0;
 	}
 	else if ((dir.y > 0 && addedForce.y < 0) || (dir.y < 0 && addedForce.y > 0))
-	{ 
+	{
 		addedForce.x = 0;
 	}
 
@@ -57,6 +97,69 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 		}
 		col->SetPlayerPos({ oldPos.x,oldPos.y });
 	}
+
+	col->UpdateBodySize();
+	col->UpdatePointGrid();
+
+	POINT arrDeleteVertex[4] = { {-1, -1}, {-1, -1} , {-1, -1} , {-1, -1} };
+	POINT arrNewfaceVertex[4] = { {-1, -1}, {-1, -1} , {-1, -1} , {-1, -1} };
+	int curDeleteVertexIdx = 0;
+	int curNewfaceVeretxIdx = 0;
+	bool isExist = false;
+	bool isNewface = true;
+	for (int i = 0; i < 4; i++)
+	{
+		isExist = false;
+		isNewface = true;
+		for (int j = 0; j < 4; j++)
+		{
+			if (arrOldVertex[i].x == col->GetPointGrid()[j].x && arrOldVertex[i].y == col->GetPointGrid()[j].y)
+			{
+				isExist = true;
+			}
+
+			if (arrOldVertex[j].x == col->GetPointGrid()[i].x && arrOldVertex[j].y == col->GetPointGrid()[i].y)
+			{
+				isNewface = false;
+			}
+		}
+		if (!isExist)
+		{
+			arrDeleteVertex[curDeleteVertexIdx++] = arrOldVertex[i];
+		}
+		if (isNewface)
+		{
+			arrNewfaceVertex[curNewfaceVeretxIdx++] = col->GetPointGrid()[i];
+		}
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		if (arrDeleteVertex[i].x == -1 || arrDeleteVertex[i].y == -1) { continue; }
+		vector<Collider*>::iterator it = find(mGridMap[arrDeleteVertex[i].x][arrDeleteVertex[i].y].begin(),
+			mGridMap[arrDeleteVertex[i].x][arrDeleteVertex[i].y].end(),
+			col);
+		if (it != mGridMap[arrDeleteVertex[i].x][arrDeleteVertex[i].y].end())
+		{
+			mGridMap[arrDeleteVertex[i].x][arrDeleteVertex[i].y].erase(it);
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (arrNewfaceVertex[i].x == -1 || arrNewfaceVertex[i].y == -1) { continue; }
+		vector<Collider*>::iterator it = find(mGridMap[arrNewfaceVertex[i].x][arrNewfaceVertex[i].y].begin(),
+			mGridMap[arrNewfaceVertex[i].x][arrNewfaceVertex[i].y].end(),
+			col);
+		if (it == mGridMap[arrNewfaceVertex[i].x][arrNewfaceVertex[i].y].end())
+		{
+			mGridMap[arrNewfaceVertex[i].x][arrNewfaceVertex[i].y].push_back(col);
+		}
+	}
+
+	mCheckGrid[0] = col->GetPointGrid()[0];
+	mCheckGrid[1] = col->GetPointGrid()[1];
+	mCheckGrid[2] = col->GetPointGrid()[2];
+	mCheckGrid[3] = col->GetPointGrid()[3];
 }
 
 bool Physcis::IsCollided(Collider* col1, Collider* col2)
@@ -71,23 +174,30 @@ bool Physcis::IsCollided(Collider* col1, Collider* col2)
 
 bool Physcis::IsCollided(Collider* col)
 {
-	for (int i = 0; i < mVecCollider.size(); i++)
+	for (int i = 0; i < 4; i++)
 	{
-		if (mVecCollider[i] == col) { continue; }
-		if (IsCollided(col, mVecCollider[i])) { return true; }
+		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+		{
+			if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
+			if (IsCollided(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][i])) { return true; }
+		}
 	}
 	return false;
 }
 
 void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& addedForce, POINTFLOAT dir, POINTFLOAT& oldOverlapped)
 {
+	if (col2->GetTag() == eCollisionTag::Water && (col1->GetTag() == eCollisionTag::PlayerTank || col1->GetTag() == eCollisionTag::EnemyTank))
+	{
+		return;
+	}
 	if (IsCollided(col1, col2))
 	{
 		float overlappedX = 0, overlappedY = 0;
-		
+
 		// col1이 왼쪽에 있는경우
 		if (col1->GetPlayerPos().x < col2->GetPlayerPos().x)
-		{ 
+		{
 			overlappedX = col2->GetPlayerBody().left - col1->GetPlayerBody().right;
 		}
 		else
@@ -136,23 +246,23 @@ void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& adde
 		}
 		// 겹친 영역이 세로로 길쭉한 형태이고 보정하기에 딱 좋은 상태
 		//바디 사이즈의 3분의 1 보다 작게 겹친경우 보는 방향에 따라 Y위치 보정을 해 준다.
-		if (fabs(overlappedX) < fabs(overlappedY) && 
-			fabs(overlappedY) < (col2->GetPlayerBodySize() * 0.33f) && 
+		if (fabs(overlappedX) < fabs(overlappedY) &&
+			fabs(overlappedY) < (col2->GetPlayerBodySize() * 0.5f) &&
 			((overlappedX > 0 && dir.x < 0) || (overlappedX < 0 && dir.x > 0)))
 		{
-			if (addedForce.y < fabs(overlappedY)) 
+			if (addedForce.y < fabs(overlappedY))
 			{
-				addedForce.y = overlappedY; 
+				addedForce.y = overlappedY;
 			}
 		}
 		// 겹친 영역이 가로로 길쭉한 형태이고 보정하기에 딱 좋은 상태
 		// 바디 사이즈의 3분의 1보자 작게 겹친경우 보는 방향에 따라 X위치 보정을 해 준다.
-		else if (fabs(overlappedX) > fabs(overlappedY) && 
-			fabs(overlappedX) < (col2->GetPlayerBodySize() * 0.33f) &&
+		else if (fabs(overlappedX) > fabs(overlappedY) &&
+			fabs(overlappedX) < (col2->GetPlayerBodySize() * 0.5f) &&
 			((overlappedY < 0 && dir.y > 0) || (overlappedY > 0 && dir.y < 0)))
 		{
-			if (addedForce.x < fabs(overlappedX)) 
-			{ 
+			if (addedForce.x < fabs(overlappedX))
+			{
 				addedForce.x = overlappedX;
 			}
 		}
@@ -166,14 +276,16 @@ void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& adde
 		{
 			addedForce.y = overlappedY;
 		}
-
 	}
 }
 
 void Physcis::Render(HDC hdc)
 {
-	for (int i = 0; i < mVecCollider.size(); i++)
+	for (int i = 0; i < 4; i++)
 	{
-		mVecCollider[i]->Render(hdc);
+		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+		{
+			mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j]->Render(hdc);
+		}
 	}
 }

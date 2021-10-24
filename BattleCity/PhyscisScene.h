@@ -13,6 +13,7 @@ private:
 	Image* mBackGround;
 	Collider* mCurCollider;
 
+
 	const POINTFLOAT DIR_LEFT{ -1, 0 };
 	const POINTFLOAT DIR_RIGHT{ 1, 0 };
 	const POINTFLOAT DIR_UP{ 0, -1 };
