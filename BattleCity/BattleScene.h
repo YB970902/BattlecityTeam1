@@ -4,14 +4,22 @@
 class Tile;
 class Physcis;
 class TileManager;
+class TankController;
+class TankSpawner;
 class BattleScene : public GameEntity
 {
 private:
 	Image* mBackgroundGray;
 	Image* mBackgroundBlack;
 
-	Physcis* mPhyscis = nullptr;
+	Physcis* mPhysics = nullptr;
 	TileManager* mTileManager;
+
+	TankController* mFirstPlayerController = nullptr;
+	TankSpawner* mFirstPlayerSpawner = nullptr;
+
+	TankController* mSecondPlayerController = nullptr;
+	TankSpawner* mSecondPlayerSpawner = nullptr;
 
 	POINT mStartPos = {};
 
