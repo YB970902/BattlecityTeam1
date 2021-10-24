@@ -1,11 +1,6 @@
 #pragma once
 #include "GameEntity.h"
 
-
-class Image;
-class MapEditor : public GameEntity
-{
-public:
 #define TILE_SIZE	16
 #define BUTTON_SIZE 30
 #define ENEMY_TILE_SIZE	32
@@ -16,65 +11,88 @@ public:
 #define BUTTON_ENEMY_MAX_COUNT 9
 #define ENEMY_MAX_COUNT 20
 
-#define ENEMY_ORDERBOX_ENEMY1 0x0002
-#define ENEMY_ORDERBOX_ENEMY2 0x0004
-#define ENEMY_ORDERBOX_ENEMY3 0x0006
-#define ENEMY_ORDERBOX_ENEMY4 0x0008
+#define NEXUS_AROUNDTILE_LEFT 4
+#define NEXUS_AROUNDTILE_RIGHT 5
+#define NEXUS_AROUNDTILE_TOP 2
+#define NEXUS_AROUNDTILE_BOTTOM 3
 
-#define ENEMY_INFO_BOX mEnemyOrderInfo.EnemyOrderBox
-
-struct SampleAreaMouse
+enum class eTankType
 {
-	POINT Start;
-	POINT End;
+	None,
+	NormalTank,
+	FastSpeedTank,
+	FastAmmoTank,
+	TankerTank,
+};
 
-	SampleAreaMouse()
+struct TagEnemyInfo
+{
+	eTankType mEnemyOrderType[20];
+	int mEnemyOrderCount;
+
+	TagEnemyInfo()
 	{
-		Start = { 0 , 0 };
-		End = { 0 , 0 };
-	}
+		mEnemyOrderType[0] = {};
+		mEnemyOrderCount = 0;
+	};
+
 };
 
-struct TagButton
+class Image;
+class MapEditor : public GameEntity
 {
-	RECT	ButtonShape;
-	POINT	ButtonPos;
-	bool    bButtonOn;
-};
-struct TagEnemyOrderInfo
-{
-	POINT EnemyOrderPos;
-	int EnemyOrderTypeImage;
-	int EnemyOrderBox[20];
-	int EnemyCount = 0;
-};
+public:
+	struct SampleAreaMouse
+	{
+		POINT Start;
+		POINT End;
+
+		SampleAreaMouse()
+		{
+			Start = { 0 , 0 };
+			End = { 0 , 0 };
+		}
+	};
+
+	struct TagButton
+	{
+		RECT	ButtonShape;
+		POINT	ButtonPos;
+		bool    bButtonOn;
+
+		TagButton()
+		{
+			ButtonShape = {};
+			ButtonPos = {};
+			bButtonOn = false;
+		}
+	};
+
 
 protected:
-	Image* mBackground;
-	Image* mBackgroundInner;
-	Image* mButtonImage;
-	Image* mTileImage;
-	Image* mEnemyOrderBoxImage;
+	Image* mBackground = nullptr;
+	Image* mBackgroundInner = nullptr;
+	Image* mButtonImage = nullptr;
+	Image* mTileImage = nullptr;
+	Image* mEnemyOrderBoxImage = nullptr;
 
-	TagTile mTileInfo[TILE_COUNT_X * TILE_COUNT_Y];
-	TagTile mTileInfoSample[TILE_COUNT_X * TILE_COUNT_Y];
+	TagTile mTileInfo[TILE_COUNT_X * TILE_COUNT_Y] = {};
+	TagTile mTileInfoSample[TILE_COUNT_X * TILE_COUNT_Y] = {};
 
-	RECT mDrawingArea;
-	POINT mClickedStartIndex;
-	POINT mClickedArea;
+	RECT mDrawingArea = {};
+	POINT mClickedStartIndex = {};
+	POINT mClickedArea = {};
 
 	bool mbIsClicked = false;
 
-	RECT mSampleAreaShape;
+	RECT mSampleAreaShape = {};
+
+	char mEasySaveIndex = NULL;
+
 	SampleAreaMouse sampleAreaMouse;
-
 	eTerrain mClickedTileTerrain;
-
 	TagButton mButtonInfo[BUTTON_ENEMY_MAX_COUNT];
-
-	TagEnemyOrderInfo mEnemyOrderInfo;
-
-	char mEasySaveIndex;
+	TagEnemyInfo mEnemyInfo;
 
 public:
 	HRESULT Init() override;
@@ -90,5 +108,7 @@ public:
 
 	Image* GetTileImage() { return this->mTileImage; }
 	void SetTileImage(Image* mTileImage) { this->mTileImage = mTileImage; };
+
+	void SetNexusAroundTile(int x, int y, int clickedPosX, int clickedPosY, int NEXUS_AROUNDTILE_POS_X, int NEXUS_AROUNDTILE_POS_Y);
 
 };
