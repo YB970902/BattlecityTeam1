@@ -58,11 +58,6 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 	{
 		arrOldVertex[i] = col->GetPointGrid()[i];
 	}
-	cout << "--------------------------" << endl;
-	for (int i = 0; i < 4; i++)
-	{
-		cout << i << "count X : " << arrOldVertex[i].x << "  Y : " << arrOldVertex[i].y << endl;
-	}
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -82,11 +77,9 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 	}
 
 	col->AddPlayerPos(addedForce);
+
 	if (IsCollided(col))
 	{
-
-		cout << "이동 후 충돌감지" << endl;
-
 		if ((dir.x > 0 && oldOverlapped.x < 0) || (dir.x < 0 && oldOverlapped.x > 0))
 		{
 			oldPos.x = col->GetPlayerPos().x + oldOverlapped.x;
@@ -174,12 +167,15 @@ bool Physcis::IsCollided(Collider* col1, Collider* col2)
 
 bool Physcis::IsCollided(Collider* col)
 {
-	for (int i = 0; i < 4; i++)
+	if (((((int)col->GetTag()) & 4) == 4))		//탱크일경우에만
 	{
-		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+		for (int i = 0; i < 4; i++)
 		{
-			if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
-			if (IsCollided(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][i])) { return true; }
+			for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+			{
+				if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
+				if (IsCollided(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j])) { return true; }
+			}
 		}
 	}
 	return false;
@@ -187,9 +183,15 @@ bool Physcis::IsCollided(Collider* col)
 
 void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& addedForce, POINTFLOAT dir, POINTFLOAT& oldOverlapped)
 {
-	if (col2->GetTag() == eCollisionTag::Water && (col1->GetTag() == eCollisionTag::PlayerTank || col1->GetTag() == eCollisionTag::EnemyTank))
+	
+	// 아래의 경우 서로 밀어내면 안되기때문
+	if ((((int)col1->GetTag() | (int)col2->GetTag()) & 34) == 34) { return; } // 물 (32) + 아모 (2) 여부 확인
+	if ((((int)col1->GetTag() & (int)col2->GetTag()) & 2) == 2)
 	{
-		return;
+		if (((int)col1->GetTag() & 1) == ((int)col2->GetTag() & 1))
+		{
+			return;
+		}
 	}
 	if (IsCollided(col1, col2))
 	{
@@ -281,11 +283,40 @@ void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& adde
 
 void Physcis::Render(HDC hdc)
 {
-	for (int i = 0; i < 4; i++)
+	// rendering near collider
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+	//	{
+	//		mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j]->Render(hdc);
+	//	}
+	//}
+
+	// rendering all
+	for (map<int, map<int, vector<Collider*>>>::iterator itX = mGridMap.begin(); itX != mGridMap.end(); itX++)
 	{
-		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+		for (map<int, vector<Collider*>>::iterator itY = (*itX).second.begin(); itY != (*itX).second.end(); itY++)
 		{
-			mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j]->Render(hdc);
+			for (vector<Collider*>::iterator vecIter = (*itY).second.begin(); vecIter != (*itY).second.end(); vecIter++)
+			{
+				(*vecIter)->Render(hdc);
+			}
+		}
+	}
+}
+
+void Physcis::Release()
+{
+	for (map<int, map<int, vector<Collider*>>>::iterator itX = mGridMap.begin(); itX != mGridMap.end(); itX++)
+	{
+		for (map<int, vector<Collider*>>::iterator itY = (*itX).second.begin(); itY != (*itX).second.end(); itY++)
+		{
+			for (vector<Collider*>::iterator vecIter = (*itY).second.begin(); vecIter != (*itY).second.end();)
+			{
+				Collider* temp = (*vecIter);
+				vecIter++;
+				SAFE_DELETE(temp);
+			}
 		}
 	}
 }

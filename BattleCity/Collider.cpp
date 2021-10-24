@@ -26,7 +26,6 @@ void Collider::UpdateBodySize()
 	mPlayerBody.top = mPlayerPos.y - (mPlayerBodySize / 2);
 	mPlayerBody.right = mPlayerBody.left + mPlayerBodySize;
 	mPlayerBody.bottom = mPlayerBody.top + mPlayerBodySize;
-
 }
 
 void Collider::Render(HDC hdc)
