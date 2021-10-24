@@ -35,6 +35,7 @@ void Ammo::Release()
 	mbIsFire = false;
 	mImage = nullptr;
 	mbIsDead = true;
+	PART_MGR->CreateParticle(eParticleTag::SmallBoom, mPos);
 }
 
 void Ammo::Update()

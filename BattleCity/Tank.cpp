@@ -32,6 +32,7 @@ void Tank::Release()
 	{
 		mVecParticle[i]->SetIsEnd(true);
 	}
+	PART_MGR->CreateParticle(eParticleTag::BigBoom, mPos);
 	GameObject::Release();
 }
 
