@@ -4,11 +4,11 @@
 
 HRESULT MapEditor::Init()
 {
-	mTileImage = IMG_MGR->AddImage(eImageTag::Tile, "Image/SampleTile1.bmp", 160, 96, 10, 6, true, RGB(255, 0, 255));
-	mBackground = IMG_MGR->AddImage(eImageTag::TileBackground, "Image/background.bmp", WIN_SIZE_X, WIN_SIZE_Y);
-	mBackgroundInner = IMG_MGR->AddImage(eImageTag::TileBackgroundInner, "Image/background2.bmp", WIN_SIZE_X, WIN_SIZE_Y);
-	mButtonImage = IMG_MGR->AddImage(eImageTag::TileButton, "Image/button02.bmp", 60, 270, 2, 9, true, RGB(255, 0, 255));
-	mEnemyOrderBoxImage = IMG_MGR->AddImage(eImageTag::EnemyOrderBox, "Image/Enemy/Enemy.bmp", (ENEMY_TILE_SIZE*8), (ENEMY_TILE_SIZE*6), 8, 6, true, RGB(255, 0, 255));
+	mTileImage = IMG_MGR->FindImage(eImageTag::Tile);
+	mBackground = IMG_MGR->FindImage(eImageTag::TileBackground);
+	mBackgroundInner = IMG_MGR->FindImage(eImageTag::TileBackgroundInner);
+	mButtonImage = IMG_MGR->FindImage(eImageTag::TileButton);
+	mEnemyOrderBoxImage = IMG_MGR->FindImage(eImageTag::EnemyOrderBox);
 
 	if (mTileImage == nullptr)
 	{
@@ -24,7 +24,8 @@ HRESULT MapEditor::Init()
 			mTileInfo[i * TILE_COUNT_X + j].TilePos.x = 4;
 			mTileInfo[i * TILE_COUNT_X + j].TilePos.y = 4;
 			mTileInfo[i * TILE_COUNT_X + j].TileState = 0;
-			mTileInfo[i * TILE_COUNT_X + j].Terrain = eTerrain::Wall;
+			mTileInfo[i * TILE_COUNT_X + j].Terrain = eTerrain::None;
+			mTileInfo[i * TILE_COUNT_X + j].NexusAroundTile = false;
 		}
 	}
 
@@ -57,12 +58,9 @@ HRESULT MapEditor::Init()
 			}
 			else if (i == 4 || i == 5)
 			{
-				if (j == 0 || j == 1 || j == 2) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::Wall; }
-				if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagPlayer; }
-			}
-			else
-			{
-				mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::None;
+				if (j == 0 || j == 1 || j == 2 || j == 3) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::Wall; }
+				else if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagPlayer; }
+				else{ mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::None; }
 			}
 		}
 	}
@@ -189,6 +187,7 @@ void MapEditor::Update()
 					mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].TilePos.y = mClickedStartIndex.y + y;
 					mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].Terrain =
 						mTileInfoSample[(mClickedStartIndex.y + y) * SAMPLETILE_COUNT_X + (mClickedStartIndex.x + x)].Terrain;
+
 					if (mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].Terrain == eTerrain::Nexus)
 					{
 						if (mTileInfo[(clickedPos.y + y) * TILE_COUNT_X + (clickedPos.x + x)].TilePos.x == NEXUS_AROUNDTILE_LEFT)
@@ -524,16 +523,16 @@ void MapEditor::SetNexusAroundTile(int x, int y, int clickedPosX, int clickedPos
 		else if (NEXUS_AROUNDTILE_POS_Y == NEXUS_AROUNDTILE_BOTTOM)
 		{
 			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].TilePos = mTileInfoSample[0].TilePos;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].TilePos = mTileInfoSample[0].TilePos;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
 
 			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].Terrain = eTerrain::Wall;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].Terrain = eTerrain::Wall;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
 
 			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].NexusAroundTile = true;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].NexusAroundTile = true;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].NexusAroundTile = true;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].NexusAroundTile = true;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX - nexusAroundTilePos) + x)].NexusAroundTile = true;
 		}
 	}
 	else if(NEXUS_AROUNDTILE_POS_X == NEXUS_AROUNDTILE_RIGHT)
@@ -555,16 +554,16 @@ void MapEditor::SetNexusAroundTile(int x, int y, int clickedPosX, int clickedPos
 		else if (NEXUS_AROUNDTILE_POS_Y == NEXUS_AROUNDTILE_BOTTOM)
 		{
 			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].TilePos = mTileInfoSample[0].TilePos;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].TilePos = mTileInfoSample[0].TilePos;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].TilePos = mTileInfoSample[0].TilePos;
 
 			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].Terrain = eTerrain::Wall;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].Terrain = eTerrain::Wall;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].Terrain = eTerrain::Wall;
 
 			mTileInfo[(clickedPosY + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].NexusAroundTile = true;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].NexusAroundTile = true;
-			mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].NexusAroundTile = true;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + (clickedPosX + x)].NexusAroundTile = true;
+			//mTileInfo[((clickedPosY + nexusAroundTilePos) + y) * TILE_COUNT_X + ((clickedPosX + nexusAroundTilePos) + x)].NexusAroundTile = true;
 		}
 	}
 	

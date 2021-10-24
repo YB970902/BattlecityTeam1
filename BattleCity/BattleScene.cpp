@@ -9,8 +9,8 @@
 
 HRESULT BattleScene::Init()
 {
-	mBackgroundGray = IMG_MGR->AddImage(eImageTag::BattleSceneGrayBG, "Image/background.bmp", WIN_SIZE_X, WIN_SIZE_Y);
-	mBackgroundBlack = IMG_MGR->AddImage(eImageTag::BattleSceneBlackBG, "Image/background2.bmp", 16 * 26, 16 * 26);
+	mBackgroundGray = IMG_MGR->FindImage(eImageTag::BattleSceneGrayBG);
+	mBackgroundBlack = IMG_MGR->FindImage(eImageTag::BattleSceneBlackBG);
 
 	mForResize = new Image();
 	mForResize->Init(16 * 26, 16 * 26);
@@ -22,7 +22,7 @@ HRESULT BattleScene::Init()
 	mbLoadMap = true;
 	mEnemyInfo = new TagEnemyInfo;
 
-	LoadMap();
+	LoadMap(0);
 	LoadEnemyOrder();
 
 	return S_OK;
@@ -212,6 +212,7 @@ void BattleScene::LoadMap(int loadIndex)
 	{
 		for (int x = 0; x < TILE_COUNT_X; x++)
 		{
+			cout << (int)arrTile[y * TILE_COUNT_X + x].NexusAroundTile;
 			if (arrTile[y * TILE_COUNT_X + x].Terrain != eTerrain::None)
 			{
 				switch (arrTile[y * TILE_COUNT_X + x].Terrain)
@@ -236,9 +237,10 @@ void BattleScene::LoadMap(int loadIndex)
 					{ mStartPos.x + arrTile[y * TILE_COUNT_X + x].TileShape.left + (int)(TILE_SIZE * 0.5f),
 						mStartPos.y + arrTile[y * TILE_COUNT_X + x].TileShape.top + static_cast<int>(TILE_SIZE * 0.5f) });
 
-				mMapTile[y][x] = newTile;
+				mMapTile[x][y] = newTile;
 			}
 		}
+		cout << endl;
 	}
 
 	CloseHandle(hFile);

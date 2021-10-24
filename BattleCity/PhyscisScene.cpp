@@ -11,7 +11,6 @@ HRESULT PhyscisScene::Init()
 	mBackGround = IMG_MGR->FindImage(eImageTag::BackGround);
 
 	mPhyscis = new Physcis;
-	mPhyscis->Init();
 
 	mPhyscis->CreateCollider({ 100,100 }, 10, nullptr, eCollisionTag::Block);
 	for (int i = 0; i < 30; i++)
@@ -48,12 +47,12 @@ void PhyscisScene::Update()
 	else if (KEY_MGR->IsStayKeyDown('D')) { mCurCollider->MoveTo(DIR_RIGHT, mMoveSpeed * DELTA_TIME); }
 	else if (KEY_MGR->IsStayKeyDown('W')) { mCurCollider->MoveTo(DIR_UP, mMoveSpeed * DELTA_TIME); }
 	else if (KEY_MGR->IsStayKeyDown('S')) { mCurCollider->MoveTo(DIR_DOWN, mMoveSpeed * DELTA_TIME); }
-	else if (KEY_MGR->IsOnceKeyDown(VK_SPACE))
+	if (KEY_MGR->IsOnceKeyDown(VK_SPACE))
 	{
 		mCurCollider = mPhyscis->CreateCollider({ WIN_SIZE_X/2,WIN_SIZE_Y/2 }, 16, nullptr, eCollisionTag::PlayerAmmo);
 	}
-	else if (KEY_MGR->IsOnceKeyDown(VK_ESCAPE))
+	if (KEY_MGR->IsOnceKeyDown(VK_ESCAPE))
 	{
-		mPhyscis->DestroyCollider(mCurCollider);
+		//mPhyscis->DestoryCollider(mCurCollider);
 	}
 }
