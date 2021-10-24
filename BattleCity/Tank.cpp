@@ -1,27 +1,38 @@
 #include "Tank.h"
 #include "Image.h"
+#include "Collider.h"
+#include "Ammo.h"
 
-HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankColor color, float x, float y)
+HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankColor color, POINTFLOAT pos, Collider* collider)
 {
 	mImage = IMG_MGR->FindImage(eImageTag::Tank);
 
-	mColTag = colTag;
+	mCollisionTag = colTag;
 	mType = type;
 	mInfo = info;
 	mColor = color;
 
-	mPos.x = x;
-	mPos.y = y;
+	mPos = pos;
+
+	mCollider = collider;
 
 	return S_OK;
 }
 
 void Tank::Release()
 {
+	GameObject::Release();
 }
 
 void Tank::Update()
 {
+	if (mbIsCanFire) { return; }
+	mElapsedFireTime += DELTA_TIME;
+	if (mElapsedFireTime >= mInfo.AttackSpeed)
+	{
+		mElapsedFireTime = 0.0f;
+		mbIsCanFire = true;
+	}
 }
 
 void Tank::Render(HDC hdc)
@@ -41,16 +52,37 @@ void Tank::Move(eDir dir)
 		mCurAnim ^= 0x1;
 	}
 	mDir = dir;
-	mPos.x += DIR_VALUE[(int)dir].x * mInfo.MoveSpeed * DELTA_TIME;
-	mPos.y += DIR_VALUE[(int)dir].y * mInfo.MoveSpeed * DELTA_TIME;
+	// dir을 활용한 이동
+	mPos.x = mPos.x + DIR_VALUE[(int)mDir].x * mInfo.MoveSpeed * DELTA_TIME;
+	mPos.y = mPos.y + DIR_VALUE[(int)mDir].y * mInfo.MoveSpeed * DELTA_TIME;
+	//mCollider->MoveTo(DIR_VALUE[(int)mDir], mInfo.MoveSpeed * DELTA_TIME);
+	//mPos =  mCollider->GetPlayerPos();
+}
+
+void Tank::MoveForward()
+{
+	Move(mDir);
 }
 
 void Tank::OnCollided(eCollisionDir dir, eCollisionTag tag)
 {
-	if ((mColTag == eCollisionTag::PlayerTank && tag == eCollisionTag::EnemyAmmo) || 
-		(mColTag == eCollisionTag::EnemyTank && tag == eCollisionTag::PlayerAmmo))
+	if ((mCollisionTag == eCollisionTag::PlayerTank && tag == eCollisionTag::EnemyAmmo) ||
+		(mCollisionTag == eCollisionTag::EnemyTank && tag == eCollisionTag::PlayerAmmo))
 	{
-		mInfo.Health--;
+		--mInfo.Health;
 		if (mInfo.Health == 0) { mbIsDead = true; }
 	}
+}
+
+void Tank::AddAmmo(Ammo* ammo)
+{
+	mVecAmmo.push_back(ammo);
+	ammo->SetOwner(this);
+	ammo->SetPosition(mPos);
+}
+
+void Tank::OnAmmoCollided(Ammo* ammo)
+{
+	mVecAmmo.erase(find(mVecAmmo.begin(), mVecAmmo.end(), ammo));
+	ammo->SetOwner(nullptr);
 }

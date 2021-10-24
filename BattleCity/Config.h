@@ -23,6 +23,8 @@ using namespace std;
 
 #define SAFE_RELEASE(p)	{ if (p) { p->Release(); delete p; p = nullptr; } }
 #define SAFE_DELETE(p)	{ if (p) { delete p; p = nullptr; } }
+#define SAFE_UPDATE(p) { if (p) { p->Update(); } }
+#define SAFE_RENDER(p) { if (p) { p->Render(hdc); } }
 
 #include "TimerManager.h"
 #include "ImageManager.h"

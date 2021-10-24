@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "BattleScene.h"
 #include "Image.h"
 #include "Physcis.h"
@@ -5,7 +6,6 @@
 #include "CollisionChecker.h"
 #include "MapEditor.h"
 #include "Tile.h"
-
 
 HRESULT BattleScene::Init()
 {
@@ -345,6 +345,9 @@ void BattleScene::Render(HDC hdc)
 void BattleScene::Release()
 {
 	/*mMapEditorInfo->Release();*/
+	SAFE_RELEASE(mForResize);
+	// mPhyscis
+	// mMapTile 순회하면서 Tile* 제대로 
 }
 
 void BattleScene::LoadMap(int loadIndex)

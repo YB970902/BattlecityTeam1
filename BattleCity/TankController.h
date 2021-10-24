@@ -1,23 +1,26 @@
 #pragma once
 #include "GameEntity.h"
-#include "CollisionChecker.h"
 
 class Tank;
-class TankController : public GameEntity, public CollisionChecker
+class AmmoSpawner;
+class TankController : public GameEntity
 {
 private:
+	AmmoSpawner* mAmmoSpawner;
 	Tank* mTank = nullptr;
 
 	int mLeftKey = 0;
 	int mRightKey = 0;
 	int mUpKey = 0;
 	int mDownKey = 0;
+	int mFireKey = 0;
 public:
-	HRESULT Init(Tank* tank, int leftKey, int rightKey, int upKey, int downKey);
+	HRESULT Init(int leftKey, int rightKey, int upKey, int downKey, int fireKey);
 	void Release();
 	void Update();
 	void Render(HDC hdc);
 
-	virtual void OnCollided(eCollisionDir dir, eCollisionTag tag) override;
+	inline void SetTank(Tank* tank) { mTank = tank; }
+	inline void SetAmmoSpawner(AmmoSpawner* spawner) { mAmmoSpawner = spawner; }
 };
 

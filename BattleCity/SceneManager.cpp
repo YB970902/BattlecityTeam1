@@ -27,6 +27,14 @@ void SceneManager::Init()
 
 void SceneManager::Release()
 {
+	if (currScene) { currScene->Release(); }
+
+	for (map<eSceneTag, GameEntity*>::iterator it = mapScenes.begin(); it != mapScenes.end();)
+	{
+		SAFE_DELETE(it->second);
+		it = mapScenes.erase(it);
+	}
+	mapScenes.clear();
 }
 
 void SceneManager::Update()

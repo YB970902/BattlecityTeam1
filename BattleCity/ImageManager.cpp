@@ -7,10 +7,10 @@ void ImageManager::Init()
 	IMG_MGR->AddImage(eImageTag::BackGround, "Image/background.bmp", WIN_SIZE_X, WIN_SIZE_Y);
 
 	IMG_MGR->AddImage(eImageTag::Tank, "Image/tank.bmp", 512, 512, 16, 16, true, RGB(255, 0, 255));
-	IMG_MGR->AddImage(eImageTag::AmmoUp, "Image/Bullet/Missile_Up", 6, 8, true, RGB(255, 0, 255));
-	IMG_MGR->AddImage(eImageTag::AmmoDown, "Image/Bullet/Missile_Down", 6, 8, true, RGB(255, 0, 255));
-	IMG_MGR->AddImage(eImageTag::AmmoLeft, "Image/Bullet/Missile_Left", 8, 6, true, RGB(255, 0, 255));
-	IMG_MGR->AddImage(eImageTag::AmmoRight, "Image/Bullet/Missile_Right", 8, 6, true, RGB(255, 0, 255));
+	IMG_MGR->AddImage(eImageTag::AmmoUp, "Image/Bullet/Missile_Up.bmp", 6, 8, true, RGB(255, 0, 255));
+	IMG_MGR->AddImage(eImageTag::AmmoDown, "Image/Bullet/Missile_Down.bmp", 6, 8, true, RGB(255, 0, 255));
+	IMG_MGR->AddImage(eImageTag::AmmoLeft, "Image/Bullet/Missile_Left.bmp", 8, 6, true, RGB(255, 0, 255));
+	IMG_MGR->AddImage(eImageTag::AmmoRight, "Image/Bullet/Missile_Right.bmp", 8, 6, true, RGB(255, 0, 255));
 }
 
 void ImageManager::Release()

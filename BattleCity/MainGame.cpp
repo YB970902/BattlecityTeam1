@@ -3,6 +3,7 @@
 #include "Image.h"
 #include "MapEditorScene.h"
 #include "BattleScene.h"
+#include "CollisionChecker.h"
 #include "PhyscisScene.h"
 #include "TankScene.h"
 
@@ -25,11 +26,16 @@ HRESULT MainGame::Init()
 	backBuffer = new Image();
 	backBuffer->Init("Image/mapImage.bmp", WIN_SIZE_X, WIN_SIZE_Y);
 
-	SCENE_MGR->Init();
 	SCENE_MGR->AddScene(eSceneTag::MapToolScene, new MapEditorScene);
 	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
 	SCENE_MGR->AddScene(eSceneTag::TestScene, new BattleScene);
 	SCENE_MGR->AddScene(eSceneTag::TankScene, new TankScene);
+
+	//map<int, GameEntity*> mapForTest;
+	//mapForTest[0] = new BattleScene;
+	//SAFE_DELETE(mapForTest[0]);
+	//mapForTest.erase(0);
+
 	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TestScene);
 	SCENE_MGR->ChangeScene(eSceneTag::TankScene);
@@ -40,9 +46,9 @@ HRESULT MainGame::Init()
 void MainGame::Update()
 {
 	TIMER_MGR->Update();
-
+	
 	SCENE_MGR->Update();
-
+	
 	KEY_MGR->Update();
 
 	InvalidateRect(g_hWnd, NULL, false);
@@ -51,11 +57,11 @@ void MainGame::Update()
 void MainGame::Render(HDC hdc)
 {
 	HDC hBackBufferDC = backBuffer->GetMemDC();
-
+	
 	SCENE_MGR->Render(hBackBufferDC);
-
+	
 	TIMER_MGR->Render(hBackBufferDC);
-
+	
 	backBuffer->Render(hdc);
 
 }
@@ -66,7 +72,7 @@ void MainGame::Release()
 
 	TIMER_MGR->Release();
 	TIMER_MGR->ReleaseSingleton();
-
+	
 	IMG_MGR->Release();
 	IMG_MGR->ReleaseSingleton();
 
