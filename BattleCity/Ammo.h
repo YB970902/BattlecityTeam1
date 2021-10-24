@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "CollisionChecker.h"
 
-const float AMMO_BODY_SIZE = 6.0f;
+const float AMMO_BODY_SIZE = 16.0f;
 
 class Tank;
 class Ammo : public GameObject, public CollisionChecker

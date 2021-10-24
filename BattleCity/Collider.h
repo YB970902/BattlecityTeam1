@@ -30,6 +30,7 @@ public:
 	void MoveTo(POINTFLOAT dir, float moveSpeed);
 
 	void OnCollided(eCollisionDir dir, int tag);
+	bool IsCollided();
 
 	inline eCollisionTag GetTag() { return this->mTag; }
 	inline void SetTag(eCollisionTag tag) { this->mTag = tag; }

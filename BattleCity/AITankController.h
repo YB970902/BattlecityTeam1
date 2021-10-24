@@ -12,6 +12,8 @@ private:
 
 	float mElapsedRotateTime = 0.0f;
 	float mMaxRotateTime = 0.0f;
+
+	bool mbIsPassedTank = true;
 public:
 	HRESULT Init();
 	void Release();

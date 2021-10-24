@@ -1,18 +1,6 @@
 #pragma once
 #include "GameEntity.h"
 
-typedef struct TankSpawnInfo
-{
-	TankSpawnInfo() {}
-	TankSpawnInfo(eCollisionTag collisionTag, eTankType type, eTankColor color, TANK_INFO tankInfo) :
-		CollisionTag(collisionTag), Type(type), Color(color), TankInfo(tankInfo) { }
-
-	eCollisionTag CollisionTag = eCollisionTag::Block;
-	eTankType Type = eTankType::Player;
-	eTankColor Color = eTankColor::Yellow;
-	TANK_INFO TankInfo = NORMAL_TANK_INFO;
-} SPAWN_INFO;
-
 class Tank;
 class Physcis;
 class TankController;

@@ -44,7 +44,7 @@ HRESULT TankScene::Init()
 	mPlayerController->SetAmmoSpawner(mAmmoSpawner);
 
 	mPlayerTankSpawner = new TankSpawner();
-	mPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::PlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, 0.0f, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_SIZE_Y * 0.9f });
+	mPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, 0.0f, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_SIZE_Y * 0.9f });
 	mPlayerTankSpawner->SetController(mPlayerController);
 
 	mAISpawner = new AITankSpawner();

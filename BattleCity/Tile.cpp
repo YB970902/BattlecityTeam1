@@ -32,7 +32,8 @@ void Tile::OnCollided(eCollisionDir dir, int tag)
 	switch (tag)
 	{
 	case (int)eCollisionTag::EnemyAmmo:
-	case (int)eCollisionTag::PlayerAmmo:
+	case (int)eCollisionTag::FirstPlayerAmmo:
+	case (int)eCollisionTag::SecondPlayerAmmo:
 		CalcBroken(dir);
 		break;
 	}

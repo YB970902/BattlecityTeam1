@@ -88,7 +88,7 @@ void AITankSpawner::Update()
 			SPAWN_INFO info = mInfo.front();
 			mInfo.erase(mInfo.begin());
 			newTank->Init(info.CollisionTag, info.Type, info.TankInfo, info.Color, mArrSpawnPosition[mCurSpawnPositionIndex],
-				mPhysics->CreateCollider(mArrSpawnPosition[mCurSpawnPositionIndex], TANK_BODY_SIZE, controller, info.CollisionTag));
+				mPhysics->CreateCollider(mArrSpawnPosition[mCurSpawnPositionIndex], TANK_BODY_SIZE, controller, eCollisionTag::PassedEnemyTank));
 			controller->SetTank(newTank);
 			controller->SetAmmoSpawner(mAmmoSpawner);
 

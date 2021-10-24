@@ -23,9 +23,9 @@ HRESULT PhyscisScene::Init()
 	mPhyscis->CreateCollider({ (float)32*9,(float)32*10 }, 16, nullptr, eCollisionTag::Water);
 	mPhyscis->CreateCollider({ (float)32*9,(float)32*14 }, 16, nullptr, eCollisionTag::Block);
 	mPhyscis->CreateCollider({ (float)32*9,(float)32*18 }, 16, nullptr, eCollisionTag::EnemyAmmo);
-	mPhyscis->CreateCollider({ (float)32 * 9,(float)32 * 24 }, 16, nullptr, eCollisionTag::PlayerAmmo);
+	mPhyscis->CreateCollider({ (float)32*9,(float)32*24 }, 16, nullptr, eCollisionTag::FirstPlayerAmmo);
 
-	mCurCollider = mPhyscis->CreateCollider({ WIN_SIZE_X / 2,WIN_SIZE_Y / 2 }, 16, nullptr, eCollisionTag::PlayerTank);
+	mCurCollider = mPhyscis->CreateCollider({ WIN_SIZE_X / 2,WIN_SIZE_Y / 2 }, 16, nullptr, eCollisionTag::FirstPlayerTank);
 
 	return S_OK;
 }
@@ -49,7 +49,7 @@ void PhyscisScene::Update()
 	else if (KEY_MGR->IsStayKeyDown('S')) { mCurCollider->MoveTo(DIR_DOWN, mMoveSpeed * DELTA_TIME); }
 	if (KEY_MGR->IsOnceKeyDown(VK_SPACE))
 	{
-		mCurCollider = mPhyscis->CreateCollider({ WIN_SIZE_X/2,WIN_SIZE_Y/2 }, 16, nullptr, eCollisionTag::PlayerAmmo);
+		mCurCollider = mPhyscis->CreateCollider({ WIN_SIZE_X/2,WIN_SIZE_Y/2 }, 16, nullptr, eCollisionTag::FirstPlayerAmmo);
 	}
 	if (KEY_MGR->IsOnceKeyDown(VK_ESCAPE))
 	{

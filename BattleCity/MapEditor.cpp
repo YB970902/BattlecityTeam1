@@ -229,22 +229,22 @@ void MapEditor::Update()
 				{
 				case 0:
 					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
-					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::NormalTank;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::NormalEnemy;
 					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 1:
 					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
-					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::FastSpeedTank;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::QuickEnemy;
 					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 2:
 					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
-					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::FastAmmoTank;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::RapidFireEnemy;
 					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 3:
 					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
-					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::TankerTank;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::DefenceEnemy;
 					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 4:
@@ -379,16 +379,16 @@ void MapEditor::Render(HDC hdc)
 	{
 		switch (mEnemyInfo.mEnemyOrderType[i])
 		{
-		case eTankType::NormalTank :
+		case eTankType::NormalEnemy :
 			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 0);
 			break;
-		case eTankType::FastSpeedTank:
+		case eTankType::QuickEnemy:
 			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 1);
 			break;
-		case eTankType::FastAmmoTank:
+		case eTankType::RapidFireEnemy:
 			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 2);
 			break;
-		case eTankType::TankerTank:
+		case eTankType::DefenceEnemy:
 			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 3);
 			break;
 		default:

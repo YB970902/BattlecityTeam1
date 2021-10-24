@@ -34,8 +34,8 @@ void TankController::Update()
     if (KEY_MGR->IsOnceKeyDown(mFireKey) && mTank->IsCanFire())
     {
         mTank->AddAmmo(mAmmoSpawner->Fire(mTank->GetDirection(),
-            mTank->GetCollisionTag() == eCollisionTag::EnemyTank ? eCollisionTag::EnemyAmmo : eCollisionTag::PlayerAmmo,
-            mTank->GetInfo().MoveSpeed, mTank->GetBarrelPosition()));
+            mTank->GetCollisionTag() == eCollisionTag::FirstPlayerTank ? eCollisionTag::FirstPlayerAmmo : eCollisionTag::SecondPlayerAmmo,
+            mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition()));
     }
 }
 

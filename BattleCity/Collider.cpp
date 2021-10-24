@@ -64,6 +64,11 @@ void Collider::MoveTo(POINTFLOAT dir, float moveSpeed)
 	mPhyscis->CheckCollider(this, dir, oldPos);
 }
 
+bool Collider::IsCollided()
+{
+	return mPhyscis->IsCollided(this);
+}
+
 void Collider::OnCollided(eCollisionDir dir, int tag)
 {
 	if (pObj != nullptr) { (pObj->*pFunc)(dir, tag); }
