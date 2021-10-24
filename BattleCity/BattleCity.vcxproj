@@ -139,6 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AITankController.cpp" />
+    <ClCompile Include="AITankSpawner.cpp" />
+    <ClCompile Include="Ammo.cpp" />
+    <ClCompile Include="AmmoSpawner.cpp" />
     <ClCompile Include="BattleScene.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="GameEntity.cpp" />
@@ -153,11 +157,19 @@
     <ClCompile Include="PhyscisScene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="MapEditor.cpp" />
+    <ClCompile Include="Tank.cpp" />
+    <ClCompile Include="TankController.cpp" />
+    <ClCompile Include="TankScene.cpp" />
+    <ClCompile Include="TankSpawner.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AITankController.h" />
+    <ClInclude Include="AITankSpawner.h" />
+    <ClInclude Include="Ammo.h" />
+    <ClInclude Include="AmmoSpawner.h" />
     <ClInclude Include="BattleScene.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionChecker.h" />
@@ -175,6 +187,10 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="MapEditor.h" />
+    <ClInclude Include="Tank.h" />
+    <ClInclude Include="TankController.h" />
+    <ClInclude Include="TankScene.h" />
+    <ClInclude Include="TankSpawner.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />

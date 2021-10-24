@@ -1,9 +1,10 @@
-#include "MapEditor.h"
+#include "Config.h"
 #include "BattleScene.h"
 #include "Image.h"
 #include "Physcis.h"
 #include "Collider.h"
 #include "CollisionChecker.h"
+#include "MapEditor.h"
 #include "Tile.h"
 
 HRESULT BattleScene::Init()

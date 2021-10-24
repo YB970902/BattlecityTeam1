@@ -45,6 +45,8 @@ private:
 
 
 public:
+	virtual ~BattleScene() = default;
+
 	HRESULT Init() override;
 	void Update() override;
 	void Render(HDC hdc) override;

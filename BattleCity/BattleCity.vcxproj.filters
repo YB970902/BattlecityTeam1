@@ -43,8 +43,14 @@
     <Filter Include="2DFrameWork\Scene">
       <UniqueIdentifier>{d64dc70e-91e0-4f9c-8962-dd39fb1d82b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\GameObject\Tank">
+      <UniqueIdentifier>{8b3a1657-d8f5-4b5b-9311-5b1c97671083}</UniqueIdentifier>
+    </Filter>
+	<Filter Include="2DFrameWork\GameObject\Ammo">
+		<UniqueIdentifier>{aad80567-2406-4e30-995c-7a1aa7284b0c}</UniqueIdentifier>
+	</Filter>
     <Filter Include="2DFrameWork\Scene\BattleScene">
-      <UniqueIdentifier>{b4bb4f77-4807-4e74-9b8a-270cc0e38671}</UniqueIdentifier>
+	    <UniqueIdentifier>{b4bb4f77-4807-4e74-9b8a-270cc0e38671}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +104,30 @@
     </ClCompile>
     <ClCompile Include="Tile.cpp">
       <Filter>2DFrameWork\MapEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank.cpp">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClCompile>
+    <ClCompile Include="TankScene.cpp">
+      <Filter>2DFrameWork\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TankController.cpp">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClCompile>
+    <ClCompile Include="TankSpawner.cpp">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClCompile>
+    <ClCompile Include="AITankSpawner.cpp">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClCompile>
+    <ClCompile Include="AITankController.cpp">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClCompile>
+    <ClCompile Include="Ammo.cpp">
+      <Filter>2DFrameWork\GameObject\Ammo</Filter>
+    </ClCompile>
+    <ClCompile Include="AmmoSpawner.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +190,30 @@
     </ClInclude>
     <ClInclude Include="Tile.h">
       <Filter>2DFrameWork\MapEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank.h">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="TankScene.h">
+      <Filter>2DFrameWork\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TankSpawner.h">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="TankController.h">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="AITankSpawner.h">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="AITankController.h">
+      <Filter>2DFrameWork\GameObject\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="Ammo.h">
+      <Filter>2DFrameWork\GameObject\Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="AmmoSpawner.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
