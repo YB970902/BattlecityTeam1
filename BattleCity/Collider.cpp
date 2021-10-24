@@ -13,7 +13,6 @@ HRESULT Collider::Init(POINTFLOAT pos, float bodySize, Physcis* physcis, Collisi
 	pObj = obj;
 	pFunc = &CollisionChecker::OnCollided;
 
-
 	UpdateBodySize();
 	UpdatePointGrid();
 
@@ -26,7 +25,6 @@ void Collider::UpdateBodySize()
 	mPlayerBody.top = mPlayerPos.y - (mPlayerBodySize / 2);
 	mPlayerBody.right = mPlayerBody.left + mPlayerBodySize;
 	mPlayerBody.bottom = mPlayerBody.top + mPlayerBodySize;
-
 }
 
 void Collider::Render(HDC hdc)
@@ -66,7 +64,7 @@ void Collider::MoveTo(POINTFLOAT dir, float moveSpeed)
 	mPhyscis->CheckCollider(this, dir, oldPos);
 }
 
-void Collider::OnCollided(eCollisionDir dir, eCollisionTag tag)
+void Collider::OnCollided(eCollisionDir dir, int tag)
 {
 	if (pObj != nullptr) { (pObj->*pFunc)(dir, tag); }
 }

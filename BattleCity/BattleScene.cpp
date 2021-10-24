@@ -1,9 +1,10 @@
-#include "MapEditor.h"
+#include "Config.h"
 #include "BattleScene.h"
 #include "Image.h"
 #include "Physcis.h"
 #include "Collider.h"
 #include "CollisionChecker.h"
+#include "MapEditor.h"
 #include "Tile.h"
 
 HRESULT BattleScene::Init()
@@ -44,7 +45,7 @@ void BattleScene::Update()
 			mMapTile.find((g_ptMouse.x - mStartPos.x) / TILE_SIZE) != mMapTile.end() &&
 			mMapTile[(g_ptMouse.x - mStartPos.x) / TILE_SIZE].find((g_ptMouse.y - mStartPos.y) / TILE_SIZE) != mMapTile[(g_ptMouse.x - mStartPos.x) / TILE_SIZE].end())
 		{
-			mMapTile[(g_ptMouse.x - mStartPos.x) / TILE_SIZE][(g_ptMouse.y - mStartPos.y) / TILE_SIZE]->OnCollided(dirTag, eCollisionTag::PlayerAmmo);
+			mMapTile[(g_ptMouse.x - mStartPos.x) / TILE_SIZE][(g_ptMouse.y - mStartPos.y) / TILE_SIZE]->OnCollided(dirTag, (int)eCollisionTag::PlayerAmmo);
 		}
 	}
 	
@@ -56,6 +57,7 @@ void BattleScene::Update()
 			{
 				Tile* temp = (*itY).second;
 				itY = (*itX).second.erase(itY);
+				mPhyscis->DestroyCollider(temp->GetCollider());
 				SAFE_RELEASE(temp);
 			}
 			else { itY++; }

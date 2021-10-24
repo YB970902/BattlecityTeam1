@@ -27,5 +27,7 @@ public:
 	void Release()override;
 	void Render(HDC hdc)override;
 	void Update()override;
+
+	virtual ~PhyscisScene() {}
 };
 
