@@ -8,6 +8,7 @@ enum class eSceneTag
 	PhysicsScene,
 	TankScene,
 	MapToolScene,
+	BattleScene,
 };
 
 

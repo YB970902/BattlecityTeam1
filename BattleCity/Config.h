@@ -44,6 +44,8 @@ using namespace std;
 
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
 
+const float PROTECT_ITEM_DURATION_TIME = 20.0f;
+
 enum class eDir
 {
     Up = 0,

@@ -162,6 +162,7 @@
     <ClCompile Include="TankScene.cpp" />
     <ClCompile Include="TankSpawner.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
   </ItemGroup>
@@ -192,6 +193,7 @@
     <ClInclude Include="TankScene.h" />
     <ClInclude Include="TankSpawner.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
   </ItemGroup>

@@ -49,9 +49,6 @@
     <Filter Include="2DFrameWork\GameObject\Ammo">
       <UniqueIdentifier>{aad80567-2406-4e30-995c-7a1aa7284b0c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="2DFrameWork\Scene\BattleScene">
-      <UniqueIdentifier>{b4bb4f77-4807-4e74-9b8a-270cc0e38671}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -90,9 +87,6 @@
     <ClCompile Include="MapEditorScene.cpp">
       <Filter>2DFrameWork\MapEditor</Filter>
     </ClCompile>
-    <ClCompile Include="BattleScene.cpp">
-      <Filter>2DFrameWork\Scene\BattleScene</Filter>
-    </ClCompile>
     <ClCompile Include="Collider.cpp">
       <Filter>2DFrameWork\Collider</Filter>
     </ClCompile>
@@ -128,6 +122,12 @@
     </ClCompile>
     <ClCompile Include="AmmoSpawner.cpp">
       <Filter>2DFrameWork\GameObject\Ammo</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleScene.cpp">
+      <Filter>2DFrameWork\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TileManager.cpp">
+      <Filter>2DFrameWork\MapEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -173,9 +173,6 @@
     <ClInclude Include="MapEditorScene.h">
       <Filter>2DFrameWork\MapEditor</Filter>
     </ClInclude>
-    <ClInclude Include="BattleScene.h">
-      <Filter>2DFrameWork\Scene\BattleScene</Filter>
-    </ClInclude>
     <ClInclude Include="Collider.h">
       <Filter>2DFrameWork\Collider</Filter>
     </ClInclude>
@@ -214,6 +211,12 @@
     </ClInclude>
     <ClInclude Include="AmmoSpawner.h">
       <Filter>2DFrameWork\GameObject\Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleScene.h">
+      <Filter>2DFrameWork\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TileManager.h">
+      <Filter>2DFrameWork\MapEditor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
