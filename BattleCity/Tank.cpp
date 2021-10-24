@@ -112,7 +112,7 @@ void Tank::OnCollided(eCollisionDir dir, int tag)
 	else if ((mCollisionTag == eCollisionTag::FirstPlayerTank && tag == (int)eCollisionTag::SecondPlayerAmmo) ||
 		(mCollisionTag == eCollisionTag::SecondPlayerTank && tag == (int)eCollisionTag::FirstPlayerAmmo))
 	{
-		// °æÁ÷
+		TurnOnStun();
 	}
 }
 

@@ -14,8 +14,11 @@ private:
 	Image* mBackground = nullptr;
 
 	AmmoSpawner* mAmmoSpawner = nullptr;
-	TankController* mPlayerController = nullptr;
-	TankSpawner* mPlayerTankSpawner = nullptr;
+	TankController* mFirstPlayerController = nullptr;
+	TankSpawner* mFirstPlayerTankSpawner = nullptr;
+
+	TankController* mSecondPlayerController = nullptr;
+	TankSpawner* mSecondPlayerTankSpawner = nullptr;
 	AITankSpawner* mAISpawner = nullptr;
 
 	Physcis* mPhysics = nullptr;

@@ -66,8 +66,8 @@ enum class eCollisionDir
 // (0: 1P, 1: 2P)(통과물체여부)(아이템여부)(넥서스여부)(물여부)(특수여부)(블럭여부)(탱크여부)(아모여부)(1:플레이어, 2:적)
 enum class eCollisionTag
 {
-    FirstPlayerTank        =0b1000000101,  //517
-    SecondPlayerTank       =0b0000000101,  //5
+    FirstPlayerTank        =0b0000000101,  //5
+    SecondPlayerTank       =0b1000000101,  //517
     FirstPlayerAmmo        =0b0000000011,  //3
     SecondPlayerAmmo       =0b1000000011,  //515
     PlayerSpecialAmmo      =0b0000010011,  //19
