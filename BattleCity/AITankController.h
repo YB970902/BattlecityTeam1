@@ -19,9 +19,9 @@ public:
 	void Render(HDC hdc);
 
 	Tank* GetTank() { return mTank; }
-	void SetTank(Tank* tank) { mTank = tank; }
+	void SetTank(Tank* tank) { mTank = tank; if (mTank) { Rotate(); } }
 
-	void OnCollided(eCollisionDir dir, eCollisionTag tag) override;
+	void OnCollided(eCollisionDir dir, int tag) override;
 	void SetAmmoSpawner(AmmoSpawner* spawner) { mAmmoSpawner = spawner; }
 
 private:

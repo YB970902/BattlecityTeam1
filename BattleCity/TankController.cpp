@@ -29,7 +29,7 @@ void TankController::Update()
     {
         mTank->AddAmmo(mAmmoSpawner->Fire(mTank->GetDirection(),
             mTank->GetCollisionTag() == eCollisionTag::EnemyTank ? eCollisionTag::EnemyAmmo : eCollisionTag::PlayerAmmo,
-            mTank->GetInfo().MoveSpeed));
+            mTank->GetInfo().MoveSpeed, mTank->GetBarrelPosition()));
     }
 }
 

@@ -2,6 +2,7 @@
 #include "TankSpawner.h"
 #include "Physcis.h"
 #include "TankController.h"
+#include "Collider.h"
 
 HRESULT TankSpawner::Init(Physcis* physics, SPAWN_INFO info, int leftCount, float maxSpawnTime, POINTFLOAT spawnPos)
 {
@@ -51,12 +52,13 @@ void TankSpawner::Update()
 			--mLeftCount;
 			mElapsedSpawnTime = 0.0f;
 			mCurTank = new Tank();
+			Collider* collider = mPhysics->CreateCollider(mSpawnPosition, TANK_BODY_SIZE, mCurTank, mInfo.CollisionTag);
 			mCurTank->Init(mInfo.CollisionTag,
 				mInfo.Type,
 				mInfo.TankInfo,
 				mInfo.Color,
 				mSpawnPosition,
-				mPhysics->CreateCollider(mSpawnPosition, TANK_BODY_SIZE, mCurTank, mInfo.CollisionTag));
+				collider);
 			if (mController) { mController->SetTank(mCurTank); }
 		}
 	}

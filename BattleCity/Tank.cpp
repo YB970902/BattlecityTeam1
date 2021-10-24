@@ -1,6 +1,6 @@
 #include "Tank.h"
-#include "Image.h"
 #include "Collider.h"
+#include "Image.h"
 #include "Ammo.h"
 
 HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankColor color, POINTFLOAT pos, Collider* collider)
@@ -21,6 +21,10 @@ HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankCo
 
 void Tank::Release()
 {
+	for (int i = 0; i < mVecAmmo.size(); ++i)
+	{
+		mVecAmmo[i]->SetOwner(nullptr);
+	}
 	GameObject::Release();
 }
 
@@ -52,11 +56,9 @@ void Tank::Move(eDir dir)
 		mCurAnim ^= 0x1;
 	}
 	mDir = dir;
-	// dir을 활용한 이동
-	mPos.x = mPos.x + DIR_VALUE[(int)mDir].x * mInfo.MoveSpeed * DELTA_TIME;
-	mPos.y = mPos.y + DIR_VALUE[(int)mDir].y * mInfo.MoveSpeed * DELTA_TIME;
-	//mCollider->MoveTo(DIR_VALUE[(int)mDir], mInfo.MoveSpeed * DELTA_TIME);
-	//mPos =  mCollider->GetPlayerPos();
+	mCollider->MoveTo(DIR_VALUE[(int)dir], mInfo.MoveSpeed * DELTA_TIME);
+	this->mPos.x = mCollider->GetPlayerPos().x;
+	this->mPos.y = mCollider->GetPlayerPos().y;
 }
 
 void Tank::MoveForward()
@@ -64,10 +66,10 @@ void Tank::MoveForward()
 	Move(mDir);
 }
 
-void Tank::OnCollided(eCollisionDir dir, eCollisionTag tag)
+void Tank::OnCollided(eCollisionDir dir, int tag)
 {
-	if ((mCollisionTag == eCollisionTag::PlayerTank && tag == eCollisionTag::EnemyAmmo) ||
-		(mCollisionTag == eCollisionTag::EnemyTank && tag == eCollisionTag::PlayerAmmo))
+	if ((mCollisionTag == eCollisionTag::PlayerTank && tag == (int)eCollisionTag::EnemyAmmo) ||
+		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::PlayerAmmo))
 	{
 		--mInfo.Health;
 		if (mInfo.Health == 0) { mbIsDead = true; }
@@ -78,7 +80,6 @@ void Tank::AddAmmo(Ammo* ammo)
 {
 	mVecAmmo.push_back(ammo);
 	ammo->SetOwner(this);
-	ammo->SetPosition(mPos);
 }
 
 void Tank::OnAmmoCollided(Ammo* ammo)

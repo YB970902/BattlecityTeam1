@@ -2,6 +2,7 @@
 #include "Ammo.h"
 #include "Image.h"
 #include "Tank.h"
+#include "Collider.h"
 
 HRESULT Ammo::Init(eDir dir, eCollisionTag tag, float speed)
 {
@@ -32,33 +33,29 @@ void Ammo::Release()
 		mOwner = nullptr;
 	}
 	mbIsFire = false;
+	mImage = nullptr;
+	mbIsDead = true;
 }
 
 void Ammo::Update()
 {
 	if (mbIsFire)
 	{
+		mCollider->MoveTo(mDirPoint, mSpeed * DELTA_TIME);
 		mPos.x += mDirPoint.x * mSpeed * DELTA_TIME;
 		mPos.y += mDirPoint.y * mSpeed * DELTA_TIME;
-
-		// 맵 밖으로 나가는 아모 삭제를 위한 코드
-
-		if (mPos.x < 0 || mPos.x > WIN_SIZE_X ||
-			mPos.y < 0 || mPos.y > WIN_SIZE_Y)
-		{
-			OnCollided(eCollisionDir::Left, eCollisionTag::Block);
-		}
-
-		// 테스트 끝나면 꼭 지웁시당
 	}
 }
 
 void Ammo::Render(HDC hdc)
 {
-	if (mbIsFire) { mImage->Render(hdc, mPos.x, mPos.y); }
+	if (mbIsFire) 
+	{
+		mImage->Render(hdc, mPos.x, mPos.y);
+	}
 }
 
-void Ammo::OnCollided(eCollisionDir dir, eCollisionTag tag)
+void Ammo::OnCollided(eCollisionDir dir, int tag)
 {
 	Release();
 }

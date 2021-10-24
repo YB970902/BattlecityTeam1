@@ -19,7 +19,10 @@ void AITankController::Update()
 	mTank->Update();
 	if (mTank->IsCanFire())
 	{
-		mTank->AddAmmo(mAmmoSpawner->Fire(mTank->GetDirection(), mTank->GetCollisionTag(), mTank->GetInfo().MoveSpeed));
+		mTank->AddAmmo(mAmmoSpawner->Fire(mTank->GetDirection(),
+			mTank->GetCollisionTag() == eCollisionTag::EnemyTank ? eCollisionTag::EnemyAmmo : eCollisionTag::PlayerAmmo,
+			mTank->GetInfo().MoveSpeed, mTank->GetBarrelPosition()));
+		mTank->SetIsCanFire(false);
 	}
 
 	mElapsedRotateTime += DELTA_TIME;
@@ -36,7 +39,7 @@ void AITankController::Render(HDC hdc)
 {
 }
 
-void AITankController::OnCollided(eCollisionDir dir, eCollisionTag tag)
+void AITankController::OnCollided(eCollisionDir dir, int tag)
 {
 	// 방향 전환
 	Rotate();

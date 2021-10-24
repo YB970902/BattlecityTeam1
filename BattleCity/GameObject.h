@@ -2,19 +2,13 @@
 #include "GameEntity.h"
 #include "CollisionChecker.h"
 
-enum class eDir
-{
-	Up = 0,
-	Left = 1,
-	Down = 2,
-	Right = 3,
-};
-
 class Image;
+class Collider;
 class GameObject : public GameEntity, public CollisionChecker
 {
 protected:
 	Image* mImage = nullptr;
+	Collider* mCollider = nullptr;
 
 	POINTFLOAT mPos = {};
 	eDir mDir = eDir::Up;
@@ -27,11 +21,12 @@ public:
 	GameObject();
 	~GameObject();
 
-	HRESULT Init();
-	void Release();
-	void Update();
-	void Render();
+	virtual HRESULT Init();
+	virtual void Release();
+	virtual void Update();
+	virtual void Render();
 
+	inline Collider* GetCollider() { return mCollider; }
 	inline POINTFLOAT GetPosition() { return mPos; }
 	inline void SetPosition(POINTFLOAT pos) { mPos = pos; }
 	inline eDir GetDirection() { return mDir; }
@@ -39,6 +34,7 @@ public:
 	inline eCollisionTag GetCollisionTag() { return mCollisionTag; }
 	inline void SetCollisionTag(eCollisionTag tag) { mCollisionTag = tag; }
 	inline bool IsDead() { return mbIsDead; }
+	inline void SetIsDead(bool set) { mbIsDead = set; }
 
-	virtual void OnCollided(eCollisionDir dir, eCollisionTag tag) override;
+	virtual void OnCollided(eCollisionDir dir, int tag) override;
 };

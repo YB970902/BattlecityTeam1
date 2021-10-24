@@ -33,7 +33,7 @@ HRESULT PhyscisScene::Init()
 
 void PhyscisScene::Release()
 {
-	SAFE_DELETE(mPhyscis);
+	SAFE_RELEASE(mPhyscis);
 }
 
 void PhyscisScene::Render(HDC hdc)

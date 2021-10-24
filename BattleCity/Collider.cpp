@@ -13,7 +13,6 @@ HRESULT Collider::Init(POINTFLOAT pos, float bodySize, Physcis* physcis, Collisi
 	pObj = obj;
 	pFunc = &CollisionChecker::OnCollided;
 
-
 	UpdateBodySize();
 	UpdatePointGrid();
 
@@ -65,7 +64,7 @@ void Collider::MoveTo(POINTFLOAT dir, float moveSpeed)
 	mPhyscis->CheckCollider(this, dir, oldPos);
 }
 
-void Collider::OnCollided(eCollisionDir dir, eCollisionTag tag)
+void Collider::OnCollided(eCollisionDir dir, int tag)
 {
 	if (pObj != nullptr) { (pObj->*pFunc)(dir, tag); }
 }

@@ -44,6 +44,14 @@ using namespace std;
 
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
 
+enum class eDir
+{
+    Up = 0,
+    Left = 1,
+    Down = 2,
+    Right = 3,
+};
+
 enum class eCollisionDir
 {
     Left,
