@@ -30,11 +30,13 @@ using namespace std;
 #include "ImageManager.h"
 #include "KeyManager.h"
 #include "SceneManager.h"
+#include "ParticleManager.h"
 
 #define TIMER_MGR TimerManager::GetSingleton()
 #define KEY_MGR KeyManager::GetSingleton()
 #define SCENE_MGR SceneManager::GetSingleton()
 #define IMG_MGR ImageManager::GetSingleton()
+#define PART_MGR ParticleManager::GetSingleton()
 
 #define DELTA_TIME TIMER_MGR->GetDeltaTime()
 
@@ -44,6 +46,7 @@ using namespace std;
 
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
 
+const float TANK_SPAWNING_TIME = 0.5f;
 const float PROTECT_ITEM_DURATION_TIME = 20.0f;
 const float INVENCIBLE_ITEM_DURATION_TIME = 10.0f;
 

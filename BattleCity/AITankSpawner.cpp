@@ -6,10 +6,9 @@
 #include "AITankController.h"
 #include "AmmoSpawner.h"
 
-HRESULT AITankSpawner::Init(Physcis* physics, float maxSpawnTime, int maxCountInScreen)
+HRESULT AITankSpawner::Init(Physcis* physics, int maxCountInScreen)
 {
 	mPhysics = physics;
-	mMaxSpawnTime = maxSpawnTime;
 	mMaxCountInScreen = maxCountInScreen;
 	return S_OK;
 }
@@ -50,7 +49,7 @@ void AITankSpawner::Update()
 		mVecTankController[i]->Update();
 	}
 
-	for(vector<Tank*>::iterator tankIt = mVecTank.begin(); tankIt != mVecTank.end();)
+	for (vector<Tank*>::iterator tankIt = mVecTank.begin(); tankIt != mVecTank.end();)
 	{
 		if ((*tankIt)->IsDead())
 		{
@@ -77,7 +76,7 @@ void AITankSpawner::Update()
 	if (mbIsSpawning)
 	{
 		mElapsedSpawnTime += DELTA_TIME;
-		if (mElapsedSpawnTime >= mMaxSpawnTime)
+		if (mElapsedSpawnTime >= TANK_SPAWNING_TIME)
 		{
 			mbIsSpawning = false;
 			mElapsedSpawnTime = 0.0f;
@@ -87,6 +86,7 @@ void AITankSpawner::Update()
 			Tank* newTank = new Tank();
 			SPAWN_INFO info = mInfo.front();
 			mInfo.erase(mInfo.begin());
+			if (mInfo.size() <= 0) { mbIsSpawnEnd = true; }
 			newTank->Init(info.CollisionTag, info.Type, info.TankInfo, info.Color, mArrSpawnPosition[mCurSpawnPositionIndex],
 				mPhysics->CreateCollider(mArrSpawnPosition[mCurSpawnPositionIndex], TANK_BODY_SIZE, controller, eCollisionTag::PassedEnemyTank));
 			controller->SetTank(newTank);
@@ -101,6 +101,8 @@ void AITankSpawner::Update()
 	else if (mVecTank.size() < mMaxCountInScreen && mInfo.size() > 0)
 	{
 		mbIsSpawning = true;
+		mElapsedSpawnTime = 0.0f;
+		PART_MGR->CreateParticle(eParticleTag::Spawn, mArrSpawnPosition[mCurSpawnPositionIndex]);
 	}
 }
 

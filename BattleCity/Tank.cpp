@@ -3,6 +3,7 @@
 #include "Collider.h"
 #include "Image.h"
 #include "Ammo.h"
+#include "Particle.h"
 
 HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankColor color, POINTFLOAT pos, Collider* collider)
 {
@@ -25,6 +26,11 @@ void Tank::Release()
 	for (int i = 0; i < mVecAmmo.size(); ++i)
 	{
 		mVecAmmo[i]->SetOwner(nullptr);
+	}
+
+	for (int i = 0; i < mVecParticle.size(); ++i)
+	{
+		mVecParticle[i]->SetIsEnd(true);
 	}
 	GameObject::Release();
 }
@@ -128,9 +134,23 @@ void Tank::OnAmmoCollided(Ammo* ammo)
 	ammo->SetOwner(nullptr);
 }
 
+void Tank::OnParticleEnded(Particle* particle)
+{
+	for (vector<Particle*>::iterator it = mVecParticle.begin(); it != mVecParticle.end(); ++it)
+	{
+		if ((*it) == particle)
+		{
+			mVecParticle.erase(it);
+			return;
+		}
+	}
+}
+
 void Tank::TurnOnInvencible()
 {
+	mbIsInvincible = true;
 	mElapsedInvencibleTime = 0.0f;
+	PART_MGR->CreateParticle(eParticleTag::Shield, this);
 }
 
 void Tank::TurnOnStun()

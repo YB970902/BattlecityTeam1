@@ -15,14 +15,13 @@ protected:
 	int mLeftCount = 0;
 
 	float mElapsedSpawnTime = 0.0f;
-	float mMaxSpawnTime = 0.0f;
 
 	POINTFLOAT mSpawnPosition = {};
 
 	bool mbIsSpawnEnd = false;
 
 public:
-	HRESULT Init(Physcis* physics, SPAWN_INFO info, int leftCount, float maxSpawnTime, POINTFLOAT spawnPos);
+	HRESULT Init(Physcis* physics, SPAWN_INFO info, int leftCount, POINTFLOAT spawnPos);
 	void Release();
 	void Update();
 	void Render(HDC hdc);

@@ -4,6 +4,7 @@
 const float TANK_BODY_SIZE = 32.0f;
 
 class Ammo;
+class Particle;
 class Tank : public GameObject
 {
 protected:
@@ -25,6 +26,8 @@ protected:
 	vector<Ammo*> mVecAmmo;
 	float mElapsedFireTime = 0.0f;
 	bool mbIsCanFire = false;
+
+	vector<Particle*> mVecParticle;
 
 	bool mbIsInvincible = false;
 	float mElapsedInvencibleTime = 0.0f;
@@ -54,8 +57,10 @@ public:
 	void AddAmmo(Ammo* ammo);
 	void OnAmmoCollided(Ammo* ammo);
 
-protected:
+	void OnParticleEnded(Particle* particle);
+
 	void TurnOnInvencible();
+protected:
 	void TurnOnStun();
 };
 

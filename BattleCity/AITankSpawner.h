@@ -17,7 +17,6 @@ protected:
 	vector<AITankController*> mVecTankController;
 
 	float mElapsedSpawnTime = 0.0f;
-	float mMaxSpawnTime = 0.0f;
 
 	POINTFLOAT* mArrSpawnPosition = nullptr;
 	int mMaxSpawnPosition = 0;
@@ -27,7 +26,7 @@ protected:
 	bool mbIsSpawnEnd = false;
 
 public:
-	HRESULT Init(Physcis* physics, float maxSpawnTime, int maxCountInScreen);
+	HRESULT Init(Physcis* physics, int maxCountInScreen);
 	void Release();
 	void Update();
 	void Render(HDC hdc);

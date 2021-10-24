@@ -44,7 +44,7 @@ HRESULT TankScene::Init()
 	mFirstPlayerController->SetAmmoSpawner(mAmmoSpawner);
 
 	mFirstPlayerTankSpawner = new TankSpawner();
-	mFirstPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, 0.0f, POINTFLOAT{ WIN_SIZE_X * 0.5f - 100.0f, WIN_SIZE_Y * 0.9f });
+	mFirstPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, POINTFLOAT{ WIN_SIZE_X * 0.5f - 100.0f, WIN_SIZE_Y * 0.9f });
 	mFirstPlayerTankSpawner->SetController(mFirstPlayerController);
 
 	mSecondPlayerController = new TankController();
@@ -52,11 +52,11 @@ HRESULT TankScene::Init()
 	mSecondPlayerController->SetAmmoSpawner(mAmmoSpawner);
 
 	mSecondPlayerTankSpawner = new TankSpawner();
-	mSecondPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), 5, 0.0f, POINTFLOAT{ WIN_SIZE_X * 0.5f + 100.0f, WIN_SIZE_Y * 0.9f });
+	mSecondPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), 5, POINTFLOAT{ WIN_SIZE_X * 0.5f + 100.0f, WIN_SIZE_Y * 0.9f });
 	mSecondPlayerTankSpawner->SetController(mSecondPlayerController);
 
 	mAISpawner = new AITankSpawner();
-	mAISpawner->Init(mPhysics, 0.5f, 8);
+	mAISpawner->Init(mPhysics, 8);
 	mAISpawner->SetAmmoSpawner(mAmmoSpawner);
 
 	POINTFLOAT* arrPoint = new POINTFLOAT[3];

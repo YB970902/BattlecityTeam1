@@ -49,6 +49,9 @@
     <Filter Include="2DFrameWork\GameObject\Ammo">
       <UniqueIdentifier>{aad80567-2406-4e30-995c-7a1aa7284b0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\Particle">
+      <UniqueIdentifier>{6fe831c0-8259-49a0-9968-ab96eeea7467}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -128,6 +131,12 @@
     </ClCompile>
     <ClCompile Include="TileManager.cpp">
       <Filter>2DFrameWork\MapEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>2DFrameWork\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>2DFrameWork\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +226,12 @@
     </ClInclude>
     <ClInclude Include="TileManager.h">
       <Filter>2DFrameWork\MapEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>2DFrameWork\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>2DFrameWork\Manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,6 +18,11 @@ void ImageManager::Init()
 	IMG_MGR->AddImage(eImageTag::AmmoRight, "Image/Bullet/Missile_Right.bmp", 8, 6, true, RGB(255, 0, 255));
 	IMG_MGR->AddImage(eImageTag::BattleSceneGrayBG, "Image/background.bmp", WIN_SIZE_X, WIN_SIZE_Y);
 	IMG_MGR->AddImage(eImageTag::BattleSceneBlackBG, "Image/background2.bmp", 16 * 26, 16 * 26);
+
+	IMG_MGR->AddImage(eImageTag::EffectSmallBoom, "Image/Effect/Boom_Effect.bmp", 96, 32, 3, 1, true, RGB(255, 0, 255));
+	IMG_MGR->AddImage(eImageTag::EffectBigBoom, "Image/Effect/Big_Boom_Effect.bmp", 128, 64, 2, 1, true, RGB(255, 0, 255));
+	IMG_MGR->AddImage(eImageTag::EffectShield, "Image/Effect/Shield.bmp", 64, 32, 2, 1, true, RGB(255, 0, 255));
+	IMG_MGR->AddImage(eImageTag::EffectSpawn, "Image/Effect/Spawn_Effect.bmp", 128, 32, 4, 1, true, RGB(255, 0, 255));
 }
 
 void ImageManager::Release()
