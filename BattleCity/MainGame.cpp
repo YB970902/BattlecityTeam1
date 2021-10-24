@@ -32,7 +32,7 @@ HRESULT MainGame::Init()
 	SCENE_MGR->AddScene(eSceneTag::TestScene, new BattleScene);
 
 	SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
-	SCENE_MGR->ChangeScene(eSceneTag::TestScene);
+	//SCENE_MGR->ChangeScene(eSceneTag::TestScene);
 
 	return S_OK;
 }
