@@ -131,8 +131,8 @@ void TileManager::LoadMap(int loadIndex)
 	{
 		for (int x = 0; x < TILE_COUNT_X; x++)
 		{
-			cout << (int)mArrTile[y * TILE_COUNT_X + x].NexusAroundTile;
-			if (mArrTile[y * TILE_COUNT_X + x].Terrain != eTerrain::None)
+			eTerrain curTerrain = mArrTile[y * TILE_COUNT_X + x].Terrain;
+			if (curTerrain != eTerrain::None && curTerrain != eTerrain::FlagEnemy && curTerrain != eTerrain::FlagFirstPlayer && curTerrain != eTerrain::FlagSecondPlayer)
 			{
 				switch (mArrTile[y * TILE_COUNT_X + x].Terrain)
 				{
@@ -274,6 +274,180 @@ void TileManager::TileDebugUpdate()
 		LoadEnemyOrder(3);
 		mbLoadMap = true;
 	}
+}
+
+POINTFLOAT* TileManager::GetEnemySpawnPosition(int& size)
+{
+	map<int, bool> mapDetected;
+
+	for (int x = 0; x < TILE_COUNT_X; ++x)
+	{
+		for (int y = 0; y < TILE_COUNT_Y; ++y)
+		{
+			if (mapDetected[y * TILE_COUNT_X + x]) continue;
+			mapDetected[y * TILE_COUNT_X + x] = false;
+			if (mArrTile[y * TILE_COUNT_X + x].Terrain == eTerrain::FlagEnemy)
+			{
+				// 상하좌우 대각선 모두 검사하기
+				// (C, L, R, T, B, LT, LB, RT, RB)
+				int bit = GetFlagDetectInfo(x, y, eTerrain::FlagEnemy);
+				if ((bit & 0b1) == 0b1) { mapDetected[(y + 1) * TILE_COUNT_X + (x + 1)] = true; }
+				if ((bit & 0b10) == 0b10) { mapDetected[(y - 1) * TILE_COUNT_X + (x + 1)] = true; }
+				if ((bit & 0b100) == 0b100) { mapDetected[(y + 1) * TILE_COUNT_X + (x - 1)] = true; }
+				if ((bit & 0b1000) == 0b1000) { mapDetected[(y - 1) * TILE_COUNT_X + (x - 1)] = true; }
+				if ((bit & 0b10000) == 0b10000) { mapDetected[(y + 1) * TILE_COUNT_X + x] = true; }
+				if ((bit & 0b100000) == 0b100000) { mapDetected[(y - 1) * TILE_COUNT_X + x] = true; }
+				if ((bit & 0b1000000) == 0b1000000) { mapDetected[y * TILE_COUNT_X + (x + 1)] = true; }
+				if ((bit & 0b10000000) == 0b10000000) { mapDetected[y * TILE_COUNT_X + (x - 1)] = true; }
+				if ((bit & 0b100000000) == 0b100000000) { mapDetected[y * TILE_COUNT_X + x] = true; }
+			}
+		}
+	}
+
+	vector<POINTFLOAT> vecTile;
+
+	for (int x = 0; x < TILE_COUNT_X; ++x)
+	{
+		for (int y = 0; y < TILE_COUNT_Y; ++y)
+		{
+			if (mapDetected[y * TILE_COUNT_X + x])
+			{
+				if ((x == 0 || mapDetected[y * TILE_COUNT_X + (x - 1)] == false) &&
+					(y == 0 || mapDetected[(y - 1) * TILE_COUNT_X + x] == false))
+				{
+					// 왼쪽과 위가 빈 상태
+					vecTile.push_back(POINTFLOAT{ (float)mStartPos.x + x * TILE_SIZE + TILE_SIZE, (float)mStartPos.y + y * TILE_SIZE + TILE_SIZE });
+				}
+			}
+		}
+	}
+
+	POINTFLOAT* result = new POINTFLOAT[vecTile.size()];
+	for (int i = 0; i < vecTile.size(); ++i)
+	{
+		result[i] = vecTile[i];
+	}
+
+	size = vecTile.size();
+
+	return result;
+}
+
+void TileManager::CreateEdgeBlock()
+{
+	for (int x = 0; x < TILE_COUNT_X; ++x)
+	{
+		mPhysics->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y - (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mPhysics->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y + (float)mBackgroundSize.y + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+	}
+
+	for (int y = 0; y < TILE_COUNT_Y; ++y)
+	{
+		mPhysics->CreateCollider(POINTFLOAT{ (float)mStartPos.x - (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mPhysics->CreateCollider(POINTFLOAT{ (float)mStartPos.x + (float)mBackgroundSize.x + (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+	}
+}
+
+vector<TankSpawnInfo>* TileManager::GetEnemyList()
+{
+	vector<TankSpawnInfo>* result = new vector<TankSpawnInfo>();
+	for (int i = 0; i < mEnemyInfo->mEnemyOrderCount; ++i)
+	{
+		switch (mEnemyInfo->mEnemyOrderType[i])
+		{
+		case eTankType::NormalEnemy:
+			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, NORMAL_TANK_INFO));
+			break;
+		case eTankType::QuickEnemy:
+			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, QUICK_TANK_INFO));
+			break;
+		case eTankType::RapidFireEnemy:
+			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, RAPID_FIRE_TANK_INFO));
+			break;
+		case eTankType::DefenceEnemy:
+			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, DEFENCE_TANK_INFO));
+			break;
+		}
+	}
+
+	return result;
+}
+
+POINTFLOAT TileManager::GetFirstPlayerSpawnPosition()
+{
+	for (int x = 0; x < TILE_COUNT_X; ++x)
+	{
+		for (int y = 0; y < TILE_COUNT_Y; ++y)
+		{
+			if (mArrTile[y * TILE_COUNT_X + x].Terrain == eTerrain::FlagFirstPlayer)
+			{
+				return POINTFLOAT{ (float)mStartPos.x + x * TILE_SIZE + TILE_SIZE, (float)mStartPos.y + y * TILE_SIZE + TILE_SIZE };
+			}
+		}
+	}
+
+	// 실패!
+	return POINTFLOAT{ 0, 0 };
+}
+
+POINTFLOAT TileManager::GetSecondPlayerSpawnPosition()
+{
+	for (int x = 0; x < TILE_COUNT_X; ++x)
+	{
+		for (int y = 0; y < TILE_COUNT_Y; ++y)
+		{
+			if (mArrTile[y * TILE_COUNT_X + x].Terrain == eTerrain::FlagSecondPlayer)
+			{
+				return POINTFLOAT{ (float)mStartPos.x + x * TILE_SIZE + TILE_SIZE, (float)mStartPos.y + y * TILE_SIZE + TILE_SIZE };
+			}
+		}
+	}
+
+	// 실패!
+	return POINTFLOAT{ 0, 0 };
+}
+
+int TileManager::GetFlagDetectInfo(int x, int y, eTerrain terrain)
+{
+	// bit연산 할꺼임
+	// (C, L, R, T, B, LT, LB, RT, RB)
+	// (0b10000000) -> Left만 true인경우
+	int resultBit = 0;
+	for (int i = -1; i < 2; ++i)
+	{
+		for (int j = -1; j < 2; ++j)
+		{
+			// x와 y가 타일 내부에 있음
+			if (x + i >= 0 && x + i < TILE_COUNT_X &&
+				y + j >= 0 && y + j < TILE_COUNT_Y)
+			{
+				if (mArrTile[(y + j) * TILE_COUNT_X + (x + i)].Terrain == terrain)
+				{
+					if (i == -1)
+					{
+						if (j == -1) { resultBit |= 0b1000; }
+						else if (j == 0) { resultBit |= 0b10000000; }
+						else if (j == 1) { resultBit |= 0b100; }
+					}
+					else if (i == 0)
+					{
+						if (j == -1) { resultBit |= 0b100000; }
+						else if (j == 0) { resultBit |= 0b100000000; }
+						else if (j == 1) { resultBit |= 0b10000; }
+					}
+					else if (i == 1)
+					{
+						if (j == -1) { resultBit |= 0b10; }
+						else if (j == 0) { resultBit |= 0b1000000; }
+						else if (j == 1) { resultBit |= 0b1; }
+					}
+
+				}
+			}
+		}
+	}
+
+	return resultBit;
 }
 
 void TileManager::TurnProtectBlockImage(bool set)

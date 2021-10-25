@@ -101,5 +101,4 @@ public:
 	void SetTileImage(Image* mTileImage) { this->mTileImage = mTileImage; };
 
 	void SetNexusAroundTile(int x, int y, int clickedPosX, int clickedPosY, int NEXUS_AROUNDTILE_POS_X, int NEXUS_AROUNDTILE_POS_Y);
-
 };

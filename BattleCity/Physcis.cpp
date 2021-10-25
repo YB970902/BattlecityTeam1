@@ -77,14 +77,25 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 
 	int collidedTag = 0;
 	eCollisionTag tag = col->GetTag();
+	map<Collider*, bool> mapDetected;
+	int curCollidedTag = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
 		{
 			if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
-			collidedTag |= PreventOverlapped(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j], addedForce, dir, oldOverlapped);
+			// 이미 검사한 애
+			if (mapDetected.find(mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j]) != mapDetected.end()) { continue; }
+			curCollidedTag = PreventOverlapped(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j], addedForce, dir, oldOverlapped);
+			if (curCollidedTag > 0)
+			{
+				mapDetected[mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j]] = true;
+				collidedTag |= curCollidedTag;
+			}
 		}
 	}
+
+	mapDetected.clear();
 
 	if (collidedTag > 1)
 	{
@@ -125,12 +136,12 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 			if (addedForce.x != 0)
 			{
 				if (addedForce.y < 0) { col->OnCollided(eCollisionDir::Bottom, collidedTag); }
-				if (addedForce.y > 0) { col->OnCollided(eCollisionDir::Top, collidedTag); }
+				else { col->OnCollided(eCollisionDir::Top, collidedTag); }
 			}
 			else
 			{
 				if (addedForce.x < 0) { col->OnCollided(eCollisionDir::Right, collidedTag); }
-				if (addedForce.x > 0) { col->OnCollided(eCollisionDir::Left, collidedTag); }
+				else { col->OnCollided(eCollisionDir::Left, collidedTag); }
 			}
 			col->AddPlayerPos(addedForce);
 		}
@@ -141,12 +152,12 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 		if (addedForce.x != 0)
 		{
 			if (addedForce.y < 0) { col->OnCollided(eCollisionDir::Bottom, collidedTag); }
-			if (addedForce.y > 0) { col->OnCollided(eCollisionDir::Top, collidedTag); }
+			else { col->OnCollided(eCollisionDir::Top, collidedTag); }
 		}
 		else
 		{
 			if (addedForce.x < 0) { col->OnCollided(eCollisionDir::Right, collidedTag); }
-			if (addedForce.x > 0) { col->OnCollided(eCollisionDir::Left, collidedTag); }
+			else { col->OnCollided(eCollisionDir::Left, collidedTag); }
 		}
 	}
 
@@ -226,7 +237,7 @@ bool Physcis::IsCollided(Collider* col1, Collider* col2)
 
 bool Physcis::IsCollided(Collider* col)
 {
-	//if ((((int)col->GetTag()) & 4) == 4)		//탱크일경우에만
+	if ((((int)col->GetTag()) & 4) == 4)		//탱크일경우에만
 	{
 		for (int i = 0; i < 4; i++)
 		{
@@ -279,6 +290,25 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 		{
 			overlappedY = col2->GetPlayerBody().bottom - col1->GetPlayerBody().top;
 		}
+
+		if (((col1Tag | col2Tag) & 0b1010) == 0b1010)
+		{
+			if (fabs(overlappedX) < fabs(overlappedY) && addedForce.x < fabs(overlappedX))
+			{
+				addedForce.x = overlappedX;
+			}
+			// 상하이동
+			else if (fabs(overlappedX) > fabs(overlappedY) && addedForce.y < fabs(overlappedY))
+			{
+				addedForce.y = overlappedY;
+			}
+			if (dir.x > 0) { col2->OnCollided(eCollisionDir::Left, col1Tag); }
+			else if (dir.x < 0) { col2->OnCollided(eCollisionDir::Right, col1Tag); }
+			else if (dir.y > 0) { col2->OnCollided(eCollisionDir::Top, col1Tag); }
+			else { col2->OnCollided(eCollisionDir::Bottom, col1Tag); }
+			return col2Tag;
+		}
+
 		oldOverlapped = { overlappedX,overlappedY };
 
 		if (fabs(overlappedX) < fabs(overlappedY))

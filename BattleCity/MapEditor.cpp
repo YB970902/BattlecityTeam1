@@ -53,13 +53,13 @@ HRESULT MapEditor::Init()
 				if (j == 0 || j == 1) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::UnbreakableWall; }
 				else if (j == 2 || j == 3) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::Iron; }
 				else if (j == 4 || j == 5) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::Nexus; }
-				else if (j == 6 || j == 7) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagNormal; }
-				else if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagEnemy; }
+				else if (j == 6 || j == 7) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagEnemy; }
+				else if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagFirstPlayer; }
 			}
 			else if (i == 4 || i == 5)
 			{
 				if (j == 0 || j == 1 || j == 2 || j == 3) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::Wall; }
-				else if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagPlayer; }
+				else if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagSecondPlayer; }
 				else{ mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::None; }
 			}
 		}

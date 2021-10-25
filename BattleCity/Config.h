@@ -73,10 +73,10 @@ enum class eDir
 
 enum class eCollisionDir
 {
-    Left,
-    Right,
     Top,
+    Left,
     Bottom,
+    Right,
 };
 
 // (0: 1P, 1: 2P)(통과물체여부)(아이템여부)(넥서스여부)(물여부)(특수여부)(블럭여부)(탱크여부)(아모여부)(1:플레이어, 2:적)
@@ -97,7 +97,7 @@ enum class eCollisionTag
     Item                   =0b0010000000,  //128
     PassedEnemyTank        =0b0100000000,  //256
 };
-enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagPlayer, NexusAroundTile };
+enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagFirstPlayer, NexusAroundTile, FlagSecondPlayer };
 
 struct TagTile
 {
