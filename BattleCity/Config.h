@@ -97,7 +97,7 @@ enum class eCollisionTag
     Item                   =0b0010000000,  //128
     PassedEnemyTank        =0b0100000000,  //256
 };
-enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagPlayer, NexusAroundTile };
+enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagFirstPlayer, NexusAroundTile, FlagSecondPlayer };
 
 struct TagTile
 {
