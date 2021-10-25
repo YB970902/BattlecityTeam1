@@ -375,12 +375,36 @@ vector<TankSpawnInfo>* TileManager::GetEnemyList()
 
 POINTFLOAT TileManager::GetFirstPlayerSpawnPosition()
 {
-	return POINTFLOAT();
+	for (int x = 0; x < TILE_COUNT_X; ++x)
+	{
+		for (int y = 0; y < TILE_COUNT_Y; ++y)
+		{
+			if (mArrTile[y * TILE_COUNT_X + x].Terrain == eTerrain::FlagFirstPlayer)
+			{
+				return POINTFLOAT{ (float)mStartPos.x + x * TILE_SIZE + TILE_SIZE, (float)mStartPos.y + y * TILE_SIZE + TILE_SIZE };
+			}
+		}
+	}
+
+	// 실패!
+	return POINTFLOAT{ 0, 0 };
 }
 
 POINTFLOAT TileManager::GetSecondPlayerSpawnPosition()
 {
-	return POINTFLOAT();
+	for (int x = 0; x < TILE_COUNT_X; ++x)
+	{
+		for (int y = 0; y < TILE_COUNT_Y; ++y)
+		{
+			if (mArrTile[y * TILE_COUNT_X + x].Terrain == eTerrain::FlagSecondPlayer)
+			{
+				return POINTFLOAT{ (float)mStartPos.x + x * TILE_SIZE + TILE_SIZE, (float)mStartPos.y + y * TILE_SIZE + TILE_SIZE };
+			}
+		}
+	}
+
+	// 실패!
+	return POINTFLOAT{ 0, 0 };
 }
 
 int TileManager::GetFlagDetectInfo(int x, int y, eTerrain terrain)

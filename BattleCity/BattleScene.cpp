@@ -30,14 +30,19 @@ HRESULT BattleScene::Init()
 	mTileManager->LoadEnemyOrder(0);
 	mTileManager->CreateEdgeBlock();
 
-	//mFirstPlayerController = new TankController();
-	//mFirstPlayerController->Init(FIRST_PLAYER_KEY);
-	//mFirstPlayerSpawner = new TankSpawner();
-	//mFirstPlayerSpawner->Init(mPhysics, )
+	mFirstPlayerController = new TankController();
+	mFirstPlayerController->Init(FIRST_PLAYER_KEY);
+	mFirstPlayerController->SetAmmoSpawner(mAmmoSpawner);
+	mFirstPlayerSpawner = new TankSpawner();
+	mFirstPlayerSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, mTileManager->GetFirstPlayerSpawnPosition());
+	mFirstPlayerSpawner->SetController(mFirstPlayerController);
 
-	// 2P¸¦ °ñ¶úÀ» °æ¿ì
-	//mSecondPlayerController = new TankController();
-	//mSecondPlayerController->Init(FIRST_PLAYER_KEY);
+	mSecondPlayerController = new TankController();
+	mSecondPlayerController->Init(SECOND_PLAYER_KEY);
+	mSecondPlayerController->SetAmmoSpawner(mAmmoSpawner);
+	mSecondPlayerSpawner = new TankSpawner();
+	mSecondPlayerSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), 5, mTileManager->GetSecondPlayerSpawnPosition());
+	mSecondPlayerSpawner->SetController(mSecondPlayerController);
 
 	mAISpawner = new AITankSpawner();
 	mAISpawner->Init(mPhysics, 3);
@@ -65,6 +70,8 @@ void BattleScene::Update()
 	SAFE_UPDATE(mTileManager);
 	SAFE_UPDATE(mAmmoSpawner);
 	SAFE_UPDATE(mAISpawner);
+	SAFE_UPDATE(mFirstPlayerSpawner);
+	SAFE_UPDATE(mSecondPlayerSpawner);
 	if (KEY_MGR->IsOnceKeyDown('O'))
 	{
 		mTileManager->ProtectNexus();
@@ -79,12 +86,17 @@ void BattleScene::Render(HDC hdc)
 	SAFE_RENDER(mAISpawner);
 	SAFE_RENDER(mAmmoSpawner);
 
+	SAFE_RENDER(mFirstPlayerSpawner);
+	SAFE_RENDER(mSecondPlayerSpawner);
+
 	if (mbIsDebugMode) { SAFE_RENDER(mPhysics); }
 }
 
 void BattleScene::Release()
 {
 	SAFE_RELEASE(mAmmoSpawner);
+	SAFE_RELEASE(mFirstPlayerSpawner);
+	SAFE_RELEASE(mSecondPlayerSpawner);
 	SAFE_RELEASE(mAISpawner);
 	SAFE_RELEASE(mPhysics);
 	SAFE_RELEASE(mTileManager);

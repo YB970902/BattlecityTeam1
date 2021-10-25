@@ -52,7 +52,7 @@ public:
 	inline void AddStar() { if (mType == eTankType::Player && mStarCount < MAX_STAR_COUNT) { mStarCount++; } }
 	inline bool IsCanFire() { return mbIsCanFire && mVecAmmo.size() < mInfo.MaxAmmoCount && !mbIsStun; }
 	inline void SetIsCanFire(bool set) { mbIsCanFire = set; }
-	inline POINTFLOAT GetBarrelPosition() { return POINTFLOAT{ mPos.x + DIR_VALUE[(int)mDir].x * TANK_BODY_SIZE * 0.5f, mPos.y + DIR_VALUE[(int)mDir].y * TANK_BODY_SIZE * 0.5f }; }
+	inline POINTFLOAT GetBarrelPosition() { return POINTFLOAT{ mPos.x + DIR_VALUE[(int)mDir].x, mPos.y + DIR_VALUE[(int)mDir].y }; }
 
 	virtual void OnCollided(eCollisionDir dir, int tag) override;
 
