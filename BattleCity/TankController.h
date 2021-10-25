@@ -18,6 +18,7 @@ private:
 	int mDownKey = 0;
 	int mFireKey = 0;
 public:
+	virtual ~TankController() {}
 	HRESULT Init(int leftKey, int rightKey, int upKey, int downKey, int fireKey);
 	HRESULT Init(const int arrKey[5]);
 	void Release();

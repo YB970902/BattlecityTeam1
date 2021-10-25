@@ -26,6 +26,7 @@ protected:
 	bool mbIsSpawnEnd = false;
 
 public:
+	virtual ~AITankSpawner() {}
 	HRESULT Init(Physcis* physics, int maxCountInScreen);
 	void Release();
 	void Update();

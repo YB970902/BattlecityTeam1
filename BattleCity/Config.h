@@ -50,6 +50,19 @@ const float TANK_SPAWNING_TIME = 0.5f;
 const float PROTECT_ITEM_DURATION_TIME = 20.0f;
 const float INVENCIBLE_ITEM_DURATION_TIME = 10.0f;
 
+enum class eEventTag
+{
+    Released,
+    Added,
+};
+
+enum class eSubjectTag
+{
+    Ammo,
+    Tank,
+    Particle,
+};
+
 enum class eDir
 {
     Up = 0,

@@ -21,6 +21,7 @@ protected:
 	bool mbIsSpawnEnd = false;
 
 public:
+	virtual ~TankSpawner() {}
 	HRESULT Init(Physcis* physics, SPAWN_INFO info, int leftCount, POINTFLOAT spawnPos);
 	void Release();
 	void Update();

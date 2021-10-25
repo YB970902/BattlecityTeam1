@@ -1,11 +1,12 @@
 #pragma once
 #include "GameObject.h"
+#include "Observer.h"
 
 const float TANK_BODY_SIZE = 32.0f;
 
 class Ammo;
-class Particle;
-class Tank : public GameObject
+class Subject;
+class Tank : public GameObject, public Observer
 {
 protected:
 	const POINT COLOR_START_FRAME[4] = { {0, 0}, {8, 0}, {0, 8}, {8, 8} };
@@ -23,11 +24,11 @@ protected:
 	float mElapsedAnimTime = 0.0f;
 	int mCurAnim = 0;
 
+	Subject* mSubject = nullptr;
+
 	vector<Ammo*> mVecAmmo;
 	float mElapsedFireTime = 0.0f;
 	bool mbIsCanFire = false;
-
-	vector<Particle*> mVecParticle;
 
 	bool mbIsInvincible = false;
 	float mElapsedInvencibleTime = 0.0f;
@@ -37,6 +38,7 @@ protected:
 	bool mbIsSparkle = false;
 	float mElapsedSparkleTime = 0.0f;
 public:
+	virtual ~Tank() { }
 	virtual HRESULT Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankColor color, POINTFLOAT pos, Collider* collider);
 	virtual void Release();
 	virtual void Update();
@@ -57,10 +59,10 @@ public:
 	void AddAmmo(Ammo* ammo);
 	void OnAmmoCollided(Ammo* ammo);
 
-	void OnParticleEnded(Particle* particle);
-
 	void TurnOnInvencible();
 protected:
 	void TurnOnStun();
+
+	virtual void OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag) override;
 };
 

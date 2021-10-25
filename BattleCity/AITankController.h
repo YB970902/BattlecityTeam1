@@ -15,6 +15,7 @@ private:
 
 	bool mbIsPassedTank = true;
 public:
+	virtual ~AITankController() {}
 	HRESULT Init();
 	void Release();
 	void Update();

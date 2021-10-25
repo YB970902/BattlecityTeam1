@@ -21,7 +21,7 @@ void TankSpawner::Release()
 	if (mCurTank)
 	{
 		mPhysics->DestroyCollider(mCurTank->GetCollider());
-		SAFE_DELETE(mCurTank);
+		SAFE_RELEASE(mCurTank);
 	}
 }
 
@@ -34,6 +34,7 @@ void TankSpawner::Update()
 		SAFE_UPDATE(mController);
 		if (mCurTank->IsDead())
 		{
+			PART_MGR->CreateParticle(eParticleTag::BigBoom, mCurTank->GetPosition());
 			mPhysics->DestroyCollider(mCurTank->GetCollider());
 			SAFE_RELEASE(mCurTank);
 			mCurTank = nullptr;

@@ -7,7 +7,7 @@ protected:
 	static T* instance;		// static 멤버 변수
 
 	Singleton() {};		// 생성자, 소멸자를 직접 호출하지 못하게 할거다.
-	~Singleton() {};
+	virtual ~Singleton() = default;
 
 public:
 	static T* GetSingleton();

@@ -1,13 +1,17 @@
 #pragma once
 #include "GameEntity.h"
+#include "Observer.h"
 
 class Tank;
 class Image;
-class Particle : public GameEntity
+class Subject;
+class Particle : public GameEntity, public Observer
 {
 protected:
 	Image* mImage = nullptr;
 	Tank* mTank = nullptr;
+
+	Subject* mSubject = nullptr;
 
 	float mDurationTime = 0.0f;
 	float mOneFrameDurationTime = 0.0f;
@@ -22,15 +26,18 @@ protected:
 
 	bool mbIsEnd = false;
 public:
+	virtual ~Particle() {}
 	HRESULT Init(Image* image, int frameX, float durationTime, float repeatTime);
 	void Release();
 	void Update();
 	void Render(HDC hdc);
 
 	void SetPosition(POINTFLOAT pos) { mPos = pos; }
-	void SetTank(Tank* tank) { mTank = tank; }
+	void SetTank(Tank* tank);
 
 	bool IsEnd() { return mbIsEnd; }
 	void SetIsEnd(bool set) { mbIsEnd = set; }
+
+	virtual void OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag) override;
 };
 

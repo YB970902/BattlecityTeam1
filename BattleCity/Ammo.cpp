@@ -35,7 +35,6 @@ void Ammo::Release()
 	mbIsFire = false;
 	mImage = nullptr;
 	mbIsDead = true;
-	PART_MGR->CreateParticle(eParticleTag::SmallBoom, mPos);
 }
 
 void Ammo::Update()
@@ -59,4 +58,9 @@ void Ammo::Render(HDC hdc)
 void Ammo::OnCollided(eCollisionDir dir, int tag)
 {
 	Release();
+	PART_MGR->CreateParticle(eParticleTag::SmallBoom, mPos);
+}
+
+void Ammo::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag)
+{
 }

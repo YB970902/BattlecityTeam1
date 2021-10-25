@@ -54,6 +54,7 @@ void AITankSpawner::Update()
 		if ((*tankIt)->IsDead())
 		{
 			Tank* delTank = (*tankIt);
+			PART_MGR->CreateParticle(eParticleTag::BigBoom, delTank->GetPosition());
 			mPhysics->DestroyCollider(delTank->GetCollider());
 			tankIt = mVecTank.erase(tankIt);
 

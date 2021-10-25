@@ -1,10 +1,12 @@
 #include "Particle.h"
 #include "Image.h"
 #include "Tank.h"
+#include "Subject.h"
 
 HRESULT Particle::Init(Image* image, int frameX, float durationTime, float repeatTime)
 {
     mImage = image;
+    mSubject = new Subject();
     mFrameX = frameX;
     mCurFrameX = 0;
     mDurationTime = durationTime;
@@ -16,6 +18,8 @@ HRESULT Particle::Init(Image* image, int frameX, float durationTime, float repea
 
 void Particle::Release()
 {
+    mSubject->Notify(this, eSubjectTag::Particle, eEventTag::Released);
+    SAFE_DELETE(mSubject);
 }
 
 void Particle::Update()
@@ -40,7 +44,6 @@ void Particle::Update()
     if (mElapsedTotalTime >= mDurationTime)
     {
         mbIsEnd = true;
-        if (mTank) { mTank->OnParticleEnded(this); mTank = nullptr; }
     }
 
     if (mTank) { mPos = mTank->GetPosition(); }
@@ -49,4 +52,33 @@ void Particle::Update()
 void Particle::Render(HDC hdc)
 {
     mImage->Render(hdc, mPos.x, mPos.y, mCurFrameX, 0);
+}
+
+void Particle::SetTank(Tank* tank)
+{
+    mTank = tank;
+    if (tank)
+    {
+        mSubject->AddObserver(static_cast<Observer*>(tank));
+        mSubject->Notify(this, eSubjectTag::Particle, eEventTag::Added);
+    }
+}
+
+void Particle::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag)
+{
+    cout << "신호를 받음 서브젝트 : " << (int)subjectTag << ", 이벤트 : " << (int)eventTag << endl;
+
+    switch (subjectTag)
+    {
+    case eSubjectTag::Tank:
+        switch (eventTag)
+        {
+        case eEventTag::Released:
+            cout << "파티클이 탱크 제거" << endl;
+            mSubject->RemoveObserver(dynamic_cast<Observer*>(obj));
+            mbIsEnd = true;
+            break;
+        }
+        break;
+    }
 }

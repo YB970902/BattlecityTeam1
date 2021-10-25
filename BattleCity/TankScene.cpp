@@ -107,5 +107,6 @@ void TankScene::Render(HDC hdc)
 	SAFE_RENDER(mSecondPlayerTankSpawner);
 	SAFE_RENDER(mAmmoSpawner);
 	SAFE_RENDER(mAISpawner);
+
 	if (mbIsDebugMode) { SAFE_RENDER(mPhysics); }
 }

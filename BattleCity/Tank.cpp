@@ -3,7 +3,7 @@
 #include "Collider.h"
 #include "Image.h"
 #include "Ammo.h"
-#include "Particle.h"
+#include "Subject.h"
 
 HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankColor color, POINTFLOAT pos, Collider* collider)
 {
@@ -18,6 +18,8 @@ HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankCo
 
 	mCollider = collider;
 
+	mSubject = new Subject();
+
 	return S_OK;
 }
 
@@ -28,17 +30,14 @@ void Tank::Release()
 		mVecAmmo[i]->SetOwner(nullptr);
 	}
 
-	for (int i = 0; i < mVecParticle.size(); ++i)
-	{
-		mVecParticle[i]->SetIsEnd(true);
-	}
-	PART_MGR->CreateParticle(eParticleTag::BigBoom, mPos);
+	mSubject->Notify(this, eSubjectTag::Tank, eEventTag::Released);
+	SAFE_DELETE(mSubject);
+
 	GameObject::Release();
 }
 
 void Tank::Update()
 {
-	if (KEY_MGR->IsOnceKeyDown('Q')) { TurnOnStun(); }
 	if (mbIsInvincible)
 	{
 		mElapsedInvencibleTime += DELTA_TIME;
@@ -135,18 +134,6 @@ void Tank::OnAmmoCollided(Ammo* ammo)
 	ammo->SetOwner(nullptr);
 }
 
-void Tank::OnParticleEnded(Particle* particle)
-{
-	for (vector<Particle*>::iterator it = mVecParticle.begin(); it != mVecParticle.end(); ++it)
-	{
-		if ((*it) == particle)
-		{
-			mVecParticle.erase(it);
-			return;
-		}
-	}
-}
-
 void Tank::TurnOnInvencible()
 {
 	mbIsInvincible = true;
@@ -160,4 +147,22 @@ void Tank::TurnOnStun()
 	mbIsSparkle = true;
 	mElapsedStunTime = 0.0f;
 	mElapsedSparkleTime = 0.0f;
+}
+
+void Tank::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag)
+{
+	switch (subjectTag)
+	{
+	case eSubjectTag::Particle:
+		switch (eventTag)
+		{
+		case eEventTag::Added:
+			mSubject->AddObserver(dynamic_cast<Observer*>(obj));
+			break;
+		case eEventTag::Released:
+			mSubject->RemoveObserver(dynamic_cast<Observer*>(obj));
+			break;
+		}
+		break;
+	}
 }
