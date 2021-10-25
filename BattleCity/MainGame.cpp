@@ -33,8 +33,8 @@ HRESULT MainGame::Init()
 	SCENE_MGR->AddScene(eSceneTag::BattleScene, new BattleScene);
 	SCENE_MGR->AddScene(eSceneTag::TankScene, new TankScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::PhysicsScene);
-	SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
-	//SCENE_MGR->ChangeScene(eSceneTag::BattleScene);
+	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
+	SCENE_MGR->ChangeScene(eSceneTag::BattleScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TankScene);
 
 	return S_OK;

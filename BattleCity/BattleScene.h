@@ -6,6 +6,8 @@ class Physcis;
 class TileManager;
 class TankController;
 class TankSpawner;
+class AITankSpawner;
+class AmmoSpawner;
 class BattleScene : public GameEntity
 {
 private:
@@ -13,7 +15,8 @@ private:
 	Image* mBackgroundBlack;
 
 	Physcis* mPhysics = nullptr;
-	TileManager* mTileManager;
+	TileManager* mTileManager = nullptr;
+	AmmoSpawner* mAmmoSpawner = nullptr;
 
 	TankController* mFirstPlayerController = nullptr;
 	TankSpawner* mFirstPlayerSpawner = nullptr;
@@ -21,7 +24,11 @@ private:
 	TankController* mSecondPlayerController = nullptr;
 	TankSpawner* mSecondPlayerSpawner = nullptr;
 
+	AITankSpawner* mAISpawner = nullptr;
+
 	POINT mStartPos = {};
+
+	bool mbIsDebugMode = false;
 
 public:
 	virtual ~BattleScene() = default;

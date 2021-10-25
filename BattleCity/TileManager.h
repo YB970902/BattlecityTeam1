@@ -50,9 +50,18 @@ public:
 	void SetPhysics(Physcis* physcis) { mPhysics = physcis; }
 
 	void ProtectNexus();
+
+	void CreateEdgeBlock();
+
+	vector<TankSpawnInfo>* GetEnemyList();
+	POINTFLOAT* GetEnemySpawnPosition(int& size);
+	POINTFLOAT GetFirstPlayerSpawnPosition();
+	POINTFLOAT GetSecondPlayerSpawnPosition();
 private:
 	void ClearTileMap();
 	void TileDebugUpdate();
 	void TurnProtectBlockImage(bool set);
+
+	int GetFlagDetectInfo(int x, int y, eTerrain terrain);
 };
 
