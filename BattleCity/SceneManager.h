@@ -9,6 +9,7 @@ enum class eSceneTag
 	TankScene,
 	MapToolScene,
 	TitleScene,
+	SlateScene,
 };
 
 

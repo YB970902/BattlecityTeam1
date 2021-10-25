@@ -12,6 +12,8 @@ enum class eImageTag
 	BattleSceneBlackBG,
 	TitleScene,
 	TitleSceneCursor,
+	SlateSceneStage,
+	SlateSceneNumber,
 };
 
 class Image;

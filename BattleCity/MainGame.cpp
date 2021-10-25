@@ -5,6 +5,7 @@
 #include "BattleScene.h"
 #include "CommonFunction.h"
 #include "TitleScene.h"
+#include "SlateScene.h"
 
 #include "PhyscisScene.h"
 
@@ -32,10 +33,12 @@ HRESULT MainGame::Init()
 	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
 	SCENE_MGR->AddScene(eSceneTag::TestScene, new BattleScene);
 	SCENE_MGR->AddScene(eSceneTag::TitleScene, new TitleScene);
+	SCENE_MGR->AddScene(eSceneTag::SlateScene, new SlateScene);
 
 	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
-	SCENE_MGR->ChangeScene(eSceneTag::TestScene);
+	//SCENE_MGR->ChangeScene(eSceneTag::TestScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TitleScene);
+	SCENE_MGR->ChangeScene(eSceneTag::SlateScene);
 
 	return S_OK;
 }

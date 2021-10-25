@@ -17,6 +17,10 @@ void ImageManager::Init()
 	//TitleScene
 	IMG_MGR->AddImage(eImageTag::TitleScene, "Image/Title.bmp", WIN_SIZE_X, WIN_SIZE_Y);
 	IMG_MGR->AddImage(eImageTag::TitleSceneCursor, "Image/Player/Player.bmp", 512, 256, 8, 4, true, RGB(255,0,255));
+
+	//SlateScene
+	IMG_MGR->AddImage(eImageTag::SlateSceneStage, "Image/Text/Stage_W.bmp", 120, 24, 1, 1, true, RGB(255, 0, 255));
+	IMG_MGR->AddImage(eImageTag::SlateSceneNumber, "Image/Text/Number_w.bmp", 120, 48, 5, 2, true, RGB(255, 0, 255));
 }
 
 void ImageManager::Release()
