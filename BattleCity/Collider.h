@@ -30,8 +30,10 @@ public:
 	void MoveTo(POINTFLOAT dir, float moveSpeed);
 
 	void OnCollided(eCollisionDir dir, int tag);
+	bool IsCollided();
 
 	inline eCollisionTag GetTag() { return this->mTag; }
+	inline void SetTag(eCollisionTag tag) { this->mTag = tag; }
 	inline POINTFLOAT GetPlayerPos() { return this->mPlayerPos; }
 	inline float GetPlayerBodySize() { return this->mPlayerBodySize; }
 	inline RECT GetPlayerBody() { return this->mPlayerBody; }

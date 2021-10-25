@@ -1,11 +1,12 @@
 #pragma once
 #include "GameObject.h"
 #include "CollisionChecker.h"
+#include "Observer.h"
 
-const float AMMO_BODY_SIZE = 6.0f;
+const float AMMO_BODY_SIZE = 16.0f;
 
 class Tank;
-class Ammo : public GameObject, public CollisionChecker
+class Ammo : public GameObject, public CollisionChecker, public Observer
 {
 protected:
 	Tank* mOwner = nullptr;
@@ -16,6 +17,7 @@ protected:
 	bool mbIsFire = false;
 
 public:
+	virtual ~Ammo() { }
 	virtual HRESULT Init(eDir dir, eCollisionTag tag, float speed);
 	virtual void Release();
 	virtual void Update();
@@ -29,4 +31,8 @@ public:
 	inline void SetOwner(Tank* owner) { mOwner = owner; }
 
 	inline void SetCollider(Collider* collider) { mCollider = collider; };
+
+
+	virtual void OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag) override;
+
 };

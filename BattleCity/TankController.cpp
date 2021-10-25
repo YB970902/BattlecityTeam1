@@ -14,6 +14,12 @@ HRESULT TankController::Init(int leftKey, int rightKey, int upKey, int downKey, 
     return S_OK;
 }
 
+HRESULT TankController::Init(const int arrKey[5])
+{
+    return Init(arrKey[0], arrKey[1], arrKey[2], arrKey[3], arrKey[4]);
+}
+
+
 void TankController::Release()
 {
 }
@@ -28,8 +34,8 @@ void TankController::Update()
     if (KEY_MGR->IsOnceKeyDown(mFireKey) && mTank->IsCanFire())
     {
         mTank->AddAmmo(mAmmoSpawner->Fire(mTank->GetDirection(),
-            mTank->GetCollisionTag() == eCollisionTag::EnemyTank ? eCollisionTag::EnemyAmmo : eCollisionTag::PlayerAmmo,
-            mTank->GetInfo().MoveSpeed, mTank->GetBarrelPosition()));
+            mTank->GetCollisionTag() == eCollisionTag::FirstPlayerTank ? eCollisionTag::FirstPlayerAmmo : eCollisionTag::SecondPlayerAmmo,
+            mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition()));
     }
 }
 

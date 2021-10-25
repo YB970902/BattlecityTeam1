@@ -16,15 +16,6 @@
 #define NEXUS_AROUNDTILE_TOP 2
 #define NEXUS_AROUNDTILE_BOTTOM 3
 
-enum class eTankType
-{
-	None,
-	NormalTank,
-	FastSpeedTank,
-	FastAmmoTank,
-	TankerTank,
-};
-
 struct TagEnemyInfo
 {
 	eTankType mEnemyOrderType[20];

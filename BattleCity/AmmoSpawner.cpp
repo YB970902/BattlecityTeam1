@@ -25,8 +25,6 @@ void AmmoSpawner::Release()
     }
 }
 
-static int ammoCount = 0;
-
 void AmmoSpawner::Update()
 {
     for (int i = 0; i < mVecAmmo.size(); ++i)
@@ -34,7 +32,6 @@ void AmmoSpawner::Update()
         mVecAmmo[i]->Update();
         if (mVecAmmo[i]->IsDead())
         {
-            cout << "아모 삭제, 남은 카운트 : " << --ammoCount << endl;
             mPhysics->DestroyCollider(mVecAmmo[i]->GetCollider());
             mVecAmmo[i]->SetCollider(nullptr);
             mVecAmmo[i]->SetIsDead(false);
@@ -56,7 +53,6 @@ Ammo* AmmoSpawner::Fire(eDir dir, eCollisionTag tag, float speed, POINTFLOAT pos
     for (int i = 0; i < mVecAmmo.size(); ++i)
     {
         if (mVecAmmo[i]->IsFire()) { continue; }
-        cout << "아모 생성, 남은 카운트 : " << ++ammoCount << endl;
         mVecAmmo[i]->Init(dir, tag, speed);
         mVecAmmo[i]->SetPosition(pos);
         mVecAmmo[i]->SetCollider(mPhysics->CreateCollider(pos, AMMO_BODY_SIZE, mVecAmmo[i], tag));
@@ -67,6 +63,5 @@ Ammo* AmmoSpawner::Fire(eDir dir, eCollisionTag tag, float speed, POINTFLOAT pos
     newAmmo->Init(dir, tag, speed);
     mVecAmmo.push_back(newAmmo);
     newAmmo->SetCollider(mPhysics->CreateCollider(pos, AMMO_BODY_SIZE, newAmmo, tag));
-    cout << "아모 생성, 남은 카운트 : " << ++ammoCount << endl;
     return newAmmo;
 }

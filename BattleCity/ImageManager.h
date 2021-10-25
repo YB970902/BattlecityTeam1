@@ -17,6 +17,10 @@ enum class eImageTag
 	AmmoDown,
 	AmmoLeft,
 	AmmoRight,
+	EffectSmallBoom,
+	EffectBigBoom,
+	EffectShield,
+	EffectSpawn,
 };
 
 class Image;

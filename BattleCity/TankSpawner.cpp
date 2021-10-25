@@ -1,16 +1,17 @@
-#include "Tank.h"
+#include "Config.h"
 #include "TankSpawner.h"
+#include "Tank.h"
 #include "Physcis.h"
 #include "TankController.h"
 #include "Collider.h"
 
-HRESULT TankSpawner::Init(Physcis* physics, SPAWN_INFO info, int leftCount, float maxSpawnTime, POINTFLOAT spawnPos)
+HRESULT TankSpawner::Init(Physcis* physics, SPAWN_INFO info, int leftCount, POINTFLOAT spawnPos)
 {
 	mPhysics = physics;
 	mInfo = info;
 	mLeftCount = leftCount;
-	mMaxSpawnTime = maxSpawnTime;
 	mSpawnPosition = spawnPos;
+	PART_MGR->CreateParticle(eParticleTag::Spawn, mSpawnPosition);
 	return S_OK;
 }
 
@@ -20,7 +21,7 @@ void TankSpawner::Release()
 	if (mCurTank)
 	{
 		mPhysics->DestroyCollider(mCurTank->GetCollider());
-		SAFE_DELETE(mCurTank);
+		SAFE_RELEASE(mCurTank);
 	}
 }
 
@@ -33,21 +34,21 @@ void TankSpawner::Update()
 		SAFE_UPDATE(mController);
 		if (mCurTank->IsDead())
 		{
+			PART_MGR->CreateParticle(eParticleTag::BigBoom, mCurTank->GetPosition());
 			mPhysics->DestroyCollider(mCurTank->GetCollider());
 			SAFE_RELEASE(mCurTank);
 			mCurTank = nullptr;
 			if (mController) { mController->SetTank(nullptr); }
+			mElapsedSpawnTime = 0.0f;
+			if (mLeftCount <= 0) { mbIsSpawnEnd = true; }
+			else { PART_MGR->CreateParticle(eParticleTag::Spawn, mSpawnPosition); }
 		}
 	}
 	else
 	{
-		if (mLeftCount <= 0)
-		{
-			mbIsSpawnEnd = true;
-			return;
-		}
+		if (mbIsSpawnEnd) { return; }
 		mElapsedSpawnTime += DELTA_TIME;
-		if (mElapsedSpawnTime >= mMaxSpawnTime)
+		if (mElapsedSpawnTime >= TANK_SPAWNING_TIME)
 		{
 			--mLeftCount;
 			mElapsedSpawnTime = 0.0f;
@@ -59,6 +60,7 @@ void TankSpawner::Update()
 				mInfo.Color,
 				mSpawnPosition,
 				collider);
+			mCurTank->TurnOnInvencible();
 			if (mController) { mController->SetTank(mCurTank); }
 		}
 	}

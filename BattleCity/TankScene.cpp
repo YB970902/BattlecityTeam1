@@ -39,16 +39,24 @@ HRESULT TankScene::Init()
 	mAmmoSpawner->Init();
 	mAmmoSpawner->SetPhysics(mPhysics);
 
-	mPlayerController = new TankController();
-	mPlayerController->Init('A', 'D', 'W', 'S', VK_SPACE);
-	mPlayerController->SetAmmoSpawner(mAmmoSpawner);
+	mFirstPlayerController = new TankController();
+	mFirstPlayerController->Init(FIRST_PLAYER_KEY);
+	mFirstPlayerController->SetAmmoSpawner(mAmmoSpawner);
 
-	mPlayerTankSpawner = new TankSpawner();
-	mPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::PlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, 0.0f, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_SIZE_Y * 0.9f });
-	mPlayerTankSpawner->SetController(mPlayerController);
+	mFirstPlayerTankSpawner = new TankSpawner();
+	mFirstPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, POINTFLOAT{ WIN_SIZE_X * 0.5f - 100.0f, WIN_SIZE_Y * 0.9f });
+	mFirstPlayerTankSpawner->SetController(mFirstPlayerController);
+
+	mSecondPlayerController = new TankController();
+	mSecondPlayerController->Init(SECOND_PLAYER_KEY);
+	mSecondPlayerController->SetAmmoSpawner(mAmmoSpawner);
+
+	mSecondPlayerTankSpawner = new TankSpawner();
+	mSecondPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), 5, POINTFLOAT{ WIN_SIZE_X * 0.5f + 100.0f, WIN_SIZE_Y * 0.9f });
+	mSecondPlayerTankSpawner->SetController(mSecondPlayerController);
 
 	mAISpawner = new AITankSpawner();
-	mAISpawner->Init(mPhysics, 0.5f, 8);
+	mAISpawner->Init(mPhysics, 8);
 	mAISpawner->SetAmmoSpawner(mAmmoSpawner);
 
 	POINTFLOAT* arrPoint = new POINTFLOAT[3];
@@ -75,7 +83,8 @@ HRESULT TankScene::Init()
 void TankScene::Release()
 {
 	SAFE_RELEASE(mAmmoSpawner);
-	SAFE_RELEASE(mPlayerTankSpawner);
+	SAFE_RELEASE(mFirstPlayerTankSpawner);
+	SAFE_RELEASE(mSecondPlayerTankSpawner);
 	SAFE_RELEASE(mAISpawner);
 	SAFE_RELEASE(mPhysics);
 }
@@ -85,7 +94,8 @@ void TankScene::Update()
 	if (KEY_MGR->IsOnceKeyDown(VK_TAB)) { mbIsDebugMode = !mbIsDebugMode; }
 
 	SAFE_UPDATE(mAmmoSpawner);
-	SAFE_UPDATE(mPlayerTankSpawner);
+	SAFE_UPDATE(mFirstPlayerTankSpawner);
+	SAFE_UPDATE(mSecondPlayerTankSpawner);
 	SAFE_UPDATE(mAISpawner);
 }
 
@@ -93,8 +103,10 @@ void TankScene::Render(HDC hdc)
 {
 	mBackground->Render(hdc);
 
-	SAFE_RENDER(mPlayerTankSpawner);
+	SAFE_RENDER(mFirstPlayerTankSpawner);
+	SAFE_RENDER(mSecondPlayerTankSpawner);
 	SAFE_RENDER(mAmmoSpawner);
 	SAFE_RENDER(mAISpawner);
+
 	if (mbIsDebugMode) { SAFE_RENDER(mPhysics); }
 }

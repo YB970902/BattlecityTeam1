@@ -36,6 +36,11 @@ Collider* Physcis::CreateCollider(POINTFLOAT pos, float bodySize, CollisionCheck
 
 void Physcis::DestroyCollider(Collider* col)
 {
+	if (col == NULL)
+	{
+		cout << "왜 널?" << endl;
+		return;
+	}
 	vector<Collider*>::iterator it;
 	for (int i = 0; i < 4; i++)
 	{
@@ -81,9 +86,8 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 		}
 	}
 
-	if (collidedTag > 0)
+	if (collidedTag > 1)
 	{
-
 		if ((dir.x > 0 && addedForce.x < 0) || (dir.x < 0 && addedForce.x > 0))
 		{
 			addedForce.y = 0;
@@ -111,7 +115,6 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 			// 이외엔 무조건 위에서 박음
 			else
 			{
-				cout << "여길 왜 들어와?" << endl;
 				col->OnCollided(eCollisionDir::Top, collidedTag);
 			}
 			col->SetPlayerPos({ oldPos.x,oldPos.y });
@@ -130,6 +133,20 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 				if (addedForce.x > 0) { col->OnCollided(eCollisionDir::Left, collidedTag); }
 			}
 			col->AddPlayerPos(addedForce);
+		}
+	}
+	// 이동시키지는 않지만 충돌했다고 말은 해줌
+	else if (collidedTag == 1)
+	{
+		if (addedForce.x != 0)
+		{
+			if (addedForce.y < 0) { col->OnCollided(eCollisionDir::Bottom, collidedTag); }
+			if (addedForce.y > 0) { col->OnCollided(eCollisionDir::Top, collidedTag); }
+		}
+		else
+		{
+			if (addedForce.x < 0) { col->OnCollided(eCollisionDir::Right, collidedTag); }
+			if (addedForce.x > 0) { col->OnCollided(eCollisionDir::Left, collidedTag); }
 		}
 	}
 
@@ -203,7 +220,7 @@ bool Physcis::IsCollided(Collider* col1, Collider* col2)
 	if ((int)col1->GetPlayerBody().right <= (int)col2->GetPlayerBody().left) { return false; }
 	if ((int)col1->GetPlayerBody().top >= (int)col2->GetPlayerBody().bottom) { return false; }
 	if ((int)col1->GetPlayerBody().bottom <= (int)col2->GetPlayerBody().top) { return false; }
-	
+
 	return true;
 }
 
@@ -228,9 +245,17 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 	// 충돌 필터
 	int col1Tag = (int)col1->GetTag();
 	int col2Tag = (int)col2->GetTag();
+	bool isNotMoved = false;
 	if (((col1Tag | col2Tag) & 0b100010) == 0b100010) { return 0; } // 물 (32) 과 아모 (2) 여부 확인
-	if (((col1Tag & col2Tag) & 0b10) == 0b10 && ((col1Tag & 1) ^ (col2Tag & 1)) == 0) { return 0; } // 같은 아모끼리 충돌금지
-	if (((col1Tag | col2Tag) & 0b110) == 0b110 && ((col1Tag & 1) ^ (col2Tag & 1)) == 0) { return 0; } // 같은 팀의 총알과 탱크 충돌 금지
+	if (((col1Tag & col2Tag) & 0b100000100) == 0b100000100) { return 0; } // 통과탱크와 일반탱크끼리 충돌금지
+	if (((col1Tag & col2Tag) & 0b10) == 0b10 && ((col1Tag & 1) ^ (col2Tag & 1)) == 0) { return 0; } // 같은 팀의 아모끼리 충돌금지
+	if (((col1Tag & col2Tag) & 0b100) == 0b100 && ((col1Tag & 1) ^ (col2Tag & 1)) == 1) { return 0; } // 다른 팀의 탱크끼리 충돌금지
+	if (((col1Tag | col2Tag) & 0b110) == 0b110 && ((col1Tag & 1) ^ (col2Tag & 1)) == 0) // 같은 팀의 총알과 탱크 충돌금지, 서로 다른 플레이어인경우는 충돌하기
+	{
+		// 서로 같은 플레이어의 총알과 탱크인경우는 충돌금지
+		if (((col1Tag & 0b1000000000) ^ (col2Tag & 0b1000000000)) == 0) { return 0; }
+		// 서로 다른 플레이어의 총알과 탱크는 충돌하기
+	}
 	if (IsCollided(col1, col2))
 	{
 		float overlappedX = 0, overlappedY = 0;
@@ -320,8 +345,7 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 		{
 			addedForce.y = overlappedY;
 		}
-		cout << "충돌했음" << col2Tag << endl;
-		cout << "충돌했음" << (int)col2->GetTag() << endl;
+
 		return (int)col2->GetTag();
 	}
 	else

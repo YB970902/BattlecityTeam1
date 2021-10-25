@@ -12,7 +12,10 @@ private:
 
 	float mElapsedRotateTime = 0.0f;
 	float mMaxRotateTime = 0.0f;
+
+	bool mbIsPassedTank = true;
 public:
+	virtual ~AITankController() {}
 	HRESULT Init();
 	void Release();
 	void Update();

@@ -30,11 +30,13 @@ using namespace std;
 #include "ImageManager.h"
 #include "KeyManager.h"
 #include "SceneManager.h"
+#include "ParticleManager.h"
 
 #define TIMER_MGR TimerManager::GetSingleton()
 #define KEY_MGR KeyManager::GetSingleton()
 #define SCENE_MGR SceneManager::GetSingleton()
 #define IMG_MGR ImageManager::GetSingleton()
+#define PART_MGR ParticleManager::GetSingleton()
 
 #define DELTA_TIME TIMER_MGR->GetDeltaTime()
 
@@ -43,6 +45,23 @@ using namespace std;
 #define TILE_COUNT_Y 26
 
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
+
+const float TANK_SPAWNING_TIME = 0.5f;
+const float PROTECT_ITEM_DURATION_TIME = 20.0f;
+const float INVENCIBLE_ITEM_DURATION_TIME = 10.0f;
+
+enum class eEventTag
+{
+    Released,
+    Added,
+};
+
+enum class eSubjectTag
+{
+    Ammo,
+    Tank,
+    Particle,
+};
 
 enum class eDir
 {
@@ -60,18 +79,23 @@ enum class eCollisionDir
     Bottom,
 };
 
+// (0: 1P, 1: 2P)(통과물체여부)(아이템여부)(넥서스여부)(물여부)(특수여부)(블럭여부)(탱크여부)(아모여부)(1:플레이어, 2:적)
 enum class eCollisionTag
 {
-    PlayerTank             =0b0000101,  //5
-    PlayerAmmo             =0b0000011,  //3
-    PlayerSpecialAmmo      =0b0010011,  //19
-    EnemyTank              =0b0000100,  //4
-    EnemyAmmo              =0b0000010,  //2
-    EnemySpecialAmmo       =0b0010010,  //18
-    Water                  =0b0100000,  //32
-    Block                  =0b0001000,  //8
-    SpecialBlock           =0b0011000,  //24
-    NexusBlock             =0b1000000   //64
+    FirstPlayerTank        =0b0000000101,  //5
+    SecondPlayerTank       =0b1000000101,  //517
+    FirstPlayerAmmo        =0b0000000011,  //3
+    SecondPlayerAmmo       =0b1000000011,  //515
+    PlayerSpecialAmmo      =0b0000010011,  //19
+    EnemyTank              =0b0000000100,  //4
+    EnemyAmmo              =0b0000000010,  //2
+    EnemySpecialAmmo       =0b0000010010,  //18
+    Water                  =0b0000100000,  //32
+    Block                  =0b0000001000,  //8
+    SpecialBlock           =0b0000011000,  //24
+    NexusBlock             =0b0001000000,  //64
+    Item                   =0b0010000000,  //128
+    PassedEnemyTank        =0b0100000000,  //256
 };
 enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagPlayer, NexusAroundTile };
 
@@ -93,8 +117,52 @@ struct TagTile
         CollisionCount = 0;
         NexusAroundTile = false;
     };
-
 };
+
+enum class eTankType
+{
+    None = 1,
+    Player = 0,
+    NormalEnemy = 4,
+    QuickEnemy = 5,
+    RapidFireEnemy = 6,
+    DefenceEnemy = 7,
+};
+
+enum class eTankColor
+{
+    Yellow,
+    White,
+    Green,
+    Red,
+};
+
+typedef struct TankInfo
+{
+    float MoveSpeed;
+    float AttackSpeed;
+    int Health;
+    int MaxAmmoCount;
+    float AmmoSpeed;
+} TANK_INFO;
+
+const TANK_INFO PLAYER_TANK_INFO{ 100.0f, 0.0f, 1, 1, 300.0f };
+const TANK_INFO NORMAL_TANK_INFO{ 100.0f, 1.0f, 1, 1, 300.0f };
+const TANK_INFO QUICK_TANK_INFO{ 200.0f, 1.0f, 1, 1, 300.0f };
+const TANK_INFO RAPID_FIRE_TANK_INFO{ 100.0f, 0.5f, 1, 2, 300.0f };
+const TANK_INFO DEFENCE_TANK_INFO{ 100.0f, 1.0f, 1, 1, 300.0f };
+
+typedef struct TankSpawnInfo
+{
+    TankSpawnInfo() {}
+    TankSpawnInfo(eCollisionTag collisionTag, eTankType type, eTankColor color, TANK_INFO tankInfo) :
+        CollisionTag(collisionTag), Type(type), Color(color), TankInfo(tankInfo) { }
+
+    eCollisionTag CollisionTag = eCollisionTag::Block;
+    eTankType Type = eTankType::Player;
+    eTankColor Color = eTankColor::Yellow;
+    TANK_INFO TankInfo = NORMAL_TANK_INFO;
+} SPAWN_INFO;
 
 extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;

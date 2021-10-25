@@ -10,6 +10,7 @@
 #endif
 
 #define _CRTDBG_MAP_ALLOC
+
 // 전역변수
 POINT		g_ptMouse;
 HINSTANCE	g_hInstance;

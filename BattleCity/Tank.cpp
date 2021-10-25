@@ -1,7 +1,9 @@
+#include "Config.h"
 #include "Tank.h"
 #include "Collider.h"
 #include "Image.h"
 #include "Ammo.h"
+#include "Subject.h"
 
 HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankColor color, POINTFLOAT pos, Collider* collider)
 {
@@ -16,6 +18,8 @@ HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankCo
 
 	mCollider = collider;
 
+	mSubject = new Subject();
+
 	return S_OK;
 }
 
@@ -25,11 +29,42 @@ void Tank::Release()
 	{
 		mVecAmmo[i]->SetOwner(nullptr);
 	}
+
+	mSubject->Notify(this, eSubjectTag::Tank, eEventTag::Released);
+	SAFE_DELETE(mSubject);
+
 	GameObject::Release();
 }
 
 void Tank::Update()
 {
+	if (mbIsInvincible)
+	{
+		mElapsedInvencibleTime += DELTA_TIME;
+		if (mElapsedInvencibleTime >= INVENCIBLE_ITEM_DURATION_TIME)
+		{
+			mElapsedAnimTime = 0.0f;
+			mbIsInvincible = false;
+		}
+	}
+
+	if (mbIsStun)
+	{
+		mElapsedSparkleTime += DELTA_TIME;
+		if (mElapsedSparkleTime >= MAX_SPARKLE_TIME)
+		{
+			mElapsedSparkleTime -= MAX_SPARKLE_TIME;
+			mbIsSparkle = !mbIsSparkle;
+		}
+		mElapsedStunTime += DELTA_TIME;
+		if (mElapsedStunTime >= MAX_STUN_TIME)
+		{
+			mbIsStun = false;
+			mbIsSparkle = false;
+		}
+		return;
+	}
+
 	if (mbIsCanFire) { return; }
 	mElapsedFireTime += DELTA_TIME;
 	if (mElapsedFireTime >= mInfo.AttackSpeed)
@@ -42,6 +77,7 @@ void Tank::Update()
 void Tank::Render(HDC hdc)
 {
 	if (mbIsDead) { return; }
+	if (mbIsSparkle) { return; }
 	mImage->Render(hdc, mPos.x, mPos.y,
 		COLOR_START_FRAME[(int)mColor].x + (int)mDir * 2 + mCurAnim,
 		COLOR_START_FRAME[(int)mColor].y + (int)mType + mStarCount);
@@ -49,6 +85,7 @@ void Tank::Render(HDC hdc)
 
 void Tank::Move(eDir dir)
 {
+	if (mbIsStun) { return; }
 	mElapsedAnimTime += DELTA_TIME;
 	if (mElapsedAnimTime >= MAX_ANIM_TIME)
 	{
@@ -68,11 +105,20 @@ void Tank::MoveForward()
 
 void Tank::OnCollided(eCollisionDir dir, int tag)
 {
-	if ((mCollisionTag == eCollisionTag::PlayerTank && tag == (int)eCollisionTag::EnemyAmmo) ||
-		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::PlayerAmmo))
+	if (mbIsInvincible) { return; }
+
+	if ((mCollisionTag == eCollisionTag::FirstPlayerTank && tag == (int)eCollisionTag::EnemyAmmo) ||
+		(mCollisionTag == eCollisionTag::SecondPlayerTank && tag == (int)eCollisionTag::EnemyAmmo) ||
+		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::FirstPlayerAmmo) ||
+		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::SecondPlayerAmmo))
 	{
 		--mInfo.Health;
 		if (mInfo.Health == 0) { mbIsDead = true; }
+	}
+	else if ((mCollisionTag == eCollisionTag::FirstPlayerTank && tag == (int)eCollisionTag::SecondPlayerAmmo) ||
+		(mCollisionTag == eCollisionTag::SecondPlayerTank && tag == (int)eCollisionTag::FirstPlayerAmmo))
+	{
+		TurnOnStun();
 	}
 }
 
@@ -86,4 +132,37 @@ void Tank::OnAmmoCollided(Ammo* ammo)
 {
 	mVecAmmo.erase(find(mVecAmmo.begin(), mVecAmmo.end(), ammo));
 	ammo->SetOwner(nullptr);
+}
+
+void Tank::TurnOnInvencible()
+{
+	mbIsInvincible = true;
+	mElapsedInvencibleTime = 0.0f;
+	PART_MGR->CreateParticle(eParticleTag::Shield, this);
+}
+
+void Tank::TurnOnStun()
+{
+	mbIsStun = true;
+	mbIsSparkle = true;
+	mElapsedStunTime = 0.0f;
+	mElapsedSparkleTime = 0.0f;
+}
+
+void Tank::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag)
+{
+	switch (subjectTag)
+	{
+	case eSubjectTag::Particle:
+		switch (eventTag)
+		{
+		case eEventTag::Added:
+			mSubject->AddObserver(dynamic_cast<Observer*>(obj));
+			break;
+		case eEventTag::Released:
+			mSubject->RemoveObserver(dynamic_cast<Observer*>(obj));
+			break;
+		}
+		break;
+	}
 }
