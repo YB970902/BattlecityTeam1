@@ -5,8 +5,8 @@
 HRESULT MapEditor::Init()
 {
 	mTileImage = IMG_MGR->FindImage(eImageTag::Tile);
-	mBackground = IMG_MGR->FindImage(eImageTag::TileBackground);
-	mBackgroundInner = IMG_MGR->FindImage(eImageTag::TileBackgroundInner);
+	mBackground = IMG_MGR->FindImage(eImageTag::GrayBG);
+	mBackgroundInner = IMG_MGR->FindImage(eImageTag::BlackBG);
 	mButtonImage = IMG_MGR->FindImage(eImageTag::TileButton);
 	mEnemyOrderBoxImage = IMG_MGR->FindImage(eImageTag::EnemyOrderBox);
 

@@ -8,7 +8,7 @@
 
 HRESULT BattleScene::Init()
 {
-	mBackgroundGray = IMG_MGR->FindImage(eImageTag::BattleSceneGrayBG);
+	mBackgroundGray = IMG_MGR->FindImage(eImageTag::GrayBG);
 	mBackgroundBlack = IMG_MGR->FindImage(eImageTag::BattleSceneBlackBG);
 
 	mForResize = new Image();
@@ -210,7 +210,7 @@ void BattleScene::LoadMap(int loadIndex)
 	{
 		for (int x = 0; x < TILE_COUNT_X; x++)
 		{
-			cout << (int)arrTile[y * TILE_COUNT_X + x].NexusAroundTile;
+			cout << (int)arrTile[y * TILE_COUNT_X + x].Terrain;
 			if (arrTile[y * TILE_COUNT_X + x].Terrain != eTerrain::None)
 			{
 				switch (arrTile[y * TILE_COUNT_X + x].Terrain)

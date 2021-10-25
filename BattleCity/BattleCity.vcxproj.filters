@@ -46,6 +46,12 @@
     <Filter Include="2DFrameWork\Scene\BattleScene">
       <UniqueIdentifier>{b4bb4f77-4807-4e74-9b8a-270cc0e38671}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\Scene\IntroScene">
+      <UniqueIdentifier>{f4a0bfa8-d77f-4e39-a104-1667cc3a8a16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DFrameWork\Scene\TitleScene">
+      <UniqueIdentifier>{57b23045-ef61-4b51-bb0a-6f307cea6280}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -98,6 +104,12 @@
     </ClCompile>
     <ClCompile Include="Tile.cpp">
       <Filter>2DFrameWork\MapEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="IntroScene.cpp">
+      <Filter>2DFrameWork\Scene\IntroScene</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>2DFrameWork\Scene\TitleScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +172,12 @@
     </ClInclude>
     <ClInclude Include="Tile.h">
       <Filter>2DFrameWork\MapEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="IntroScene.h">
+      <Filter>2DFrameWork\Scene\IntroScene</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>2DFrameWork\Scene\TitleScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
