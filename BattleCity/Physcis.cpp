@@ -132,7 +132,7 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 				else { col->OnCollided(eCollisionDir::Top, collidedTag); }
 				oldPos.y += oldOverlapped.y;
 			}
-			col->SetPlayerPos({ oldPos.x,oldPos.y });
+			col->SetPlayerPos(oldPos);
 		}
 		//여기는 보정이 됨
 		else
@@ -240,14 +240,12 @@ bool Physcis::IsCollided(Collider* col1, Collider* col2)
 
 bool Physcis::IsCollided(Collider* col)
 {
+	for (int i = 0; i < 4; i++)
 	{
-		for (int i = 0; i < 4; i++)
+		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
 		{
-			for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
-			{
-				if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
-				if (IsCollided(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j])) { return true; }
-			}
+			if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
+			if (IsCollided(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j])) { return true; }
 		}
 	}
 	return false;
@@ -325,6 +323,7 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 				// 오른쪽에서 박음
 				col2->OnCollided(eCollisionDir::Right, (int)col1->GetTag());
 			}
+			if (fabs(oldOverlapped.x) < fabs(overlappedX)) { oldOverlapped.x = overlappedX; }
 		}
 		else
 		{
@@ -339,10 +338,8 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 				// 아래쪽에서 박음
 				col2->OnCollided(eCollisionDir::Bottom, (int)col1->GetTag());
 			}
+			if (fabs(oldOverlapped.y) < fabs(overlappedY)) { oldOverlapped.y = overlappedY; }
 		}
-
-		if (fabs(oldOverlapped.x) < fabs(overlappedX)) { oldOverlapped.x = overlappedX; }
-		if (fabs(oldOverlapped.y) < fabs(overlappedY)) { oldOverlapped.y = overlappedY; }
 
 		// 충돌면적이 세로로 길쭉함
 		if (fabs(overlappedX) < fabs(overlappedY))
