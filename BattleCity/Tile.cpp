@@ -31,11 +31,22 @@ void Tile::OnCollided(eCollisionDir dir, int tag)
 {
 	switch (tag)
 	{
-	case (int)eCollisionTag::EnemyAmmo:
-	case (int)eCollisionTag::FirstPlayerAmmo:
-	case (int)eCollisionTag::SecondPlayerAmmo:
-		CalcBroken(dir);
+	case (int)eCollisionTag::FirstPlayerSpecialAmmo:
+	case (int)eCollisionTag::SecondPlayerSpecialAmmo:
+		mbIsBroken = true;
 		break;
+	}
+
+	if (mCollider->GetTag() == eCollisionTag::Block)
+	{
+		switch (tag)
+		{
+		case (int)eCollisionTag::EnemyAmmo:
+		case (int)eCollisionTag::FirstPlayerAmmo:
+		case (int)eCollisionTag::SecondPlayerAmmo:
+			CalcBroken(dir);
+			break;
+		}
 	}
 }
 

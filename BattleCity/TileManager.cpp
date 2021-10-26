@@ -88,7 +88,10 @@ void TileManager::Update()
 			for (int i = 0; i < mVecAroundTileInfo.size(); ++i)
 			{
 				tileIndex = mVecAroundTileInfo[i].second;
-				mMapTile[tileIndex.x][tileIndex.y]->GetCollider()->SetTag(eCollisionTag::Block);
+				if (mMapTile.find(tileIndex.x) != mMapTile.end() && mMapTile[tileIndex.x].find(tileIndex.y) != mMapTile[tileIndex.x].end() && mMapTile[tileIndex.x][tileIndex.y] != nullptr)
+				{
+					mMapTile[tileIndex.x][tileIndex.y]->GetCollider()->SetTag(eCollisionTag::Block);
+				}
 			}
 		}
 	}
@@ -211,6 +214,7 @@ void TileManager::ProtectNexus()
 		}
 
 		mMapTile[tileIndex.x][tileIndex.y]->GetCollider()->SetTag(eCollisionTag::NexusBlock);
+		mMapTile[tileIndex.x][tileIndex.y]->GetTileInfo()->TileState = 0;
 		TurnProtectBlockImage(true);
 		mbIsOnProtectBlock = true;
 	}
@@ -485,6 +489,9 @@ void TileManager::TurnProtectBlockImage(bool set)
 	for (int i = 0; i < mVecAroundTileInfo.size(); ++i)
 	{
 		tileIndex = mVecAroundTileInfo[i].second;
-		mMapTile[tileIndex.x][tileIndex.y]->SetImagePos(POINT{ 0, (int)set * 2 });
+		if (mMapTile.find(tileIndex.x) != mMapTile.end() && mMapTile[tileIndex.x].find(tileIndex.y) != mMapTile[tileIndex.x].end() && mMapTile[tileIndex.x][tileIndex.y] != nullptr)
+		{
+			mMapTile[tileIndex.x][tileIndex.y]->SetImagePos(POINT{ 0, (int)set * 2 });
+		}
 	}
 }

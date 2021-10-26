@@ -100,7 +100,8 @@ enum class eCollisionTag
     SecondPlayerTank       =0b1000000101,  //517
     FirstPlayerAmmo        =0b0000000011,  //3
     SecondPlayerAmmo       =0b1000000011,  //515
-    PlayerSpecialAmmo      =0b0000010011,  //19
+    FirstPlayerSpecialAmmo =0b0000010011,  //19
+    SecondPlayerSpecialAmmo=0b1000010011,  //531
     EnemyTank              =0b0000000100,  //4
     EnemyAmmo              =0b0000000010,  //2
     EnemySpecialAmmo       =0b0000010010,  //18
@@ -113,6 +114,7 @@ enum class eCollisionTag
 };
 
 #define IS_PLAYER_TANK(bit) ((bool)((bit & 0b101) == 0b101))
+#define IS_SPECIAL_AMMO(bit) ((bool)((bit & 0b10010) == 0b10010))
 
 enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagFirstPlayer, NexusAroundTile, FlagSecondPlayer };
 
