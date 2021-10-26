@@ -19,6 +19,7 @@ class SceneManager : public Singleton<SceneManager>
 private:
 	map<eSceneTag, GameEntity*>	mapScenes;
 	map<eSceneTag, GameEntity*>	mapLoadingScenes;
+	map<string, int> mapSceneData;
 
 public:
 	static GameEntity* currScene;		// 현재 출력 중인 씬
@@ -34,6 +35,9 @@ public:
 
 	void AddScene(eSceneTag tag, GameEntity* scene);
 	void AddLoadingScene(eSceneTag tag, GameEntity* scene);
+
+	void SetSceneData(string key, int val);
+	int GetSceneData(string key);
 
 	HRESULT ChangeScene(eSceneTag tag);
 	HRESULT ChangeScene(eSceneTag tag, eSceneTag loadingSceneName);

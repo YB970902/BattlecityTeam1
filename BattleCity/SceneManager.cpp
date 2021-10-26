@@ -74,6 +74,16 @@ void SceneManager::AddLoadingScene(eSceneTag tag, GameEntity* scene)
 	mapLoadingScenes.insert(pair<eSceneTag, GameEntity*>(tag, scene));
 }
 
+void SceneManager::SetSceneData(string key, int val)
+{
+	mapSceneData[key] = val;
+}
+
+int SceneManager::GetSceneData(string key)
+{
+	return mapSceneData[key];
+}
+
 HRESULT SceneManager::ChangeScene(eSceneTag tag)
 {
 	map<eSceneTag, GameEntity*>::iterator it = mapScenes.find(tag);
