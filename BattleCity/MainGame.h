@@ -5,6 +5,7 @@ class MapEditor;
 class Image;
 class Collider;
 class Physcis;
+class TitleScene;
 
 class MainGame : public GameEntity
 {

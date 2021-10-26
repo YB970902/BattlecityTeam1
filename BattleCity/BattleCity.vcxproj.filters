@@ -58,6 +58,12 @@
     <Filter Include="2DFrameWork\Item">
       <UniqueIdentifier>{8965ce46-32f1-473c-b4e9-ff47cfcdd562}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\Scene\TitleScene">
+      <UniqueIdentifier>{57b23045-ef61-4b51-bb0a-6f307cea6280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2DFrameWork\Score">
+      <UniqueIdentifier>{2289326f-6e53-47e4-8893-d71c69a104d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -155,6 +161,15 @@
     </ClCompile>
     <ClCompile Include="ItemManager.cpp">
       <Filter>2DFrameWork\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>2DFrameWork\Scene\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="SlateScene.cpp">
+      <Filter>2DFrameWork\Scene\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Score.cpp">
+      <Filter>2DFrameWork\Score</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +277,15 @@
     </ClInclude>
     <ClInclude Include="ItemManager.h">
       <Filter>2DFrameWork\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>2DFrameWork\Scene\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="SlateScene.h">
+      <Filter>2DFrameWork\Scene\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Score.h">
+      <Filter>2DFrameWork\Score</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
