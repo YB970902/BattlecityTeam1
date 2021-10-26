@@ -46,7 +46,7 @@ HRESULT BattleScene::Init()
 	mSecondPlayerSpawner->SetController(mSecondPlayerController);
 
 	mAISpawner = new AITankSpawner();
-	mAISpawner->Init(mPhysics, 5);
+	mAISpawner->Init(mPhysics, 20);
 	mAISpawner->SetAmmoSpawner(mAmmoSpawner);
 	int size;
 	POINTFLOAT* enemySpawnPos = mTileManager->GetEnemySpawnPosition(size);

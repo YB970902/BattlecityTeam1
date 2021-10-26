@@ -33,7 +33,6 @@ HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankCo
 
 void Tank::Release()
 {
-	if (mbIsHaveItem) { mSubject->Notify(this, eSubjectTag::Tank, eEventTag::DropItem); }
 	mSubject->Notify(this, eSubjectTag::Tank, eEventTag::Released);
 	SAFE_DELETE(mSubject);
 
@@ -178,6 +177,7 @@ void Tank::ChangeToStun()
 
 void Tank::OnDamaged()
 {
+	if (mbIsHaveItem) { mSubject->Notify(this, eSubjectTag::Tank, eEventTag::DropItem); }
 	--mInfo.Health;
 	if (mInfo.Health == 0) { mbIsDead = true; }
 	else
