@@ -31,18 +31,23 @@ using namespace std;
 #include "KeyManager.h"
 #include "SceneManager.h"
 #include "ParticleManager.h"
+#include "UIManager.h"
 
 #define TIMER_MGR TimerManager::GetSingleton()
 #define KEY_MGR KeyManager::GetSingleton()
 #define SCENE_MGR SceneManager::GetSingleton()
 #define IMG_MGR ImageManager::GetSingleton()
 #define PART_MGR ParticleManager::GetSingleton()
+#define UI_MGR UIManager::GetSingleton()
 
 #define DELTA_TIME TIMER_MGR->GetDeltaTime()
 
 
 #define TILE_COUNT_X 26
 #define TILE_COUNT_Y 26
+
+#define TILE_START_POS_X ((WIN_SIZE_X - (TILE_SIZE * TILE_COUNT_X)) / 2)
+#define TILE_START_POS_Y ((WIN_SIZE_Y - (TILE_SIZE * TILE_COUNT_Y)) / 2)
 
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
 
@@ -116,6 +121,8 @@ enum class eCollisionTag
 
 #define IS_PLAYER_TANK(bit) ((bool)((bit & 0b101) == 0b101))
 #define IS_PLAYER_AMMO(bit) ((bool)((bit & 0b11) == 0b11))
+#define IS_FIRST_PLAYER(bit) ((bool)((bit & 0b1) == 0b1))
+#define IS_SECOND_PLAYER(bit) ((bool)((bit & 0b1000000001) == 0b1000000001))
 #define IS_SPECIAL_AMMO(bit) ((bool)((bit & 0b10010) == 0b10010))
 
 enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagFirstPlayer, NexusAroundTile, FlagSecondPlayer };

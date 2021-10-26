@@ -33,6 +33,11 @@ private:
 
 	bool mbIsDebugMode = false;
 
+	bool mbIsSoloMode = true;
+	bool mbIsFirstPlayerDead = false;
+	bool mbIsSecondPlayerDead = false;
+	bool mbIsGameEnd = false;
+
 public:
 	virtual ~BattleScene() = default;
 

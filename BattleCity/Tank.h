@@ -22,6 +22,8 @@ protected:
 	eTankColor mColor;
 	TANK_INFO mInfo;
 
+	eCollisionTag mCollidedTag;
+
 	int mStarCount = 0;
 
 	float mElapsedAnimTime = 0.0f;
@@ -60,6 +62,7 @@ public:
 	void Move(eDir dir);
 	void MoveForward();
 
+	inline eTankType GetTankType() { return mType; }
 	inline void SetIsInvencible(bool set) { mbIsInvincible = set; if (set) { ChangeToInvencible(); } }
 	inline TANK_INFO GetInfo() { return mInfo; }
 	inline void AddStar() { if (mType == eTankType::Player && mStarCount < MAX_STAR_COUNT) { mStarCount++; } }
@@ -68,6 +71,7 @@ public:
 	inline bool IsCanFire() { return mbIsCanFire && mFiredAmmoCount < mInfo.MaxAmmoCount + mStarCount / 2 && !mbIsStun; }
 	inline void SetIsCanFire(bool set) { mbIsCanFire = set; }
 	inline POINTFLOAT GetBarrelPosition() { return POINTFLOAT{ mPos.x + DIR_VALUE[(int)mDir].x, mPos.y + DIR_VALUE[(int)mDir].y }; }
+	inline eCollisionTag GetCollidedTag() { return mCollidedTag; }
 
 	Subject* GetSubject() { return mSubject; }
 

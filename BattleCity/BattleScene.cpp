@@ -14,6 +14,19 @@
 
 HRESULT BattleScene::Init()
 {
+	SCENE_MGR->SetSceneData("FirstPlayerNormalEnemyTank", 0);
+	SCENE_MGR->SetSceneData("FirstPlayerQuickEnemyTank", 0);
+	SCENE_MGR->SetSceneData("FirstPlayerRapidFireEnemyTank", 0);
+	SCENE_MGR->SetSceneData("FirstPlayerDefenceEnemyTank", 0);
+
+	SCENE_MGR->SetSceneData("SecondPlayerNormalEnemyTank", 0);
+	SCENE_MGR->SetSceneData("SecondPlayerQuickEnemyTank", 0);
+	SCENE_MGR->SetSceneData("SecondPlayerRapidFireEnemyTank", 0);
+	SCENE_MGR->SetSceneData("SecondPlayerDefenceEnemyTank", 0);
+
+	// 1 : 1인모드 0 : 2인모드
+	mbIsSoloMode = SCENE_MGR->GetSceneData("IsSoloMode");
+
 	mBackgroundGray = IMG_MGR->FindImage(eImageTag::BattleSceneGrayBG);
 	mBackgroundBlack = IMG_MGR->FindImage(eImageTag::BattleSceneBlackBG);
 	mStartPos = { (mBackgroundGray->GetWidth() - mBackgroundBlack->GetWidth()) / 2 ,(mBackgroundGray->GetHeight() - mBackgroundBlack->GetHeight()) / 2 };
@@ -27,26 +40,26 @@ HRESULT BattleScene::Init()
 	mTileManager = new TileManager();
 	mTileManager->Init(mStartPos, POINT{ mBackgroundBlack->GetWidth(), mBackgroundBlack->GetHeight() });
 	mTileManager->SetPhysics(mPhysics);
-	mTileManager->LoadMap(0);
-	mTileManager->LoadEnemyOrder(0);
+	mTileManager->LoadMap(SCENE_MGR->GetSceneData("Stage"));
+	mTileManager->LoadEnemyOrder(SCENE_MGR->GetSceneData("Stage"));
 	mTileManager->CreateEdgeBlock();
 
 	mFirstPlayerController = new TankController();
 	mFirstPlayerController->Init(FIRST_PLAYER_KEY);
 	mFirstPlayerController->SetAmmoSpawner(mAmmoSpawner);
 	mFirstPlayerSpawner = new TankSpawner();
-	mFirstPlayerSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, mTileManager->GetFirstPlayerSpawnPosition());
+	mFirstPlayerSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 1, mTileManager->GetFirstPlayerSpawnPosition());
 	mFirstPlayerSpawner->SetController(mFirstPlayerController);
 
 	mSecondPlayerController = new TankController();
 	mSecondPlayerController->Init(SECOND_PLAYER_KEY);
 	mSecondPlayerController->SetAmmoSpawner(mAmmoSpawner);
 	mSecondPlayerSpawner = new TankSpawner();
-	mSecondPlayerSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), 5, mTileManager->GetSecondPlayerSpawnPosition());
+	mSecondPlayerSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), 1, mTileManager->GetSecondPlayerSpawnPosition());
 	mSecondPlayerSpawner->SetController(mSecondPlayerController);
 
 	mAISpawner = new AITankSpawner();
-	mAISpawner->Init(mPhysics, 20);
+	mAISpawner->Init(mPhysics, 5);
 	mAISpawner->SetAmmoSpawner(mAmmoSpawner);
 	int size;
 	POINTFLOAT* enemySpawnPos = mTileManager->GetEnemySpawnPosition(size);
@@ -84,6 +97,46 @@ void BattleScene::Update()
 	SAFE_UPDATE(mAISpawner);
 	SAFE_UPDATE(mFirstPlayerSpawner);
 	SAFE_UPDATE(mSecondPlayerSpawner);
+	if (mbIsSoloMode)
+	{
+		if (mFirstPlayerSpawner && !mbIsFirstPlayerDead && mFirstPlayerSpawner->IsSpawnEnd())
+		{
+			mbIsFirstPlayerDead = true;
+			mbIsGameEnd = true;
+			UI_MGR->AddMovingUI(eImageTag::UIGameOver, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_START_POS_Y }, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_SIZE_Y * 0.5f }, 2.0f, 1.0f);
+		}
+	}
+	else
+	{
+		if (mFirstPlayerSpawner && !mbIsFirstPlayerDead && mFirstPlayerSpawner->IsSpawnEnd())
+		{
+			mbIsFirstPlayerDead = true;
+			if (mbIsSecondPlayerDead)
+			{
+				mbIsGameEnd = true;
+				UI_MGR->AddMovingUI(eImageTag::UIGameOver, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_START_POS_Y }, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_SIZE_Y * 0.5f }, 2.0f, 1.0f);
+			}
+			else
+			{
+				UI_MGR->AddMovingUI(eImageTag::UIGameOver, POINTFLOAT{ WIN_START_POS_X, mFirstPlayerSpawner->GetSpawnPosition().y },
+					POINTFLOAT{ mFirstPlayerSpawner->GetSpawnPosition().x, mFirstPlayerSpawner->GetSpawnPosition().y }, 2.0f, 1.0f);
+			}
+		}
+		if (mSecondPlayerSpawner && !mbIsSecondPlayerDead && mSecondPlayerSpawner->IsSpawnEnd())
+		{
+			mbIsSecondPlayerDead = true;
+			if (mbIsFirstPlayerDead)
+			{
+				mbIsGameEnd = true;
+				UI_MGR->AddMovingUI(eImageTag::UIGameOver, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_START_POS_Y }, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_SIZE_Y * 0.5f }, 2.0f, 1.0f);
+			}
+			else
+			{
+				UI_MGR->AddMovingUI(eImageTag::UIGameOver, POINTFLOAT{ WIN_SIZE_X - WIN_START_POS_X, mSecondPlayerSpawner->GetSpawnPosition().y },
+					POINTFLOAT{ mSecondPlayerSpawner->GetSpawnPosition().x, mSecondPlayerSpawner->GetSpawnPosition().y }, 2.0f, 1.0f);
+			}
+		}
+	}
 	SAFE_UPDATE(mItemManager);
 	if (KEY_MGR->IsOnceKeyDown('O'))
 	{

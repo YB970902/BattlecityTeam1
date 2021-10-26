@@ -30,6 +30,8 @@ public:
 	int GetLeftLife() { return mLeftCount; }
 	void AddLife() { mLeftCount++; }
 
+	POINTFLOAT GetSpawnPosition() { return mSpawnPosition; }
+
 	inline bool IsSpawnEnd() { return mbIsSpawnEnd; }
 
 	inline void SetController(TankController* controller) { mController = controller; }

@@ -58,6 +58,9 @@
     <Filter Include="2DFrameWork\Item">
       <UniqueIdentifier>{8965ce46-32f1-473c-b4e9-ff47cfcdd562}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\UI">
+      <UniqueIdentifier>{2bcbb078-5866-47c5-aa4f-85536fc4cdc0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -155,6 +158,15 @@
     </ClCompile>
     <ClCompile Include="ItemManager.cpp">
       <Filter>2DFrameWork\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>2DFrameWork\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedUI.cpp">
+      <Filter>2DFrameWork\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="MovingUI.cpp">
+      <Filter>2DFrameWork\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +274,15 @@
     </ClInclude>
     <ClInclude Include="ItemManager.h">
       <Filter>2DFrameWork\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>2DFrameWork\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedUI.h">
+      <Filter>2DFrameWork\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingUI.h">
+      <Filter>2DFrameWork\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

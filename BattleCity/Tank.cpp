@@ -151,6 +151,7 @@ void Tank::OnCollided(eCollisionDir dir, int tag)
 		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::FirstPlayerAmmo) ||
 		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::SecondPlayerAmmo))
 	{
+		mCollidedTag = (eCollisionTag)tag;
 		OnDamaged();
 	}
 	else if ((mCollisionTag == eCollisionTag::FirstPlayerTank && tag == (int)eCollisionTag::SecondPlayerAmmo) ||

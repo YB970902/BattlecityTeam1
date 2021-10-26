@@ -24,6 +24,12 @@ void ImageManager::Init()
 	AddImage(eImageTag::EffectShield, "Image/Effect/Shield.bmp", 64, 32, 2, 1, true, RGB(255, 0, 255));
 	AddImage(eImageTag::EffectSpawn, "Image/Effect/Spawn_Effect.bmp", 128, 32, 4, 1, true, RGB(255, 0, 255));
 
+	AddImage(eImageTag::UIScore100, "Image/Text/Score100.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore200, "Image/Text/Score200.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore300, "Image/Text/Score300.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore400, "Image/Text/Score400.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIGameOver, "Image/Text/Game_Over.bmp", 64, 30, true, RGB(255, 0, 255));
+
 	AddImage(eImageTag::ItemInvencible, "Image/Item/Item1.bmp", 32, 32, true, RGB(255, 0, 255));
 	AddImage(eImageTag::ItemProtect, "Image/Item/Item3.bmp", 32, 32, true, RGB(255, 0, 255));
 	AddImage(eImageTag::ItemStar, "Image/Item/Item4.bmp", 32, 32, true, RGB(255, 0, 255));
