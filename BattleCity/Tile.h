@@ -24,7 +24,7 @@ public:
 	void Update();
 	void Render(HDC hdc);
 
-	void OnCollided(eCollisionDir dir, eCollisionTag tag) override;
+	void OnCollided(eCollisionDir dir, int tag) override;
 
 	Collider* GetCollider() { return this->mCollider; }
 	POINT GetPosition() { return this->mPos; }

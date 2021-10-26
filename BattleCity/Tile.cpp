@@ -27,12 +27,13 @@ void Tile::Render(HDC hdc)
 	mImg->Render(hdc, mPos.x, mPos.y, mTileInfo.TilePos.x, mTileInfo.TilePos.y);
 }
 
-void Tile::OnCollided(eCollisionDir dir, eCollisionTag tag)
+void Tile::OnCollided(eCollisionDir dir, int tag)
 {
 	switch (tag)
 	{
-	case eCollisionTag::EnemyAmmo:
-	case eCollisionTag::PlayerAmmo:
+	case (int)eCollisionTag::EnemyAmmo:
+	case (int)eCollisionTag::FirstPlayerAmmo:
+	case (int)eCollisionTag::SecondPlayerAmmo:
 		CalcBroken(dir);
 		break;
 	}

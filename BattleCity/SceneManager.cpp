@@ -27,6 +27,14 @@ void SceneManager::Init()
 
 void SceneManager::Release()
 {
+	if (currScene) { currScene->Release(); }
+
+	for (map<eSceneTag, GameEntity*>::iterator it = mapScenes.begin(); it != mapScenes.end();)
+	{
+		SAFE_DELETE(it->second);
+		it = mapScenes.erase(it);
+	}
+	mapScenes.clear();
 }
 
 void SceneManager::Update()
@@ -64,6 +72,16 @@ void SceneManager::AddLoadingScene(eSceneTag tag, GameEntity* scene)
 	}
 
 	mapLoadingScenes.insert(pair<eSceneTag, GameEntity*>(tag, scene));
+}
+
+void SceneManager::SetSceneData(string key, int val)
+{
+	mapSceneData[key] = val;
+}
+
+int SceneManager::GetSceneData(string key)
+{
+	return mapSceneData[key];
 }
 
 HRESULT SceneManager::ChangeScene(eSceneTag tag)

@@ -1,3 +1,4 @@
+#include <crtdbg.h>
 #include "Config.h"
 #include "CommonFunction.h"
 #include "MainGame.h"
@@ -7,6 +8,8 @@
 #else
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #endif
+
+#define _CRTDBG_MAP_ALLOC
 
 // 전역변수
 POINT		g_ptMouse;
@@ -21,6 +24,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage,
 int APIENTRY WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance,
 	LPSTR _lpszCmdParam, int nCmdShow)
 {
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(185);
+#endif
+
 	// 윈도우를 생성하기 위한 기본 셋팅
 	g_hInstance = _hInstance;
 	WNDCLASS wndClass;

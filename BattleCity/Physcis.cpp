@@ -11,6 +11,7 @@ Collider* Physcis::CreateCollider(POINTFLOAT pos, float bodySize, CollisionCheck
 {
 	Collider* newCol = new Collider();
 	newCol->Init(pos, bodySize, this, obj, tag);
+	mVecCollider.push_back(newCol);
 
 	POINT prevPoint = newCol->GetPointGrid()[0];
 	if (prevPoint.x == -1 || prevPoint.y == -1) { return nullptr; } // 생성실패!
@@ -35,9 +36,15 @@ Collider* Physcis::CreateCollider(POINTFLOAT pos, float bodySize, CollisionCheck
 
 void Physcis::DestroyCollider(Collider* col)
 {
+	if (col == NULL)
+	{
+		cout << "왜 널?" << endl;
+		return;
+	}
+	vector<Collider*>::iterator it;
 	for (int i = 0; i < 4; i++)
 	{
-		vector<Collider*>::iterator it = find(mGridMap[col->GetPointGrid()[i].x][col->GetPointGrid()[i].y].begin(),
+		it = find(mGridMap[col->GetPointGrid()[i].x][col->GetPointGrid()[i].y].begin(),
 			mGridMap[col->GetPointGrid()[i].x][col->GetPointGrid()[i].y].end(),
 			col);
 		if (it != mGridMap[col->GetPointGrid()[i].x][col->GetPointGrid()[i].y].end())
@@ -45,6 +52,10 @@ void Physcis::DestroyCollider(Collider* col)
 			mGridMap[col->GetPointGrid()[i].x][col->GetPointGrid()[i].y].erase(it);
 		}
 	}
+
+	it = find(mVecCollider.begin(), mVecCollider.end(), col);
+	mVecCollider.erase(it);
+
 	SAFE_DELETE(col);
 }
 
@@ -53,49 +64,103 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 	POINTFLOAT addedForce = { 0,0 };
 	POINTFLOAT oldOverlapped = { 0,0 };
 
+	mCheckGrid[0] = col->GetPointGrid()[0];
+	mCheckGrid[1] = col->GetPointGrid()[1];
+	mCheckGrid[2] = col->GetPointGrid()[2];
+	mCheckGrid[3] = col->GetPointGrid()[3];
+
 	POINT arrOldVertex[4];
 	for (int i = 0; i < 4; i++)
 	{
 		arrOldVertex[i] = col->GetPointGrid()[i];
 	}
-	cout << "--------------------------" << endl;
-	for (int i = 0; i < 4; i++)
-	{
-		cout << i << "count X : " << arrOldVertex[i].x << "  Y : " << arrOldVertex[i].y << endl;
-	}
 
+	int collidedTag = 0;
+	eCollisionTag tag = col->GetTag();
+	map<Collider*, bool> mapDetected;
+	int curCollidedTag = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
 		{
 			if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
-			PreventOverlapped(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j], addedForce, dir, oldOverlapped);
+			// 이미 검사한 애
+			if (mapDetected.find(mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j]) != mapDetected.end()) { continue; }
+			curCollidedTag = PreventOverlapped(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j], addedForce, dir, oldOverlapped);
+			if (curCollidedTag > 0)
+			{
+				mapDetected[mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j]] = true;
+				collidedTag |= curCollidedTag;
+			}
 		}
 	}
-	if ((dir.x > 0 && addedForce.x < 0) || (dir.x < 0 && addedForce.x > 0))
-	{
-		addedForce.y = 0;
-	}
-	else if ((dir.y > 0 && addedForce.y < 0) || (dir.y < 0 && addedForce.y > 0))
-	{
-		addedForce.x = 0;
-	}
 
-	col->AddPlayerPos(addedForce);
-	if (IsCollided(col))
+	mapDetected.clear();
+
+	if (collidedTag > 1)
 	{
-
-		cout << "이동 후 충돌감지" << endl;
-
-		if ((dir.x > 0 && oldOverlapped.x < 0) || (dir.x < 0 && oldOverlapped.x > 0))
+		if ((dir.x > 0 && addedForce.x < 0) || (dir.x < 0 && addedForce.x > 0))
 		{
-			oldPos.x = col->GetPlayerPos().x + oldOverlapped.x;
+			addedForce.y = 0;
 		}
-		else if ((dir.y > 0 && oldOverlapped.y < 0) || (dir.y < 0 && oldOverlapped.y > 0))
+		else if ((dir.y > 0 && addedForce.y < 0) || (dir.y < 0 && addedForce.y > 0))
 		{
-			oldPos.y = col->GetPlayerPos().y + oldOverlapped.y;
+			addedForce.x = 0;
 		}
-		col->SetPlayerPos({ oldPos.x,oldPos.y });
+
+		col->AddPlayerPos(addedForce);
+
+		// 여기에 들어가면 보정을 하지 않음.
+		if (IsCollided(col))
+		{
+			if ((dir.x > 0 && oldOverlapped.x < 0) || (dir.x < 0 && oldOverlapped.x > 0))
+			{
+				oldPos.x = col->GetPlayerPos().x + oldOverlapped.x;
+				if (dir.x > 0) { col->OnCollided(eCollisionDir::Left, collidedTag); }
+				else { col->OnCollided(eCollisionDir::Right, collidedTag); }
+			}
+			else if ((dir.y > 0 && oldOverlapped.y < 0) || (dir.y < 0 && oldOverlapped.y > 0))
+			{
+				oldPos.y = col->GetPlayerPos().y + oldOverlapped.y;
+				if (dir.y > 0) { col->OnCollided(eCollisionDir::Top, collidedTag); }
+				else { col->OnCollided(eCollisionDir::Bottom, collidedTag); }
+			}
+			// 이외엔 무조건 위에서 박음
+			else
+			{
+				col->OnCollided(eCollisionDir::Top, collidedTag);
+			}
+			col->SetPlayerPos({ oldPos.x,oldPos.y });
+		}
+		//여기는 보정이 됨
+		else
+		{
+			if (addedForce.x != 0)
+			{
+				if (addedForce.y < 0) { col->OnCollided(eCollisionDir::Bottom, collidedTag); }
+				else { col->OnCollided(eCollisionDir::Top, collidedTag); }
+			}
+			else
+			{
+				if (addedForce.x < 0) { col->OnCollided(eCollisionDir::Right, collidedTag); }
+				else { col->OnCollided(eCollisionDir::Left, collidedTag); }
+			}
+			//col->AddPlayerPos(addedForce);
+		}
+	}
+	// 이동시키지는 않지만 충돌했다고 말은 해줌
+	else if (collidedTag == 1)
+	{
+		if (addedForce.x != 0)
+		{
+			if (addedForce.y < 0) { col->OnCollided(eCollisionDir::Bottom, collidedTag); }
+			else { col->OnCollided(eCollisionDir::Top, collidedTag); }
+		}
+		else
+		{
+			if (addedForce.x < 0) { col->OnCollided(eCollisionDir::Right, collidedTag); }
+			else { col->OnCollided(eCollisionDir::Left, collidedTag); }
+		}
 	}
 
 	col->UpdateBodySize();
@@ -174,22 +239,36 @@ bool Physcis::IsCollided(Collider* col1, Collider* col2)
 
 bool Physcis::IsCollided(Collider* col)
 {
-	for (int i = 0; i < 4; i++)
+	//if ((((int)col->GetTag()) & 4) == 4)		//탱크일경우에만
 	{
-		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+		for (int i = 0; i < 4; i++)
 		{
-			if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
-			if (IsCollided(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][i])) { return true; }
+			for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+			{
+				if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
+				if (IsCollided(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j])) { return true; }
+			}
 		}
 	}
 	return false;
 }
 
-void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& addedForce, POINTFLOAT dir, POINTFLOAT& oldOverlapped)
+int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& addedForce, POINTFLOAT dir, POINTFLOAT& oldOverlapped)
 {
-	if (col2->GetTag() == eCollisionTag::Water && (col1->GetTag() == eCollisionTag::PlayerTank || col1->GetTag() == eCollisionTag::EnemyTank))
+	// 충돌 필터
+	int col1Tag = (int)col1->GetTag();
+	int col2Tag = (int)col2->GetTag();
+	bool isNotMoved = false;
+	if (((col1Tag | col2Tag) & 0b100010) == 0b100010) { return 0; } // 물 (32) 과 아모 (2) 여부 확인
+	if (((col1Tag | col2Tag) & 0b0010000000) && ((col1Tag | col2Tag) & 0b0010000101) != 0b0010000101) { return 0; } // 아이템과 플레이어 탱크 이외엔 충돌 금지
+	if (((col1Tag & col2Tag) & 0b100000100) == 0b100000100) { return 0; } // 통과탱크와 일반탱크끼리 충돌금지
+	if (((col1Tag & col2Tag) & 0b10) == 0b10 && ((col1Tag & 1) ^ (col2Tag & 1)) == 0) { return 0; } // 같은 팀의 아모끼리 충돌금지
+	if (((col1Tag & col2Tag) & 0b100) == 0b100 && ((col1Tag & 1) ^ (col2Tag & 1)) == 1) { return 0; } // 다른 팀의 탱크끼리 충돌금지
+	if (((col1Tag | col2Tag) & 0b110) == 0b110 && ((col1Tag & 1) ^ (col2Tag & 1)) == 0) // 같은 팀의 총알과 탱크 충돌금지, 서로 다른 플레이어인경우는 충돌하기
 	{
-		return;
+		// 서로 같은 플레이어의 총알과 탱크인경우는 충돌금지
+		if (((col1Tag & 0b1000000000) ^ (col2Tag & 0b1000000000)) == 0) { return 0; }
+		// 서로 다른 플레이어의 총알과 탱크는 충돌하기
 	}
 	if (IsCollided(col1, col2))
 	{
@@ -214,7 +293,26 @@ void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& adde
 		{
 			overlappedY = col2->GetPlayerBody().bottom - col1->GetPlayerBody().top;
 		}
+
 		oldOverlapped = { overlappedX,overlappedY };
+
+		if (((col1Tag | col2Tag) & 0b1010) == 0b1010)
+		{
+			if (fabs(overlappedX) < fabs(overlappedY) && addedForce.x < fabs(overlappedX))
+			{
+				addedForce.x = overlappedX;
+			}
+			// 상하이동
+			else if (fabs(overlappedX) > fabs(overlappedY) && addedForce.y < fabs(overlappedY))
+			{
+				addedForce.y = overlappedY;
+			}
+			if (dir.x > 0) { col2->OnCollided(eCollisionDir::Left, col1Tag); }
+			else if (dir.x < 0) { col2->OnCollided(eCollisionDir::Right, col1Tag); }
+			else if (dir.y > 0) { col2->OnCollided(eCollisionDir::Top, col1Tag); }
+			else { col2->OnCollided(eCollisionDir::Bottom, col1Tag); }
+			return col2Tag;
+		}
 
 		if (fabs(overlappedX) < fabs(overlappedY))
 		{
@@ -222,12 +320,14 @@ void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& adde
 			if (overlappedX < 0)
 			{
 				// 쪽에서 박음
-				col1->OnCollided(eCollisionDir::Right, col2->GetTag());
+				//col1->OnCollided(eCollisionDir::Right, col2->GetTag());
+				col2->OnCollided(eCollisionDir::Left, (int)col1->GetTag());
 			}
 			else
 			{
 				// 오른쪽에서 박음
-				col1->OnCollided(eCollisionDir::Left, col2->GetTag());
+				//col1->OnCollided(eCollisionDir::Left, col2->GetTag());
+				col2->OnCollided(eCollisionDir::Right, (int)col1->GetTag());
 			}
 		}
 		else
@@ -236,12 +336,14 @@ void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& adde
 			if (overlappedY < 0)
 			{
 				// 위쪽에서 박음
-				col1->OnCollided(eCollisionDir::Bottom, col2->GetTag());
+				//col1->OnCollided(eCollisionDir::Bottom, col2->GetTag());
+				col2->OnCollided(eCollisionDir::Top, (int)col1->GetTag());
 			}
 			else
 			{
 				// 아래쪽에서 박음
-				col1->OnCollided(eCollisionDir::Top, col2->GetTag());
+				//col1->OnCollided(eCollisionDir::Top, col2->GetTag());
+				col2->OnCollided(eCollisionDir::Bottom, (int)col1->GetTag());
 			}
 		}
 		// 겹친 영역이 세로로 길쭉한 형태이고 보정하기에 딱 좋은 상태
@@ -276,16 +378,40 @@ void Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& adde
 		{
 			addedForce.y = overlappedY;
 		}
+
+		return (int)col2->GetTag();
+	}
+	else
+	{
+		return 0;
 	}
 }
 
 void Physcis::Render(HDC hdc)
 {
-	for (int i = 0; i < 4; i++)
+	// rendering near collider
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
+	//	{
+	//		mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j]->Render(hdc);
+	//	}
+	//}
+
+	// rendering all
+	for (vector<Collider*>::iterator it = mVecCollider.begin(); it != mVecCollider.end(); ++it)
 	{
-		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
-		{
-			mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j]->Render(hdc);
-		}
+		(*it)->Render(hdc);
+	}
+}
+
+void Physcis::Release()
+{
+	Collider* col;
+	for (vector<Collider*>::iterator it = mVecCollider.begin(); it != mVecCollider.end();)
+	{
+		col = (*it);
+		it = mVecCollider.erase(it);
+		SAFE_DELETE(col);
 	}
 }

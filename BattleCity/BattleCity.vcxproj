@@ -139,28 +139,47 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AITankController.cpp" />
+    <ClCompile Include="AITankSpawner.cpp" />
+    <ClCompile Include="Ammo.cpp" />
+    <ClCompile Include="AmmoSpawner.cpp" />
     <ClCompile Include="BattleScene.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="GameEntity.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImageManager.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="MapEditorScene.cpp" />
+    <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleManager.cpp" />
     <ClCompile Include="Physcis.cpp" />
     <ClCompile Include="PhyscisScene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="MapEditor.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="SlateScene.cpp" />
+    <ClCompile Include="Subject.cpp" />
+    <ClCompile Include="Tank.cpp" />
+    <ClCompile Include="TankController.cpp" />
+    <ClCompile Include="TankScene.cpp" />
+    <ClCompile Include="TankSpawner.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AITankController.h" />
+    <ClInclude Include="AITankSpawner.h" />
+    <ClInclude Include="Ammo.h" />
+    <ClInclude Include="AmmoSpawner.h" />
     <ClInclude Include="BattleScene.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionChecker.h" />
@@ -170,9 +189,14 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="MapEditorScene.h" />
+    <ClInclude Include="Observer.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="Physcis.h" />
     <ClInclude Include="PhyscisScene.h" />
     <ClInclude Include="SceneManager.h" />
@@ -180,7 +204,13 @@
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="MapEditor.h" />
     <ClInclude Include="SlateScene.h" />
+    <ClInclude Include="Subject.h" />
+    <ClInclude Include="Tank.h" />
+    <ClInclude Include="TankController.h" />
+    <ClInclude Include="TankScene.h" />
+    <ClInclude Include="TankSpawner.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="TitleScene.h" />

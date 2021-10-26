@@ -1,282 +1,117 @@
-#include "MapEditor.h"
+#include "Config.h"
 #include "BattleScene.h"
 #include "Image.h"
 #include "Physcis.h"
 #include "Collider.h"
 #include "CollisionChecker.h"
+#include "TileManager.h"
 #include "Tile.h"
+#include "TankController.h"
+#include "TankSpawner.h"
+#include "AITankSpawner.h"
+#include "AmmoSpawner.h"
+#include "ItemManager.h"
 
 HRESULT BattleScene::Init()
 {
-	mBackgroundGray = IMG_MGR->FindImage(eImageTag::GrayBG);
+	mBackgroundGray = IMG_MGR->FindImage(eImageTag::BattleSceneGrayBG);
 	mBackgroundBlack = IMG_MGR->FindImage(eImageTag::BattleSceneBlackBG);
-
-	mForResize = new Image();
-	mForResize->Init(16 * 26, 16 * 26);
-
 	mStartPos = { (mBackgroundGray->GetWidth() - mBackgroundBlack->GetWidth()) / 2 ,(mBackgroundGray->GetHeight() - mBackgroundBlack->GetHeight()) / 2 };
 
-	mPhyscis = new Physcis;
+	mPhysics = new Physcis;
 
-	mbLoadMap = true;
-	mEnemyInfo = new TagEnemyInfo;
+	mAmmoSpawner = new AmmoSpawner();
+	mAmmoSpawner->Init();
+	mAmmoSpawner->SetPhysics(mPhysics);
 
-	LoadMap(0);
-	LoadEnemyOrder();
+	mTileManager = new TileManager();
+	mTileManager->Init(mStartPos, POINT{ mBackgroundBlack->GetWidth(), mBackgroundBlack->GetHeight() });
+	mTileManager->SetPhysics(mPhysics);
+	mTileManager->LoadMap(0);
+	mTileManager->LoadEnemyOrder(0);
+	mTileManager->CreateEdgeBlock();
+
+	mFirstPlayerController = new TankController();
+	mFirstPlayerController->Init(FIRST_PLAYER_KEY);
+	mFirstPlayerController->SetAmmoSpawner(mAmmoSpawner);
+	mFirstPlayerSpawner = new TankSpawner();
+	mFirstPlayerSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, mTileManager->GetFirstPlayerSpawnPosition());
+	mFirstPlayerSpawner->SetController(mFirstPlayerController);
+
+	mSecondPlayerController = new TankController();
+	mSecondPlayerController->Init(SECOND_PLAYER_KEY);
+	mSecondPlayerController->SetAmmoSpawner(mAmmoSpawner);
+	mSecondPlayerSpawner = new TankSpawner();
+	mSecondPlayerSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), 5, mTileManager->GetSecondPlayerSpawnPosition());
+	mSecondPlayerSpawner->SetController(mSecondPlayerController);
+
+	mAISpawner = new AITankSpawner();
+	mAISpawner->Init(mPhysics, 3);
+	mAISpawner->SetAmmoSpawner(mAmmoSpawner);
+	int size;
+	POINTFLOAT* enemySpawnPos = mTileManager->GetEnemySpawnPosition(size);
+	mAISpawner->SetSpawnPosition(enemySpawnPos, size);
+	vector<TankSpawnInfo>* vecInfo = mTileManager->GetEnemyList();
+	for (int i = 0; i < vecInfo->size(); ++i)
+	{
+		mAISpawner->AddTankSpawnInfo((*vecInfo)[i]);
+	}
+	delete vecInfo;
+
+	mItemManager = new ItemManager();
+	mItemManager->Init();
+	mItemManager->SetPhysics(mPhysics);
+	mItemManager->SetTileManager(mTileManager);
 
 	return S_OK;
 }
 
 void BattleScene::Update()
 {
-	eCollisionDir dirTag = (eCollisionDir)-1;
-	if (KEY_MGR->IsStayKeyDown('Q')) { dirTag = eCollisionDir::Left; }
-	if (KEY_MGR->IsStayKeyDown('W')) { dirTag = eCollisionDir::Top; }
-	if (KEY_MGR->IsStayKeyDown('E')) { dirTag = eCollisionDir::Right; }
-	if (KEY_MGR->IsStayKeyDown('R')) { dirTag = eCollisionDir::Bottom; }
-
-	if (KEY_MGR->IsOnceKeyDown(VK_LBUTTON))
+	if (KEY_MGR->IsOnceKeyDown(VK_TAB))
 	{
-		if ((int)dirTag != -1 && g_ptMouse.x > mStartPos.x &&
-			g_ptMouse.x <(mStartPos.x + mBackgroundBlack->GetWidth()) &&
-			g_ptMouse.y > mStartPos.y &&
-			g_ptMouse.y <(mStartPos.x + mBackgroundBlack->GetHeight()) &&
-			mMapTile.find((g_ptMouse.x - mStartPos.x) / TILE_SIZE) != mMapTile.end() &&
-			mMapTile[(g_ptMouse.x - mStartPos.x) / TILE_SIZE].find((g_ptMouse.y - mStartPos.y) / TILE_SIZE) != mMapTile[(g_ptMouse.x - mStartPos.x) / TILE_SIZE].end())
-		{
-			mMapTile[(g_ptMouse.x - mStartPos.x) / TILE_SIZE][(g_ptMouse.y - mStartPos.y) / TILE_SIZE]->OnCollided(dirTag, eCollisionTag::PlayerAmmo);
-		}
-	}
-	
-	for (map<int, map<int, Tile*>>::iterator itX = mMapTile.begin(); itX != mMapTile.end();)
-	{
-		for (map<int, Tile*>::iterator itY = (*itX).second.begin(); itY != (*itX).second.end();)
-		{
-			if ((*itY).second->IsBroken())
-			{
-				Tile* temp = (*itY).second;
-				itY = (*itX).second.erase(itY);
-				SAFE_RELEASE(temp);
-			}
-			else { itY++; }
-		}
-		if ((*itX).second.size() == 0) { itX = mMapTile.erase(itX); }
-		else { itX++; }
+		mbIsDebugMode = !mbIsDebugMode;
 	}
 
-	mChangeWaterTileTime += TIMER_MGR->GetDeltaTime();
-
-	for (map<int, map<int, Tile*>>::iterator itX = mMapTile.begin(); itX != mMapTile.end(); itX++)
+	SAFE_UPDATE(mTileManager);
+	SAFE_UPDATE(mAmmoSpawner);
+	SAFE_UPDATE(mAISpawner);
+	SAFE_UPDATE(mFirstPlayerSpawner);
+	SAFE_UPDATE(mSecondPlayerSpawner);
+	SAFE_UPDATE(mItemManager);
+	if (KEY_MGR->IsOnceKeyDown('O'))
 	{
-		for (map<int, Tile*>::iterator itY = (*itX).second.begin(); itY != (*itX).second.end(); itY++)
-		{
-			if ((*itY).second->IsWater())
-			{
-				if (mChangeWaterTileTime >= CHANGE_WATER_TILE_TIME)
-				{
-					if ((*itY).second->GetTileInfo()->TilePos.x < 6) {
-						(*itY).second->GetTileInfo()->TilePos.x = (*itY).second->GetTileInfo()->TilePos.x + 2;
-					}
-					else
-					{
-						(*itY).second->GetTileInfo()->TilePos.x = (*itY).second->GetTileInfo()->TilePos.x - 2;
-					}
-				}
-			}
-		}
+		mTileManager->ProtectNexus();
 	}
-
-	if (mChangeWaterTileTime >= CHANGE_WATER_TILE_TIME) mChangeWaterTileTime = 0;
-
-	if (KEY_MGR->IsOnceKeyDown('1'))
+	if (KEY_MGR->IsOnceKeyDown('E'))
 	{
-		ClearTileMap();
-		LoadMap(1);
-		LoadEnemyOrder(1);
-		mbLoadMap = true;
-	}
-	else if (KEY_MGR->IsOnceKeyDown('2'))
-	{
-		ClearTileMap();
-		LoadMap(2);
-		LoadEnemyOrder(2);
-		mbLoadMap = true;
-	}
-	else if (KEY_MGR->IsOnceKeyDown('3'))
-	{
-		ClearTileMap();
-		LoadMap(3);
-		LoadEnemyOrder(3);
-		mbLoadMap = true;
-	}
-
-	if (KEY_MGR->IsStayKeyDown('A'))
-	{
-		mScale -= 10.0f * DELTA_TIME;
-	}
-	if (KEY_MGR->IsStayKeyDown('D'))
-	{
-		mScale += 10.0f * DELTA_TIME;
-	}
-
-	if (KEY_MGR->IsStayKeyDown('O'))
-	{
-		mbItemBlock = true;
-	}
-
-	if (mbItemBlock)
-	{
-		mItemTime += DELTA_TIME;
-		for (map<int, map<int, Tile*>>::iterator itX = mMapTile.begin(); itX != mMapTile.end(); itX++)
-		{
-			for (map<int, Tile*>::iterator itY = (*itX).second.begin(); itY != (*itX).second.end(); itY++)
-			{
-				if ((*itY).second->GetTileInfo()->NexusAroundTile == true)
-				{
-					POINT tempPos = { 0,2 };
-					(*itY).second->GetTileInfo()->Terrain = eTerrain::UnbreakableWall;
-					(*itY).second->SetImagePos(tempPos);
-
-					if (mItemTime >= 3.55f)
-					{
-						POINT tempPos = { 0,0 };
-						(*itY).second->GetTileInfo()->Terrain = eTerrain::Wall;
-						(*itY).second->SetImagePos(tempPos);
-					}
-				}
-			}
-		}
-		if (mItemTime >= 3.55f)
-		{
-			mbItemBlock = false;
-			mItemTime = 0;
-		}
+		mItemManager->CreateItem((eItemTag)RANDOM(1, 6));
 	}
 }
 
 void BattleScene::Render(HDC hdc)
 {
 	mBackgroundGray->Render(hdc);
-
-	mResizeHDC = mForResize->GetMemDC();
 	mBackgroundBlack->Render(hdc, WIN_SIZE_X / 2, WIN_SIZE_Y / 2);
+	SAFE_RENDER(mAISpawner);
+	SAFE_RENDER(mAmmoSpawner);
 
-	for (map<int, map<int, Tile*>>::iterator itX = mMapTile.begin(); itX != mMapTile.end(); itX++)
-	{
-		for (map<int, Tile*>::iterator itY = (*itX).second.begin(); itY != (*itX).second.end(); itY++)
-		{
-			(*itY).second->Render(hdc);
-		}
-	}
+	SAFE_RENDER(mFirstPlayerSpawner);
+	SAFE_RENDER(mSecondPlayerSpawner);
+
+	SAFE_RENDER(mTileManager);
+	SAFE_RENDER(mItemManager);
+
+	if (mbIsDebugMode) { SAFE_RENDER(mPhysics); }
 }
 
 void BattleScene::Release()
 {
-	SAFE_RELEASE(mPhyscis);
-	SAFE_RELEASE(mForResize);
-
-	if (mEnemyInfo)
-	{
-		delete mEnemyInfo;
-		mEnemyInfo = nullptr;
-	}
+	SAFE_RELEASE(mAmmoSpawner);
+	SAFE_RELEASE(mFirstPlayerSpawner);
+	SAFE_RELEASE(mSecondPlayerSpawner);
+	SAFE_RELEASE(mAISpawner);
+	SAFE_RELEASE(mPhysics);
+	SAFE_RELEASE(mTileManager);
+	SAFE_RELEASE(mItemManager);
 }
-
-void BattleScene::LoadMap(int loadIndex)
-{
-	TagTile arrTile[TILE_COUNT_X * TILE_COUNT_Y];
-
-	string loadFileName = "Save/saveMapData_" + to_string(loadIndex);
-	loadFileName += ".map";
-	DWORD mapSaveTileInfo = sizeof(TagTile) * TILE_COUNT_X * TILE_COUNT_Y;
-
-	HANDLE hFile = CreateFile(loadFileName.c_str(),
-		GENERIC_READ,          
-		0, NULL,               
-		OPEN_EXISTING,         
-		FILE_ATTRIBUTE_NORMAL, 
-		NULL);
-
-	DWORD readByte;
-	if (ReadFile(hFile, arrTile, mapSaveTileInfo,
-		&readByte, NULL) == false)
-	{
-		MessageBox(g_hWnd, "맵 데이터 로드에 실패했습니다.", "에러", MB_OK);
-	}
-
-	Tile* newTile = nullptr;
-	eCollisionTag tileTag = eCollisionTag::Block;
-	for (int y = 0; y < TILE_COUNT_Y; y++)
-	{
-		for (int x = 0; x < TILE_COUNT_X; x++)
-		{
-			cout << (int)arrTile[y * TILE_COUNT_X + x].Terrain;
-			if (arrTile[y * TILE_COUNT_X + x].Terrain != eTerrain::None)
-			{
-				switch (arrTile[y * TILE_COUNT_X + x].Terrain)
-				{
-				case eTerrain::Wall:
-					tileTag = eCollisionTag::Block;
-					break;
-				case eTerrain::Water:
-					tileTag = eCollisionTag::Water;
-					break;
-				default:
-					tileTag = eCollisionTag::Block;
-					break;
-				}
-				newTile = new Tile;
-				newTile->Init(arrTile[y * TILE_COUNT_X + x],
-					mPhyscis->CreateCollider({ mStartPos.x + arrTile[y * TILE_COUNT_X + x].TileShape.left + TILE_SIZE * 0.5f,
-						mStartPos.y + arrTile[y * TILE_COUNT_X + x].TileShape.top + TILE_SIZE * 0.5f },
-						TILE_SIZE,
-						newTile,
-						tileTag),
-					{ mStartPos.x + arrTile[y * TILE_COUNT_X + x].TileShape.left + (int)(TILE_SIZE * 0.5f),
-						mStartPos.y + arrTile[y * TILE_COUNT_X + x].TileShape.top + static_cast<int>(TILE_SIZE * 0.5f) });
-
-				mMapTile[x][y] = newTile;
-			}
-		}
-		cout << endl;
-	}
-
-	CloseHandle(hFile);
-}
-
-void BattleScene::ClearTileMap()
-{
-	for (map<int, map<int, Tile*>>::iterator itX = mMapTile.begin(); itX != mMapTile.end();)
-	{
-		for (map<int, Tile*>::iterator itY = (*itX).second.begin(); itY != (*itX).second.end();)
-		{
-			Tile* temp = (*itY).second;
-			itY = (*itX).second.erase(itY);
-			SAFE_RELEASE(temp);
-		}
-		itX = mMapTile.erase(itX);
-	}
-}
-void BattleScene::LoadEnemyOrder(int loadIndex)
-{
-	
-	string loadFileName = "Save/saveEnemyOrderData_" + to_string(loadIndex);
-	loadFileName += ".map";
-
-	HANDLE hFile = CreateFile(loadFileName.c_str(),
-		GENERIC_READ,          
-		0, NULL,               
-		OPEN_EXISTING,         
-		FILE_ATTRIBUTE_NORMAL, 
-		NULL);
-
-	DWORD readByte;
-	if (ReadFile(hFile, mEnemyInfo, sizeof(TagEnemyInfo),
-		&readByte, NULL) == false)
-	{
-		MessageBox(g_hWnd, "에너미 데이터 로드에 실패했습니다.", "에러", MB_OK);
-	}
-
-	CloseHandle(hFile);
-}
-

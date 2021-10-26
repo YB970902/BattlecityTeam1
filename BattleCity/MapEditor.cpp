@@ -53,13 +53,13 @@ HRESULT MapEditor::Init()
 				if (j == 0 || j == 1) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::UnbreakableWall; }
 				else if (j == 2 || j == 3) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::Iron; }
 				else if (j == 4 || j == 5) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::Nexus; }
-				else if (j == 6 || j == 7) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagNormal; }
-				else if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagEnemy; }
+				else if (j == 6 || j == 7) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagEnemy; }
+				else if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagFirstPlayer; }
 			}
 			else if (i == 4 || i == 5)
 			{
 				if (j == 0 || j == 1 || j == 2 || j == 3) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::Wall; }
-				else if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagPlayer; }
+				else if (j == 8 || j == 9) { mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::FlagSecondPlayer; }
 				else{ mTileInfoSample[i * SAMPLETILE_COUNT_X + j].Terrain = eTerrain::None; }
 			}
 		}
@@ -229,22 +229,22 @@ void MapEditor::Update()
 				{
 				case 0:
 					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
-					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::NormalTank;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::NormalEnemy;
 					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 1:
 					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
-					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::FastSpeedTank;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::QuickEnemy;
 					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 2:
 					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
-					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::FastAmmoTank;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::RapidFireEnemy;
 					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 3:
 					if (mEnemyInfo.mEnemyOrderCount >= ENEMY_MAX_COUNT) break;
-					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::TankerTank;
+					mEnemyInfo.mEnemyOrderType[mEnemyInfo.mEnemyOrderCount] = eTankType::DefenceEnemy;
 					mEnemyInfo.mEnemyOrderCount++;
 					break;
 				case 4:
@@ -379,16 +379,16 @@ void MapEditor::Render(HDC hdc)
 	{
 		switch (mEnemyInfo.mEnemyOrderType[i])
 		{
-		case eTankType::NormalTank :
+		case eTankType::NormalEnemy :
 			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 0);
 			break;
-		case eTankType::FastSpeedTank:
+		case eTankType::QuickEnemy:
 			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 1);
 			break;
-		case eTankType::FastAmmoTank:
+		case eTankType::RapidFireEnemy:
 			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 2);
 			break;
-		case eTankType::TankerTank:
+		case eTankType::DefenceEnemy:
 			mEnemyOrderBoxImage->Render(hdc, 30 * ((i % 10) + 1), (mDrawingArea.bottom + 30 * (i / 10)) + 50, 0, 3);
 			break;
 		default:

@@ -16,15 +16,6 @@
 #define NEXUS_AROUNDTILE_TOP 2
 #define NEXUS_AROUNDTILE_BOTTOM 3
 
-enum class eTankType
-{
-	None,
-	NormalTank,
-	FastSpeedTank,
-	FastAmmoTank,
-	TankerTank,
-};
-
 struct TagEnemyInfo
 {
 	eTankType mEnemyOrderType[20];
@@ -110,5 +101,4 @@ public:
 	void SetTileImage(Image* mTileImage) { this->mTileImage = mTileImage; };
 
 	void SetNexusAroundTile(int x, int y, int clickedPosX, int clickedPosY, int NEXUS_AROUNDTILE_POS_X, int NEXUS_AROUNDTILE_POS_Y);
-
 };

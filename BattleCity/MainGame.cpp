@@ -8,6 +8,7 @@
 #include "SlateScene.h"
 
 #include "PhyscisScene.h"
+#include "TankScene.h"
 
 HRESULT MainGame::Init()
 {
@@ -15,6 +16,7 @@ HRESULT MainGame::Init()
 	IMG_MGR->Init();
 	TIMER_MGR->Init();
 	SCENE_MGR->Init();
+	PART_MGR->Init();
 
 	srand((unsigned int) time(nullptr));
 
@@ -28,17 +30,20 @@ HRESULT MainGame::Init()
 	backBuffer = new Image();
 	backBuffer->Init("Image/mapImage.bmp", WIN_SIZE_X, WIN_SIZE_Y);
 
-	SCENE_MGR->Init();
 	SCENE_MGR->AddScene(eSceneTag::MapToolScene, new MapEditorScene);
 	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
-	SCENE_MGR->AddScene(eSceneTag::TestScene, new BattleScene);
+	SCENE_MGR->AddScene(eSceneTag::BattleScene, new BattleScene);
+	SCENE_MGR->AddScene(eSceneTag::TankScene, new TankScene);
 	SCENE_MGR->AddScene(eSceneTag::TitleScene, new TitleScene);
 	SCENE_MGR->AddScene(eSceneTag::SlateScene, new SlateScene);
-
+	//SCENE_MGR->ChangeScene(eSceneTag::PhysicsScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
+	SCENE_MGR->ChangeScene(eSceneTag::BattleScene);
+	//SCENE_MGR->ChangeScene(eSceneTag::TankScene);
+	
+
+	SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TestScene);
-	//SCENE_MGR->ChangeScene(eSceneTag::TitleScene);
-	SCENE_MGR->ChangeScene(eSceneTag::SlateScene);
 
 	return S_OK;
 }
@@ -46,9 +51,11 @@ HRESULT MainGame::Init()
 void MainGame::Update()
 {
 	TIMER_MGR->Update();
-
+	
 	SCENE_MGR->Update();
 
+	PART_MGR->Update();
+	
 	KEY_MGR->Update();
 
 	InvalidateRect(g_hWnd, NULL, false);
@@ -57,11 +64,13 @@ void MainGame::Update()
 void MainGame::Render(HDC hdc)
 {
 	HDC hBackBufferDC = backBuffer->GetMemDC();
-
+	
 	SCENE_MGR->Render(hBackBufferDC);
 
+	PART_MGR->Render(hBackBufferDC);
+	
 	TIMER_MGR->Render(hBackBufferDC);
-
+	
 	backBuffer->Render(hdc);
 
 }
@@ -72,7 +81,7 @@ void MainGame::Release()
 
 	TIMER_MGR->Release();
 	TIMER_MGR->ReleaseSingleton();
-
+	
 	IMG_MGR->Release();
 	IMG_MGR->ReleaseSingleton();
 
@@ -81,6 +90,9 @@ void MainGame::Release()
 
 	SCENE_MGR->Release();
 	SCENE_MGR->ReleaseSingleton();
+
+	PART_MGR->Release();
+	PART_MGR->ReleaseSingleton();
 
 	KillTimer(g_hWnd, 0);
 }
