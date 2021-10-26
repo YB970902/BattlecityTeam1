@@ -296,12 +296,12 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 
 		if (((col1Tag | col2Tag) & 0b1010) == 0b1010)
 		{
-			if (fabs(overlappedX) < fabs(overlappedY) && addedForce.x < fabs(overlappedX))
+			if (fabs(overlappedX) < fabs(overlappedY) && fabs(addedForce.x) < fabs(overlappedX))
 			{
 				addedForce.x = overlappedX;
 			}
 			// 상하이동
-			else if (fabs(overlappedX) > fabs(overlappedY) && addedForce.y < fabs(overlappedY))
+			else if (fabs(overlappedX) > fabs(overlappedY) && fabs(addedForce.y) < fabs(overlappedY))
 			{
 				addedForce.y = overlappedY;
 			}
@@ -341,8 +341,8 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 			}
 		}
 
-		if (oldOverlapped.x < fabs(overlappedX)) { oldOverlapped.x = overlappedX; }
-		if (oldOverlapped.y < fabs(overlappedY)) { oldOverlapped.y = overlappedY; }
+		if (fabs(oldOverlapped.x) < fabs(overlappedX)) { oldOverlapped.x = overlappedX; }
+		if (fabs(oldOverlapped.y) < fabs(overlappedY)) { oldOverlapped.y = overlappedY; }
 
 		// 충돌면적이 세로로 길쭉함
 		if (fabs(overlappedX) < fabs(overlappedY))
@@ -371,7 +371,7 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 			else
 			{
 				// 좌우이동
-				if (fabs(overlappedX) < fabs(overlappedY) && addedForce.x < fabs(overlappedX))
+				if (fabs(overlappedX) < fabs(overlappedY) && fabs(addedForce.x) < fabs(overlappedX))
 				{
 					addedForce.x = overlappedX;
 				}
@@ -403,7 +403,7 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 			else
 			{
 				// 상하이동
-				if (fabs(overlappedX) > fabs(overlappedY) && addedForce.y < fabs(overlappedY))
+				if (fabs(overlappedX) > fabs(overlappedY) && fabs(addedForce.y) < fabs(overlappedY))
 				{
 					addedForce.y = overlappedY;
 				}

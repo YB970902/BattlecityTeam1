@@ -25,6 +25,9 @@ public:
 	void Update();
 	void Render(HDC hdc);
 
+	void AddStar();
+	void TurnToInvencible();
+
 	inline void SetTank(Tank* tank) { mTank = tank; }
 	inline void SetAmmoSpawner(AmmoSpawner* spawner) { mAmmoSpawner = spawner; }
 };

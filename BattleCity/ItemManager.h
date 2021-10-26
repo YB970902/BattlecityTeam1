@@ -12,6 +12,9 @@ struct ItemInfo
 class Item;
 class Physcis;
 class TileManager;
+class TankController;
+class TankSpawner;
+class AITankSpawner;
 class ItemManager : public GameEntity, public Observer
 {
 private:
@@ -20,6 +23,12 @@ private:
 
 	vector<Item*> mVecItem;
 	map<eItemTag, ItemInfo> mMapItemInfo;
+
+	TankController* mFirstPlayerController = nullptr;
+	TankController* mSecondPlayerController = nullptr;
+	TankSpawner* mFirstPlayerSpawner = nullptr;
+	TankSpawner* mSecondPlayerSpawner = nullptr;
+	AITankSpawner* mAISpawner = nullptr;
 
 public:
 	HRESULT Init() override;
@@ -31,6 +40,12 @@ public:
 
 	void SetPhysics(Physcis* physics) { mPhysics = physics; }
 	void SetTileManager(TileManager* tileManager) { mTileManager = tileManager; };
+
+	void SetFirstPlayerController(TankController* controller) { mFirstPlayerController = controller; }
+	void SetSecondPlayerController(TankController* controller) { mSecondPlayerController = controller; }
+	void SetFirstPlayerSpawner(TankSpawner* spawner) { mFirstPlayerSpawner = spawner; }
+	void SetSecondPlayerSpawner(TankSpawner* spawner) { mSecondPlayerSpawner = spawner; }
+	void SetAISpawner(AITankSpawner* spawner) { mAISpawner = spawner; }
 
 	virtual ~ItemManager() {}
 

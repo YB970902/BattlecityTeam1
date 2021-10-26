@@ -62,7 +62,8 @@ Ammo* AmmoSpawner::Fire(eDir dir, eCollisionTag tag, float speed, POINTFLOAT pos
 
     Ammo* newAmmo = new Ammo;
     newAmmo->Init(dir, tag, speed);
-    mVecAmmo.push_back(newAmmo);
+    newAmmo->SetPosition(pos);
     newAmmo->SetCollider(mPhysics->CreateCollider(pos, AMMO_BODY_SIZE, newAmmo, tag));
+    mVecAmmo.push_back(newAmmo);
     return newAmmo;
 }

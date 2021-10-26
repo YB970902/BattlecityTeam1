@@ -12,8 +12,11 @@ protected:
 	const POINT COLOR_START_FRAME[4] = { {0, 0}, {8, 0}, {0, 8}, {8, 8} };
 	const int MAX_STAR_COUNT = 3;
 	const float MAX_ANIM_TIME = 0.1f;
-	const float MAX_SPARKLE_TIME = 0.175;
+	const float MAX_SPARKLE_TIME = 0.175f;
 	const float MAX_STUN_TIME = 5.0f;
+
+	const float MAX_CHANGE_COLOR_TIME = 0.025f;
+	const float MAX_ITEM_SPARKLE_TIME = 0.25f;
 
 	eTankType mType;
 	eTankColor mColor;
@@ -26,7 +29,7 @@ protected:
 
 	Subject* mSubject = nullptr;
 
-	vector<Ammo*> mVecAmmo;
+	int mFiredAmmoCount = 0;
 	float mElapsedFireTime = 0.0f;
 	bool mbIsCanFire = false;
 
@@ -37,6 +40,16 @@ protected:
 	float mElapsedStunTime = 0.0f;
 	bool mbIsSparkle = false;
 	float mElapsedSparkleTime = 0.0f;
+
+	bool mbIsHaveItem = false;
+	float mElapsedItemSparkleTime = 0.0f;
+	eTankColor mItemColor = eTankColor::Red;
+	eTankColor mDefaultColor;
+
+	bool mbIsChangeColor = false;
+	eTankColor mMainColor;
+	eTankColor mSubColor;
+	float mElapsedChangeColorTime = 0.0f;
 public:
 	virtual ~Tank() { }
 	virtual HRESULT Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankColor color, POINTFLOAT pos, Collider* collider);
@@ -47,21 +60,21 @@ public:
 	void Move(eDir dir);
 	void MoveForward();
 
-	inline void SetIsInvencible(bool set) { mbIsInvincible = set; if (set) { TurnOnInvencible(); } }
+	inline void SetIsInvencible(bool set) { mbIsInvincible = set; if (set) { ChangeToInvencible(); } }
 	inline TANK_INFO GetInfo() { return mInfo; }
 	inline void AddStar() { if (mType == eTankType::Player && mStarCount < MAX_STAR_COUNT) { mStarCount++; } }
-	inline bool IsCanFire() { return mbIsCanFire && mVecAmmo.size() < mInfo.MaxAmmoCount && !mbIsStun; }
+	inline void SetIsHaveItem(bool set) { mbIsHaveItem = set; }
+	inline int GetStartCount() { return mStarCount; }
+	inline bool IsCanFire() { return mbIsCanFire && mFiredAmmoCount < mInfo.MaxAmmoCount + mStarCount / 2 && !mbIsStun; }
 	inline void SetIsCanFire(bool set) { mbIsCanFire = set; }
 	inline POINTFLOAT GetBarrelPosition() { return POINTFLOAT{ mPos.x + DIR_VALUE[(int)mDir].x, mPos.y + DIR_VALUE[(int)mDir].y }; }
 
 	virtual void OnCollided(eCollisionDir dir, int tag) override;
 
-	void AddAmmo(Ammo* ammo);
-	void OnAmmoCollided(Ammo* ammo);
-
-	void TurnOnInvencible();
+	void ChangeToInvencible();
 protected:
-	void TurnOnStun();
+	void ChangeToStun();
+	void OnDamaged();
 
 	virtual void OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag) override;
 };

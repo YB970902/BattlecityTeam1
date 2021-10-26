@@ -8,6 +8,8 @@ class AmmoSpawner;
 class AITankSpawner : public GameEntity
 {
 protected:
+	const float MAX_PAUSE_TIME = 10.0f;
+
 	Physcis* mPhysics = nullptr;
 	AmmoSpawner* mAmmoSpawner = nullptr;
 	int mMaxCountInScreen = 0;
@@ -25,6 +27,8 @@ protected:
 	bool mbIsSpawning = false;
 	bool mbIsSpawnEnd = false;
 
+	bool mbIsPause = false;
+	float mElapsedPauseTime = 0.0f;
 public:
 	virtual ~AITankSpawner() {}
 	HRESULT Init(Physcis* physics, int maxCountInScreen);
@@ -35,6 +39,9 @@ public:
 	void SetAmmoSpawner(AmmoSpawner* spawner) { mAmmoSpawner = spawner; }
 	void SetSpawnPosition(POINTFLOAT* arrPos, int maxCount);
 	void AddTankSpawnInfo(TankSpawnInfo info);
+
+	void PauseAll();
+	void DestroyAll();
 
 	inline bool IsSpawnEnd() { return mbIsSpawnEnd; }
 };

@@ -56,6 +56,7 @@ enum class eEventTag
     Released,
     Added,
     Collided,
+    DropItem,
 };
 
 enum class eSubjectTag
@@ -165,11 +166,11 @@ typedef struct TankInfo
     float AmmoSpeed;
 } TANK_INFO;
 
-const TANK_INFO PLAYER_TANK_INFO{ 100.0f, 0.0f, 1, 1, 300.0f };
+const TANK_INFO PLAYER_TANK_INFO{ 100.0f, 0.5f, 1, 1, 300.0f };
 const TANK_INFO NORMAL_TANK_INFO{ 100.0f, 1.0f, 1, 1, 300.0f };
 const TANK_INFO QUICK_TANK_INFO{ 200.0f, 1.0f, 1, 1, 300.0f };
 const TANK_INFO RAPID_FIRE_TANK_INFO{ 100.0f, 0.5f, 1, 2, 300.0f };
-const TANK_INFO DEFENCE_TANK_INFO{ 100.0f, 1.0f, 1, 1, 300.0f };
+const TANK_INFO DEFENCE_TANK_INFO{ 100.0f, 1.0f, 4, 1, 300.0f };
 
 typedef struct TankSpawnInfo
 {

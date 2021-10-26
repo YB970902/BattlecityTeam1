@@ -25,7 +25,6 @@ void AITankSpawner::Release()
 	for (vector<Tank*>::iterator it = mVecTank.begin(); it != mVecTank.end();)
 	{
 		tank = (*it);
-		if (tank == nullptr) { cout << "AITank is nullptr" << endl; }
 		it = mVecTank.erase(it);
 		mPhysics->DestroyCollider(tank->GetCollider());
 		SAFE_RELEASE(tank);
@@ -44,9 +43,12 @@ void AITankSpawner::Release()
 
 void AITankSpawner::Update()
 {
-	for (int i = 0; i < mVecTankController.size(); ++i)
+	if (!mbIsPause)
 	{
-		mVecTankController[i]->Update();
+		for (int i = 0; i < mVecTankController.size(); ++i)
+		{
+			mVecTankController[i]->Update();
+		}
 	}
 
 	for (vector<Tank*>::iterator tankIt = mVecTank.begin(); tankIt != mVecTank.end();)
@@ -72,6 +74,17 @@ void AITankSpawner::Update()
 			SAFE_RELEASE(delTank);
 		}
 		else { ++tankIt; }
+	}
+
+	if (mbIsPause)
+	{
+		mElapsedPauseTime += DELTA_TIME;
+		if (mElapsedPauseTime >= MAX_PAUSE_TIME)
+		{
+			mElapsedPauseTime = 0.0f;
+			mbIsPause = false;
+		}
+		else { return; }
 	}
 
 	if (mbIsSpawning)
@@ -130,4 +143,32 @@ void AITankSpawner::SetSpawnPosition(POINTFLOAT* arrPos, int maxCount)
 void AITankSpawner::AddTankSpawnInfo(TankSpawnInfo info)
 {
 	mInfo.push_back(info);
+}
+
+void AITankSpawner::PauseAll()
+{
+	mbIsPause = true;
+	mElapsedPauseTime = 0.0f;
+}
+
+void AITankSpawner::DestroyAll()
+{
+	Tank* tank;
+	for (vector<Tank*>::iterator it = mVecTank.begin(); it != mVecTank.end();)
+	{
+		tank = (*it);
+		PART_MGR->CreateParticle(eParticleTag::SmallBoom, tank->GetPosition());
+		PART_MGR->CreateParticle(eParticleTag::BigBoom, tank->GetPosition());
+		it = mVecTank.erase(it);
+		mPhysics->DestroyCollider(tank->GetCollider());
+		SAFE_RELEASE(tank);
+	}
+
+	AITankController* controller;
+	for (vector<AITankController*>::iterator it = mVecTankController.begin(); it != mVecTankController.end();)
+	{
+		controller = (*it);
+		it = mVecTankController.erase(it);
+		SAFE_RELEASE(controller);
+	}
 }

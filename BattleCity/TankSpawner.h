@@ -27,6 +27,9 @@ public:
 	void Update();
 	void Render(HDC hdc);
 
+	int GetLeftLife() { return mLeftCount; }
+	void AddLife() { mLeftCount++; }
+
 	inline bool IsSpawnEnd() { return mbIsSpawnEnd; }
 
 	inline void SetController(TankController* controller) { mController = controller; }

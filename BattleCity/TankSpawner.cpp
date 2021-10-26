@@ -60,7 +60,7 @@ void TankSpawner::Update()
 				mInfo.Color,
 				mSpawnPosition,
 				collider);
-			mCurTank->TurnOnInvencible();
+			mCurTank->ChangeToInvencible();
 			if (mController) { mController->SetTank(mCurTank); }
 		}
 	}

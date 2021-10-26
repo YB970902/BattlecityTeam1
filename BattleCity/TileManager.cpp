@@ -163,7 +163,6 @@ void TileManager::LoadMap(int loadIndex)
 				mMapTile[x][y] = newTile;
 			}
 		}
-		cout << endl;
 	}
 
 	CloseHandle(hFile);

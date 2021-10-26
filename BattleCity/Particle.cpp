@@ -80,15 +80,12 @@ void Particle::SetTank(Tank* tank)
 
 void Particle::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag)
 {
-    cout << "신호를 받음 서브젝트 : " << (int)subjectTag << ", 이벤트 : " << (int)eventTag << endl;
-
     switch (subjectTag)
     {
     case eSubjectTag::Tank:
         switch (eventTag)
         {
         case eEventTag::Released:
-            cout << "파티클이 탱크 제거" << endl;
             mSubject->RemoveObserver(dynamic_cast<Observer*>(obj));
             mbIsEnd = true;
             break;

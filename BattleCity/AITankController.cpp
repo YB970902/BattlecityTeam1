@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "AITankController.h"
 #include "Tank.h"
+#include "Ammo.h"
 #include "AmmoSpawner.h"
 #include "Collider.h"
 
@@ -25,9 +26,9 @@ void AITankController::Update()
 	mTank->Update();
 	if (mTank->IsCanFire())
 	{
-		mTank->AddAmmo(mAmmoSpawner->Fire(mTank->GetDirection(),
+		mAmmoSpawner->Fire(mTank->GetDirection(),
 			eCollisionTag::EnemyAmmo,
-			mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition()));
+			mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition())->AddObserver(mTank);
 		mTank->SetIsCanFire(false);
 	}
 
