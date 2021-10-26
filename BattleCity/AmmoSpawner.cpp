@@ -33,6 +33,7 @@ void AmmoSpawner::Update()
         if (mVecAmmo[i]->IsDead())
         {
             mPhysics->DestroyCollider(mVecAmmo[i]->GetCollider());
+            mVecAmmo[i]->Release();
             mVecAmmo[i]->SetCollider(nullptr);
             mVecAmmo[i]->SetIsDead(false);
             mVecAmmo[i]->SetIsFire(false);

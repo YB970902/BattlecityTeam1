@@ -46,6 +46,7 @@ using namespace std;
 
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
 
+const float ITEM_BODY_SIZE = 32.0f;
 const float TANK_SPAWNING_TIME = 0.5f;
 const float PROTECT_ITEM_DURATION_TIME = 20.0f;
 const float INVENCIBLE_ITEM_DURATION_TIME = 10.0f;
@@ -54,6 +55,7 @@ enum class eEventTag
 {
     Released,
     Added,
+    Collided,
 };
 
 enum class eSubjectTag
@@ -61,6 +63,18 @@ enum class eSubjectTag
     Ammo,
     Tank,
     Particle,
+    Item,
+};
+
+enum class eItemTag
+{
+    None,
+    TankInvencible,
+    ProtectedWall,
+    TankStar,
+    DestroyAllEnemy,
+    PauseAllEnemy,
+    AddPlayerLife,
 };
 
 enum class eDir
@@ -97,6 +111,9 @@ enum class eCollisionTag
     Item                   =0b0010000000,  //128
     PassedEnemyTank        =0b0100000000,  //256
 };
+
+#define IS_PLAYER_TANK(bit) ((bool)((bit & 0b101) == 0b101))
+
 enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagFirstPlayer, NexusAroundTile, FlagSecondPlayer };
 
 struct TagTile

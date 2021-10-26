@@ -3,7 +3,7 @@
 #include "Tank.h"
 #include "Subject.h"
 
-HRESULT Particle::Init(Image* image, int frameX, float durationTime, float repeatTime)
+HRESULT Particle::Init(Image* image, int frameX, float durationTime, float repeatTime, float delayTime)
 {
     mImage = image;
     mSubject = new Subject();
@@ -13,6 +13,10 @@ HRESULT Particle::Init(Image* image, int frameX, float durationTime, float repea
     mOneFrameDurationTime = repeatTime / (float)(frameX + frameX - 1);
     mElapsedFrameTime = 0.0f;
     mElapsedTotalTime = 0.0f;
+    mDurationDelayTime = delayTime;
+    mElapsedDelayTime = 0.0f;
+
+    mbIsWait = true;
     return S_OK;
 }
 
@@ -24,6 +28,15 @@ void Particle::Release()
 
 void Particle::Update()
 {
+    if (mbIsWait)
+    {
+        mElapsedDelayTime += DELTA_TIME;
+        if (mElapsedDelayTime > mDurationDelayTime)
+        {
+            mbIsWait = false;
+        }
+        else { return; }
+    }
     mElapsedFrameTime += DELTA_TIME;
     if (mElapsedFrameTime >= mOneFrameDurationTime)
     {
@@ -51,6 +64,7 @@ void Particle::Update()
 
 void Particle::Render(HDC hdc)
 {
+    if (mbIsWait) { return; }
     mImage->Render(hdc, mPos.x, mPos.y, mCurFrameX, 0);
 }
 

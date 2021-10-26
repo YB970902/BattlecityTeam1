@@ -57,6 +57,7 @@ public:
 	POINTFLOAT* GetEnemySpawnPosition(int& size);
 	POINTFLOAT GetFirstPlayerSpawnPosition();
 	POINTFLOAT GetSecondPlayerSpawnPosition();
+	POINTFLOAT GetItemSpawnPosition();
 private:
 	void ClearTileMap();
 	void TileDebugUpdate();

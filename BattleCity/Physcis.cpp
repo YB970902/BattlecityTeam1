@@ -108,6 +108,8 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 			addedForce.x = 0;
 		}
 
+		col->AddPlayerPos(addedForce);
+
 		// 여기에 들어가면 보정을 하지 않음.
 		if (IsCollided(col))
 		{
@@ -143,7 +145,7 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 				if (addedForce.x < 0) { col->OnCollided(eCollisionDir::Right, collidedTag); }
 				else { col->OnCollided(eCollisionDir::Left, collidedTag); }
 			}
-			col->AddPlayerPos(addedForce);
+			//col->AddPlayerPos(addedForce);
 		}
 	}
 	// 이동시키지는 않지만 충돌했다고 말은 해줌
@@ -237,7 +239,7 @@ bool Physcis::IsCollided(Collider* col1, Collider* col2)
 
 bool Physcis::IsCollided(Collider* col)
 {
-	if ((((int)col->GetTag()) & 4) == 4)		//탱크일경우에만
+	//if ((((int)col->GetTag()) & 4) == 4)		//탱크일경우에만
 	{
 		for (int i = 0; i < 4; i++)
 		{
@@ -258,6 +260,7 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 	int col2Tag = (int)col2->GetTag();
 	bool isNotMoved = false;
 	if (((col1Tag | col2Tag) & 0b100010) == 0b100010) { return 0; } // 물 (32) 과 아모 (2) 여부 확인
+	if (((col1Tag | col2Tag) & 0b0010000000) && ((col1Tag | col2Tag) & 0b0010000101) != 0b0010000101) { return 0; } // 아이템과 플레이어 탱크 이외엔 충돌 금지
 	if (((col1Tag & col2Tag) & 0b100000100) == 0b100000100) { return 0; } // 통과탱크와 일반탱크끼리 충돌금지
 	if (((col1Tag & col2Tag) & 0b10) == 0b10 && ((col1Tag & 1) ^ (col2Tag & 1)) == 0) { return 0; } // 같은 팀의 아모끼리 충돌금지
 	if (((col1Tag & col2Tag) & 0b100) == 0b100 && ((col1Tag & 1) ^ (col2Tag & 1)) == 1) { return 0; } // 다른 팀의 탱크끼리 충돌금지
@@ -291,6 +294,8 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 			overlappedY = col2->GetPlayerBody().bottom - col1->GetPlayerBody().top;
 		}
 
+		oldOverlapped = { overlappedX,overlappedY };
+
 		if (((col1Tag | col2Tag) & 0b1010) == 0b1010)
 		{
 			if (fabs(overlappedX) < fabs(overlappedY) && addedForce.x < fabs(overlappedX))
@@ -308,8 +313,6 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 			else { col2->OnCollided(eCollisionDir::Bottom, col1Tag); }
 			return col2Tag;
 		}
-
-		oldOverlapped = { overlappedX,overlappedY };
 
 		if (fabs(overlappedX) < fabs(overlappedY))
 		{

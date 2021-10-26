@@ -55,6 +55,9 @@
     <Filter Include="2DFrameWork\Observer">
       <UniqueIdentifier>{505c3f9a-495e-40c8-89c2-e9879f8caa34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\Item">
+      <UniqueIdentifier>{8965ce46-32f1-473c-b4e9-ff47cfcdd562}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -146,6 +149,12 @@
     </ClCompile>
     <ClCompile Include="Subject.cpp">
       <Filter>2DFrameWork\Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>2DFrameWork\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemManager.cpp">
+      <Filter>2DFrameWork\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +256,12 @@
     </ClInclude>
     <ClInclude Include="Subject.h">
       <Filter>2DFrameWork\Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>2DFrameWork\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemManager.h">
+      <Filter>2DFrameWork\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
