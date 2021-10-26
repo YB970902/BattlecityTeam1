@@ -48,7 +48,7 @@ void AITankController::Render(HDC hdc)
 
 void AITankController::OnCollided(eCollisionDir dir, int tag)
 {
-	Rotate();
+	if (!IS_PLAYER_AMMO(tag)) { Rotate(); }
 	mTank->OnCollided(dir, tag);
 }
 

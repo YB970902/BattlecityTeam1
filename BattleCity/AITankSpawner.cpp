@@ -5,6 +5,8 @@
 #include "Physcis.h"
 #include "AITankController.h"
 #include "AmmoSpawner.h"
+#include "ItemManager.h"
+#include "Subject.h"
 
 HRESULT AITankSpawner::Init(Physcis* physics, int maxCountInScreen)
 {
@@ -105,6 +107,15 @@ void AITankSpawner::Update()
 				mPhysics->CreateCollider(mArrSpawnPosition[mCurSpawnPositionIndex], TANK_BODY_SIZE, controller, eCollisionTag::PassedEnemyTank));
 			controller->SetTank(newTank);
 			controller->SetAmmoSpawner(mAmmoSpawner);
+			switch (++mSpawnedCount)
+			{
+			case 4:
+			case 11:
+			case 18:
+				newTank->GetSubject()->AddObserver(this);
+				newTank->SetIsHaveItem(true);
+				break;
+			}
 
 			mVecTank.push_back(newTank);
 			mVecTankController.push_back(controller);
@@ -170,5 +181,13 @@ void AITankSpawner::DestroyAll()
 		controller = (*it);
 		it = mVecTankController.erase(it);
 		SAFE_RELEASE(controller);
+	}
+}
+
+void AITankSpawner::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag)
+{
+	if (subjectTag == eSubjectTag::Tank && eventTag == eEventTag::DropItem)
+	{
+		mItemManager->CreateItem((eItemTag)RANDOM(1, 6));
 	}
 }

@@ -115,6 +115,7 @@ enum class eCollisionTag
 };
 
 #define IS_PLAYER_TANK(bit) ((bool)((bit & 0b101) == 0b101))
+#define IS_PLAYER_AMMO(bit) ((bool)((bit & 0b11) == 0b11))
 #define IS_SPECIAL_AMMO(bit) ((bool)((bit & 0b10010) == 0b10010))
 
 enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagFirstPlayer, NexusAroundTile, FlagSecondPlayer };

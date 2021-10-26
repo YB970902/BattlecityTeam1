@@ -69,6 +69,8 @@ public:
 	inline void SetIsCanFire(bool set) { mbIsCanFire = set; }
 	inline POINTFLOAT GetBarrelPosition() { return POINTFLOAT{ mPos.x + DIR_VALUE[(int)mDir].x, mPos.y + DIR_VALUE[(int)mDir].y }; }
 
+	Subject* GetSubject() { return mSubject; }
+
 	virtual void OnCollided(eCollisionDir dir, int tag) override;
 
 	void ChangeToInvencible();

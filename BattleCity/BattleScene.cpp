@@ -65,6 +65,7 @@ HRESULT BattleScene::Init()
 	mItemManager->SetFirstPlayerController(mFirstPlayerController);
 	mItemManager->SetSecondPlayerController(mSecondPlayerController);
 	mItemManager->SetAISpawner(mAISpawner);
+	mAISpawner->SetItemManager(mItemManager);
 	mItemManager->SetFirstPlayerSpawner(mFirstPlayerSpawner);
 	mItemManager->SetSecondPlayerSpawner(mSecondPlayerSpawner);
 
