@@ -13,7 +13,8 @@ enum class eImageTag
 	TitleScene,
 	TitleSceneCursor,
 	SlateSceneStage,
-	SlateSceneNumber,
+	WhiteNumber,
+	OrangeNumber,
 };
 
 class Image;

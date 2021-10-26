@@ -20,7 +20,10 @@ void ImageManager::Init()
 
 	//SlateScene
 	IMG_MGR->AddImage(eImageTag::SlateSceneStage, "Image/Text/Stage_W.bmp", 120, 24, 1, 1, true, RGB(255, 0, 255));
-	IMG_MGR->AddImage(eImageTag::SlateSceneNumber, "Image/Text/Number_w.bmp", 120, 48, 5, 2, true, RGB(255, 0, 255));
+	IMG_MGR->AddImage(eImageTag::WhiteNumber, "Image/Text/Number_w.bmp", 120, 48, 5, 2, true, RGB(255, 0, 255));
+
+	//Score
+	IMG_MGR->AddImage(eImageTag::OrangeNumber, "Image/Text/ScoreNumber.bmp", 120, 48, 5, 2, true, RGB(255, 0, 255));
 }
 
 void ImageManager::Release()

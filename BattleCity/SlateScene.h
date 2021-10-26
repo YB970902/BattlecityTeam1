@@ -2,6 +2,7 @@
 #include "GameEntity.h"
 
 class Image;
+class Score;
 class SlateScene : public GameEntity
 {
 private:
@@ -9,6 +10,9 @@ private:
 	Image* mNumber;
 	Image* mBackGroundGray[2];
 	Image* mBackGroundBlack;
+
+	Score* mScore1;
+	Score* mScore2;
 
 	int mGrayBGStartPos = 0;
 

@@ -153,6 +153,7 @@
     <ClCompile Include="PhyscisScene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="MapEditor.cpp" />
+    <ClCompile Include="Score.cpp" />
     <ClCompile Include="SlateScene.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Physcis.h" />
     <ClInclude Include="PhyscisScene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Score.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="MapEditor.h" />
     <ClInclude Include="SlateScene.h" />
