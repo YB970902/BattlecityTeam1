@@ -15,6 +15,7 @@ typedef struct ParticleInfo
 	int FrameX = 0;
 	float DurationTime = 0.0f;
 	float RepeatTime = 0.0f;
+	float DelayTime = 0.0f;
 } PARTICLE_INFO;
 
 class Tank;
@@ -30,7 +31,7 @@ public:
 	void Update();
 	void Render(HDC hdc);
 
-	void AddParticle(eParticleTag particleTag, eImageTag imageTag, int frameX, float durationTime, float repeatTime);
+	void AddParticle(eParticleTag particleTag, eImageTag imageTag, int frameX, float durationTime, float repeatTime, float delayTime = 0.0f);
 
 	void CreateParticle(eParticleTag tag, POINTFLOAT pos);
 	void CreateParticle(eParticleTag tag, Tank* tank);

@@ -10,6 +10,7 @@
 #include "TankSpawner.h"
 #include "AITankSpawner.h"
 #include "AmmoSpawner.h"
+#include "ItemManager.h"
 
 HRESULT BattleScene::Init()
 {
@@ -57,6 +58,11 @@ HRESULT BattleScene::Init()
 	}
 	delete vecInfo;
 
+	mItemManager = new ItemManager();
+	mItemManager->Init();
+	mItemManager->SetPhysics(mPhysics);
+	mItemManager->SetTileManager(mTileManager);
+
 	return S_OK;
 }
 
@@ -72,9 +78,14 @@ void BattleScene::Update()
 	SAFE_UPDATE(mAISpawner);
 	SAFE_UPDATE(mFirstPlayerSpawner);
 	SAFE_UPDATE(mSecondPlayerSpawner);
+	SAFE_UPDATE(mItemManager);
 	if (KEY_MGR->IsOnceKeyDown('O'))
 	{
 		mTileManager->ProtectNexus();
+	}
+	if (KEY_MGR->IsOnceKeyDown('E'))
+	{
+		mItemManager->CreateItem((eItemTag)RANDOM(1, 6));
 	}
 }
 
@@ -82,12 +93,14 @@ void BattleScene::Render(HDC hdc)
 {
 	mBackgroundGray->Render(hdc);
 	mBackgroundBlack->Render(hdc, WIN_SIZE_X / 2, WIN_SIZE_Y / 2);
-	SAFE_RENDER(mTileManager);
 	SAFE_RENDER(mAISpawner);
 	SAFE_RENDER(mAmmoSpawner);
 
 	SAFE_RENDER(mFirstPlayerSpawner);
 	SAFE_RENDER(mSecondPlayerSpawner);
+
+	SAFE_RENDER(mTileManager);
+	SAFE_RENDER(mItemManager);
 
 	if (mbIsDebugMode) { SAFE_RENDER(mPhysics); }
 }
@@ -100,4 +113,5 @@ void BattleScene::Release()
 	SAFE_RELEASE(mAISpawner);
 	SAFE_RELEASE(mPhysics);
 	SAFE_RELEASE(mTileManager);
+	SAFE_RELEASE(mItemManager);
 }

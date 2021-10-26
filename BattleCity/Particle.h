@@ -17,6 +17,8 @@ protected:
 	float mOneFrameDurationTime = 0.0f;
 	float mElapsedFrameTime = 0.0f;
 	float mElapsedTotalTime = 0.0f;
+	float mDurationDelayTime = 0.0f;
+	float mElapsedDelayTime = 0.0f;
 
 	int mFrameX = 0;
 	int mCurFrameX = 0;
@@ -25,9 +27,10 @@ protected:
 	POINTFLOAT mPos = { 0, 0 };
 
 	bool mbIsEnd = false;
+	bool mbIsWait = false;
 public:
 	virtual ~Particle() {}
-	HRESULT Init(Image* image, int frameX, float durationTime, float repeatTime);
+	HRESULT Init(Image* image, int frameX, float durationTime, float repeatTime, float delayTime);
 	void Release();
 	void Update();
 	void Render(HDC hdc);

@@ -57,7 +57,7 @@ void Ammo::Render(HDC hdc)
 
 void Ammo::OnCollided(eCollisionDir dir, int tag)
 {
-	Release();
+	mbIsDead = true;
 	PART_MGR->CreateParticle(eParticleTag::SmallBoom, mPos);
 }
 

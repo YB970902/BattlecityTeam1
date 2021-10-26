@@ -8,6 +8,7 @@ class TankController;
 class TankSpawner;
 class AITankSpawner;
 class AmmoSpawner;
+class ItemManager;
 class BattleScene : public GameEntity
 {
 private:
@@ -25,6 +26,8 @@ private:
 	TankSpawner* mSecondPlayerSpawner = nullptr;
 
 	AITankSpawner* mAISpawner = nullptr;
+
+	ItemManager* mItemManager = nullptr;
 
 	POINT mStartPos = {};
 

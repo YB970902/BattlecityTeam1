@@ -407,6 +407,35 @@ POINTFLOAT TileManager::GetSecondPlayerSpawnPosition()
 	return POINTFLOAT{ 0, 0 };
 }
 
+POINTFLOAT TileManager::GetItemSpawnPosition()
+{
+	int x = 0;
+	int y = 0;
+
+	while (true)
+	{
+		x = RANDOM(0, TILE_COUNT_X);
+		y = RANDOM(0, TILE_COUNT_X);
+
+		if (x > 0)
+		{
+			if (mMapTile.find(x - 1) == mMapTile.end()) { break; }
+			if (y > 0 && mMapTile[x - 1].find(y - 1) == mMapTile[x - 1].end()) { break; }
+			if (y < TILE_COUNT_Y && mMapTile[x - 1].find(y) == mMapTile[x - 1].end()) { break; }
+		}
+
+		if (x < TILE_COUNT_X)
+		{
+			if (mMapTile.find(x) == mMapTile.end()) { break; }
+			if (y > 0 && mMapTile[x].find(y - 1) == mMapTile[x].end()) { break; }
+			if (y < TILE_COUNT_Y && mMapTile[x].find(y) == mMapTile[x].end()) { break; }
+		}
+	}
+
+	return POINTFLOAT{ (float)mStartPos.x + x * TILE_SIZE, (float)mStartPos.y + y * TILE_SIZE };
+
+}
+
 int TileManager::GetFlagDetectInfo(int x, int y, eTerrain terrain)
 {
 	// bit¿¬»ê ÇÒ²¨ÀÓ

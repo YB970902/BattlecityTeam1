@@ -21,6 +21,12 @@ enum class eImageTag
 	EffectBigBoom,
 	EffectShield,
 	EffectSpawn,
+	ItemInvencible,
+	ItemProtect,
+	ItemStar,
+	ItemDetroyAll,
+	ItemPauseAll,
+	ItemLife,
 };
 
 class Image;
