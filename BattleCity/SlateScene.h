@@ -1,8 +1,8 @@
 #pragma once
 #include "GameEntity.h"
 
-class Image;
 class Score;
+class Image;
 class SlateScene : public GameEntity
 {
 private:
@@ -11,10 +11,9 @@ private:
 	Image* mBackGroundGray[2];
 	Image* mBackGroundBlack;
 
-	Score* mScore1;
-	Score* mScore2;
-
 	int mGrayBGStartPos = 0;
+
+	Score* mStageNum;
 
 public:
 	HRESULT Init() override;
