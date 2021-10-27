@@ -12,6 +12,7 @@ enum class eBrokenStyle
 
 class GameManager;
 class Tile;
+class NexusTile;
 struct TagEnemyInfo;
 class TileManager : public GameEntity
 {
@@ -21,6 +22,7 @@ private:
 	GameManager* mGameManager = nullptr;
 
 	map<int, map<int, Tile*>> mMapTile = {};
+	vector<NexusTile*> mVecNexusTile;
 
 	POINT mStartPos = {};
 	POINT mBackgroundSize = {};
@@ -52,6 +54,7 @@ public:
 	void ProtectNexus();
 
 	void CreateEdgeBlock();
+	void ChangeNexusImageToFlag();
 
 	pair<TankSpawnInfo*, int> GetEnemyList();
 	POINTFLOAT* GetEnemySpawnPosition(int& size);

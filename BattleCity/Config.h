@@ -62,6 +62,7 @@ enum class eEventTag
     Added,
     Collided,
     DropItem,
+    PlayerDown,
 };
 
 enum class eSubjectTag
@@ -71,6 +72,7 @@ enum class eSubjectTag
     Particle,
     Item,
     Nexus,
+    Player,
 };
 
 enum class eItemTag

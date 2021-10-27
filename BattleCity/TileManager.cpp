@@ -1,10 +1,12 @@
 #include "Config.h"
 #include "TileManager.h"
 #include "Tile.h"
+#include "NexusTile.h"
 #include "MapEditor.h"
 #include "Image.h"
 #include "Collider.h"
 #include "GameManager.h"
+#include "Subject.h"
 
 HRESULT TileManager::Init(POINT startPos, POINT backgroundSize)
 {
@@ -146,15 +148,32 @@ void TileManager::LoadMap(int loadIndex)
 					tileTag = eCollisionTag::Block;
 					break;
 				}
-				newTile = new Tile;
-				newTile->Init(mArrTile[y * TILE_COUNT_X + x],
-					mGameManager->CreateCollider({ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + TILE_SIZE * 0.5f,
-						mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + TILE_SIZE * 0.5f },
-						TILE_SIZE,
-						newTile,
-						tileTag),
-					{ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + (int)(TILE_SIZE * 0.5f),
-						mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + static_cast<int>(TILE_SIZE * 0.5f) });
+				if (mArrTile[y * TILE_COUNT_X + x].Terrain == eTerrain::Nexus)
+				{
+					newTile = new NexusTile;
+					newTile->Init(mArrTile[y * TILE_COUNT_X + x],
+						mGameManager->CreateCollider({ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + TILE_SIZE * 0.5f,
+							mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + TILE_SIZE * 0.5f },
+							TILE_SIZE,
+							newTile,
+							tileTag),
+						{ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + (int)(TILE_SIZE * 0.5f),
+							mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + static_cast<int>(TILE_SIZE * 0.5f) });
+					dynamic_cast<NexusTile*>(newTile)->GetSubject()->AddObserver(mGameManager);
+					mVecNexusTile.push_back(static_cast<NexusTile*>(newTile));
+				}
+				else
+				{
+					newTile = new Tile;
+					newTile->Init(mArrTile[y * TILE_COUNT_X + x],
+						mGameManager->CreateCollider({ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + TILE_SIZE * 0.5f,
+							mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + TILE_SIZE * 0.5f },
+							TILE_SIZE,
+							newTile,
+							tileTag),
+						{ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + (int)(TILE_SIZE * 0.5f),
+							mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + static_cast<int>(TILE_SIZE * 0.5f) });
+				}
 
 				if (mArrTile[y * TILE_COUNT_X + x].NexusAroundTile)
 				{
@@ -348,6 +367,14 @@ void TileManager::CreateEdgeBlock()
 	{
 		mGameManager->CreateCollider(POINTFLOAT{ (float)mStartPos.x - (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
 		mGameManager->CreateCollider(POINTFLOAT{ (float)mStartPos.x + (float)mBackgroundSize.x + (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+	}
+}
+
+void TileManager::ChangeNexusImageToFlag()
+{
+	for (int i = 0; i < mVecNexusTile.size(); ++i)
+	{
+		mVecNexusTile[i]->SetImagePos(POINT{ mVecNexusTile[i]->GetTileInfo()->TilePos.x + 2, mVecNexusTile[i]->GetTileInfo()->TilePos.y });
 	}
 }
 

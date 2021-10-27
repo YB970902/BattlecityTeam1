@@ -65,5 +65,10 @@ public:
 	inline POINT GetStartPosition() { return mStartPos; }
 
 	virtual void OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag) override;
+
+protected:
+	void SetGameOver();
+	void GameOverLogoAtFirstPlayer();
+	void GameOverLogoAtSecondPlayer();
 };
 

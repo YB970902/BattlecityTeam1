@@ -3,6 +3,7 @@
 #include "Tank.h"
 #include "TankController.h"
 #include "GameManager.h"
+#include "Subject.h"
 
 HRESULT TankSpawner::Init(GameManager* gameManager, SPAWN_INFO info, int leftCount, POINTFLOAT spawnPos)
 {
@@ -10,12 +11,14 @@ HRESULT TankSpawner::Init(GameManager* gameManager, SPAWN_INFO info, int leftCou
 	mInfo = info;
 	mLeftCount = leftCount;
 	mSpawnPosition = spawnPos;
+	mSubject = new Subject();
 	PART_MGR->CreateParticle(eParticleTag::Spawn, mSpawnPosition);
 	return S_OK;
 }
 
 void TankSpawner::Release()
 {
+	SAFE_DELETE(mSubject);
 	SAFE_RELEASE(mController);
 	if (mCurTank)
 	{
@@ -27,7 +30,7 @@ void TankSpawner::Release()
 void TankSpawner::Update()
 {
 	if (mbIsSpawnEnd) { return; }
-	
+
 	if (mCurTank)
 	{
 		SAFE_UPDATE(mController);
@@ -39,7 +42,11 @@ void TankSpawner::Update()
 			mCurTank = nullptr;
 			if (mController) { mController->SetTank(nullptr); }
 			mElapsedSpawnTime = 0.0f;
-			if (mLeftCount <= 0) { mbIsSpawnEnd = true; }
+			if (mLeftCount <= 0 && !mbIsSpawnEnd)
+			{
+				mbIsSpawnEnd = true;
+				if (mSubject) { mSubject->Notify(this, eSubjectTag::Player, eEventTag::PlayerDown); }
+			}
 			else { PART_MGR->CreateParticle(eParticleTag::Spawn, mSpawnPosition); }
 		}
 	}

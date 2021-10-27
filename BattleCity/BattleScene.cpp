@@ -19,11 +19,13 @@ HRESULT BattleScene::Init()
 	SCENE_MGR->SetSceneData("FirstPlayerQuickEnemyTank", 0);
 	SCENE_MGR->SetSceneData("FirstPlayerRapidFireEnemyTank", 0);
 	SCENE_MGR->SetSceneData("FirstPlayerDefenceEnemyTank", 0);
+	SCENE_MGR->SetSceneData("FirstPlayerGrenadeItem", 0);
 
 	SCENE_MGR->SetSceneData("SecondPlayerNormalEnemyTank", 0);
 	SCENE_MGR->SetSceneData("SecondPlayerQuickEnemyTank", 0);
 	SCENE_MGR->SetSceneData("SecondPlayerRapidFireEnemyTank", 0);
 	SCENE_MGR->SetSceneData("SecondPlayerDefenceEnemyTank", 0);
+	SCENE_MGR->SetSceneData("SecondPlayerGrenadeItem", 0);
 
 	mGameManager = new GameManager();
 	mGameManager->Init();

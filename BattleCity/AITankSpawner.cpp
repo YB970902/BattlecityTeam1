@@ -65,22 +65,18 @@ void AITankSpawner::Update()
 					case eTankType::NormalEnemy:
 						UI_MGR->AddStayUI(eImageTag::UIScore100, delTank->GetPosition(), 0.5f);
 						SCENE_MGR->SetSceneData("SecondPlayerNormalEnemyTank", SCENE_MGR->GetSceneData("SecondPlayerNormalEnemyTank") + 1);
-						cout << "두번째 플레이어가 일반탱크 킬" << endl;
 						break;
 					case eTankType::QuickEnemy:
 						UI_MGR->AddStayUI(eImageTag::UIScore200, delTank->GetPosition(), 0.5f);
 						SCENE_MGR->SetSceneData("SecondPlayerQuickEnemyTank", SCENE_MGR->GetSceneData("SecondPlayerQuickEnemyTank") + 1);
-						cout << "두번째 플레이어가 이속탱크 킬" << endl;
 						break;
 					case eTankType::RapidFireEnemy:
 						UI_MGR->AddStayUI(eImageTag::UIScore300, delTank->GetPosition(), 0.5f);
 						SCENE_MGR->SetSceneData("SecondPlayerRapidFireEnemyTank", SCENE_MGR->GetSceneData("SecondPlayerRapidFireEnemyTank") + 1);
-						cout << "두번째 플레이어가 공속탱크 킬" << endl;
 						break;
 					case eTankType::DefenceEnemy:
 						UI_MGR->AddStayUI(eImageTag::UIScore400, delTank->GetPosition(), 0.5f);
 						SCENE_MGR->SetSceneData("SecondPlayerDefenceEnemyTank", SCENE_MGR->GetSceneData("SecondPlayerDefenceEnemyTank") + 1);
-						cout << "두번째 플레이어가 방어탱크 킬" << endl;
 						break;
 					}
 				}
@@ -91,22 +87,18 @@ void AITankSpawner::Update()
 					case eTankType::NormalEnemy:
 						UI_MGR->AddStayUI(eImageTag::UIScore100, delTank->GetPosition(), 0.5f);
 						SCENE_MGR->SetSceneData("FirstPlayerNormalEnemyTank", SCENE_MGR->GetSceneData("FirstPlayerNormalEnemyTank") + 1);
-						cout << "첫번째 플레이어가 일반탱크 킬" << endl;
 						break;
 					case eTankType::QuickEnemy:
 						UI_MGR->AddStayUI(eImageTag::UIScore200, delTank->GetPosition(), 0.5f);
 						SCENE_MGR->SetSceneData("FirstPlayerQuickEnemyTank", SCENE_MGR->GetSceneData("FirstPlayerQuickEnemyTank") + 1);
-						cout << "첫번째 플레이어가 이속탱크 킬" << endl;
 						break;
 					case eTankType::RapidFireEnemy:
 						UI_MGR->AddStayUI(eImageTag::UIScore300, delTank->GetPosition(), 0.5f);
 						SCENE_MGR->SetSceneData("FirstPlayerRapidFireEnemyTank", SCENE_MGR->GetSceneData("FirstPlayerRapidFireEnemyTank") + 1);
-						cout << "첫번째 플레이어가 공속탱크 킬" << endl;
 						break;
 					case eTankType::DefenceEnemy:
 						UI_MGR->AddStayUI(eImageTag::UIScore400, delTank->GetPosition(), 0.5f);
 						SCENE_MGR->SetSceneData("FirstPlayerDefenceEnemyTank", SCENE_MGR->GetSceneData("FirstPlayerDefenceEnemyTank") + 1);
-						cout << "첫번째 플레이어가 방어탱크 킬" << endl;
 						break;
 					}
 				}

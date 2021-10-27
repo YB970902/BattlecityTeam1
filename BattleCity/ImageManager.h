@@ -25,6 +25,7 @@ enum class eImageTag
 	UIScore200,
 	UIScore300,
 	UIScore400,
+	UIScore500,
 	UIGameOver,
 	ItemInvencible,
 	ItemProtect,

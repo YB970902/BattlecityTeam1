@@ -4,11 +4,13 @@
 class Tank;
 class GameManager;
 class TankController;
+class Subject;
 class TankSpawner : public GameEntity
 {
 protected:
 	GameManager* mGameManager = nullptr;
 	TankController* mController = nullptr;
+	Subject* mSubject = nullptr;
 
 	Tank* mCurTank = nullptr;
 	SPAWN_INFO mInfo = {};
@@ -27,11 +29,10 @@ public:
 	void Update();
 	void Render(HDC hdc);
 
-	int GetLeftLife() { return mLeftCount; }
-	void AddLife() { mLeftCount++; }
-
-	POINTFLOAT GetSpawnPosition() { return mSpawnPosition; }
-
+	inline Subject* GetSubject() { return mSubject; }
+	inline int GetLeftLife() { return mLeftCount; }
+	inline void AddLife() { mLeftCount++; }
+	inline POINTFLOAT GetSpawnPosition() { return mSpawnPosition; }
 	inline bool IsSpawnEnd() { return mbIsSpawnEnd; }
 
 	inline void SetController(TankController* controller) { mController = controller; }

@@ -79,6 +79,9 @@ void ItemManager::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag ev
 			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mGameManager->SecondPlayerAddStar(); }
 			break;
 		case eItemTag::DestroyAllEnemy:
+			UI_MGR->AddStayUI(eImageTag::UIScore500, dynamic_cast<Item*>(obj)->GetPosition(), 0.5f);
+			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { SCENE_MGR->SetSceneData("FirstPlayerGrenadeItem", SCENE_MGR->GetSceneData("FirstPlayerGrenadeItem") + 1); }
+			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { SCENE_MGR->SetSceneData("SecondPlayerGrenadeItem", SCENE_MGR->GetSceneData("SecondPlayerGrenadeItem") + 1); }
 			mGameManager->DestroyAllEnemy();
 			break;
 		case eItemTag::PauseAllEnemy:
