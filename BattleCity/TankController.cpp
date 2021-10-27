@@ -2,7 +2,7 @@
 #include "TankController.h"
 #include "Tank.h"
 #include "Ammo.h"
-#include "AmmoSpawner.h"
+#include "GameManager.h"
 
 HRESULT TankController::Init(int leftKey, int rightKey, int upKey, int downKey, int fireKey)
 {
@@ -36,13 +36,13 @@ void TankController::Update()
     {
         if (mTank->GetStartCount() == 3)
         {
-            mAmmoSpawner->Fire(mTank->GetDirection(),
+            mGameManager->Fire(mTank->GetDirection(),
                 mTank->GetCollisionTag() == eCollisionTag::FirstPlayerTank ? eCollisionTag::FirstPlayerSpecialAmmo : eCollisionTag::SecondPlayerSpecialAmmo,
                 mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition())->AddObserver(mTank);
         }
         else
         {
-            mAmmoSpawner->Fire(mTank->GetDirection(),
+            mGameManager->Fire(mTank->GetDirection(),
                 mTank->GetCollisionTag() == eCollisionTag::FirstPlayerTank ? eCollisionTag::FirstPlayerAmmo : eCollisionTag::SecondPlayerAmmo,
                 mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition())->AddObserver(mTank);
         }

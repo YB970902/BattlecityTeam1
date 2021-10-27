@@ -147,6 +147,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="FixedUI.cpp" />
     <ClCompile Include="GameEntity.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImageManager.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="MapEditorScene.cpp" />
     <ClCompile Include="MovingUI.cpp" />
+    <ClCompile Include="NexusTile.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
@@ -187,6 +189,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="FixedUI.h" />
     <ClInclude Include="GameEntity.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
@@ -196,6 +199,7 @@
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="MapEditorScene.h" />
     <ClInclude Include="MovingUI.h" />
+    <ClInclude Include="NexusTile.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleManager.h" />

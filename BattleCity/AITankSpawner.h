@@ -2,19 +2,15 @@
 #include "GameEntity.h"
 #include "Observer.h"
 
-class Physcis;
 class Tank;
 class AITankController;
-class AmmoSpawner;
-class ItemManager;
+class GameManager;
 class AITankSpawner : public GameEntity, public Observer
 {
 protected:
 	const float MAX_PAUSE_TIME = 10.0f;
 
-	Physcis* mPhysics = nullptr;
-	AmmoSpawner* mAmmoSpawner = nullptr;
-	ItemManager* mItemManager = nullptr;
+	GameManager* mGameManager = nullptr;
 	int mMaxCountInScreen = 0;
 	int mSpawnedCount = 0;
 
@@ -35,19 +31,16 @@ protected:
 	float mElapsedPauseTime = 0.0f;
 public:
 	virtual ~AITankSpawner() {}
-	HRESULT Init(Physcis* physics, int maxCountInScreen);
+	HRESULT Init(GameManager* gameManager, int maxCountInScreen);
 	void Release();
 	void Update();
 	void Render(HDC hdc);
 
-	void SetAmmoSpawner(AmmoSpawner* spawner) { mAmmoSpawner = spawner; }
 	void SetSpawnPosition(POINTFLOAT* arrPos, int maxCount);
 	void AddTankSpawnInfo(TankSpawnInfo info);
 
 	void PauseAll();
 	void DestroyAll();
-
-	void SetItemManager(ItemManager* itemManager) { mItemManager = itemManager; }
 
 	inline bool IsSpawnEnd() { return mbIsSpawnEnd; }
 

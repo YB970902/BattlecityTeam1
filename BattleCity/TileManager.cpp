@@ -3,8 +3,8 @@
 #include "Tile.h"
 #include "MapEditor.h"
 #include "Image.h"
-#include "Physcis.h"
 #include "Collider.h"
+#include "GameManager.h"
 
 HRESULT TileManager::Init(POINT startPos, POINT backgroundSize)
 {
@@ -35,7 +35,7 @@ void TileManager::Update()
 			{
 				Tile* temp = (*itY).second;
 				itY = (*itX).second.erase(itY);
-				mPhysics->DestroyCollider(temp->GetCollider());
+				mGameManager->DestroyCollider(temp->GetCollider());
 				SAFE_RELEASE(temp);
 			}
 			else { itY++; }
@@ -148,7 +148,7 @@ void TileManager::LoadMap(int loadIndex)
 				}
 				newTile = new Tile;
 				newTile->Init(mArrTile[y * TILE_COUNT_X + x],
-					mPhysics->CreateCollider({ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + TILE_SIZE * 0.5f,
+					mGameManager->CreateCollider({ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + TILE_SIZE * 0.5f,
 						mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + TILE_SIZE * 0.5f },
 						TILE_SIZE,
 						newTile,
@@ -205,7 +205,7 @@ void TileManager::ProtectNexus()
 		{
 			mMapTile[tileIndex.x][tileIndex.y] = new Tile();
 			mMapTile[tileIndex.x][tileIndex.y]->Init(mArrTile[tileIndex.y * TILE_COUNT_X + tileIndex.x],
-				mPhysics->CreateCollider(mVecAroundTileInfo[i].first,
+				mGameManager->CreateCollider(mVecAroundTileInfo[i].first,
 					TILE_SIZE,
 					mMapTile[tileIndex.x][tileIndex.y],
 					eCollisionTag::NexusBlock),
@@ -340,40 +340,40 @@ void TileManager::CreateEdgeBlock()
 {
 	for (int x = 0; x < TILE_COUNT_X; ++x)
 	{
-		mPhysics->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y - (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
-		mPhysics->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y + (float)mBackgroundSize.y + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mGameManager->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y - (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mGameManager->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y + (float)mBackgroundSize.y + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
 	}
 
 	for (int y = 0; y < TILE_COUNT_Y; ++y)
 	{
-		mPhysics->CreateCollider(POINTFLOAT{ (float)mStartPos.x - (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
-		mPhysics->CreateCollider(POINTFLOAT{ (float)mStartPos.x + (float)mBackgroundSize.x + (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mGameManager->CreateCollider(POINTFLOAT{ (float)mStartPos.x - (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mGameManager->CreateCollider(POINTFLOAT{ (float)mStartPos.x + (float)mBackgroundSize.x + (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
 	}
 }
 
-vector<TankSpawnInfo>* TileManager::GetEnemyList()
+pair<TankSpawnInfo*, int> TileManager::GetEnemyList()
 {
-	vector<TankSpawnInfo>* result = new vector<TankSpawnInfo>();
+	TankSpawnInfo* result = new TankSpawnInfo[mEnemyInfo->mEnemyOrderCount];
 	for (int i = 0; i < mEnemyInfo->mEnemyOrderCount; ++i)
 	{
 		switch (mEnemyInfo->mEnemyOrderType[i])
 		{
 		case eTankType::NormalEnemy:
-			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, NORMAL_TANK_INFO));
+			result[i] = (TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, NORMAL_TANK_INFO));
 			break;
 		case eTankType::QuickEnemy:
-			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, QUICK_TANK_INFO));
+			result[i] = (TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, QUICK_TANK_INFO));
 			break;
 		case eTankType::RapidFireEnemy:
-			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, RAPID_FIRE_TANK_INFO));
+			result[i] = (TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, RAPID_FIRE_TANK_INFO));
 			break;
 		case eTankType::DefenceEnemy:
-			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, DEFENCE_TANK_INFO));
+			result[i] = (TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, DEFENCE_TANK_INFO));
 			break;
 		}
 	}
 
-	return result;
+	return pair<TankSpawnInfo*, int>(result, mEnemyInfo->mEnemyOrderCount);
 }
 
 POINTFLOAT TileManager::GetFirstPlayerSpawnPosition()

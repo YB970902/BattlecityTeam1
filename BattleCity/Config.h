@@ -70,6 +70,7 @@ enum class eSubjectTag
     Tank,
     Particle,
     Item,
+    Nexus,
 };
 
 enum class eItemTag

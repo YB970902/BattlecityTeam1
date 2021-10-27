@@ -9,34 +9,11 @@ class TankSpawner;
 class AITankSpawner;
 class AmmoSpawner;
 class ItemManager;
+class GameManager;
 class BattleScene : public GameEntity
 {
 private:
-	Image* mBackgroundGray;
-	Image* mBackgroundBlack;
-
-	Physcis* mPhysics = nullptr;
-	TileManager* mTileManager = nullptr;
-	AmmoSpawner* mAmmoSpawner = nullptr;
-
-	TankController* mFirstPlayerController = nullptr;
-	TankSpawner* mFirstPlayerSpawner = nullptr;
-
-	TankController* mSecondPlayerController = nullptr;
-	TankSpawner* mSecondPlayerSpawner = nullptr;
-
-	AITankSpawner* mAISpawner = nullptr;
-
-	ItemManager* mItemManager = nullptr;
-
-	POINT mStartPos = {};
-
-	bool mbIsDebugMode = false;
-
-	bool mbIsSoloMode = true;
-	bool mbIsFirstPlayerDead = false;
-	bool mbIsSecondPlayerDead = false;
-	bool mbIsGameEnd = false;
+	GameManager* mGameManager;
 
 public:
 	virtual ~BattleScene() = default;

@@ -1,7 +1,7 @@
 #include "Config.h"
 #include "AmmoSpawner.h"
 #include "Ammo.h"
-#include "Physcis.h"
+#include "GameManager.h"
 
 HRESULT AmmoSpawner::Init()
 {
@@ -32,7 +32,7 @@ void AmmoSpawner::Update()
         mVecAmmo[i]->Update();
         if (mVecAmmo[i]->IsDead())
         {
-            mPhysics->DestroyCollider(mVecAmmo[i]->GetCollider());
+            mGameManager->DestroyCollider(mVecAmmo[i]->GetCollider());
             mVecAmmo[i]->Release();
             mVecAmmo[i]->SetCollider(nullptr);
             mVecAmmo[i]->SetIsDead(false);
@@ -56,14 +56,14 @@ Ammo* AmmoSpawner::Fire(eDir dir, eCollisionTag tag, float speed, POINTFLOAT pos
         if (mVecAmmo[i]->IsFire()) { continue; }
         mVecAmmo[i]->Init(dir, tag, speed);
         mVecAmmo[i]->SetPosition(pos);
-        mVecAmmo[i]->SetCollider(mPhysics->CreateCollider(pos, AMMO_BODY_SIZE, mVecAmmo[i], tag));
+        mVecAmmo[i]->SetCollider(mGameManager->CreateCollider(pos, AMMO_BODY_SIZE, mVecAmmo[i], tag));
         return mVecAmmo[i];
     }
 
     Ammo* newAmmo = new Ammo;
     newAmmo->Init(dir, tag, speed);
     newAmmo->SetPosition(pos);
-    newAmmo->SetCollider(mPhysics->CreateCollider(pos, AMMO_BODY_SIZE, newAmmo, tag));
+    newAmmo->SetCollider(mGameManager->CreateCollider(pos, AMMO_BODY_SIZE, newAmmo, tag));
     mVecAmmo.push_back(newAmmo);
     return newAmmo;
 }

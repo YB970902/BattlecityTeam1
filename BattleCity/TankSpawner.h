@@ -2,12 +2,12 @@
 #include "GameEntity.h"
 
 class Tank;
-class Physcis;
+class GameManager;
 class TankController;
 class TankSpawner : public GameEntity
 {
 protected:
-	Physcis* mPhysics = nullptr;
+	GameManager* mGameManager = nullptr;
 	TankController* mController = nullptr;
 
 	Tank* mCurTank = nullptr;
@@ -22,7 +22,7 @@ protected:
 
 public:
 	virtual ~TankSpawner() {}
-	HRESULT Init(Physcis* physics, SPAWN_INFO info, int leftCount, POINTFLOAT spawnPos);
+	HRESULT Init(GameManager* gameManager, SPAWN_INFO info, int leftCount, POINTFLOAT spawnPos);
 	void Release();
 	void Update();
 	void Render(HDC hdc);

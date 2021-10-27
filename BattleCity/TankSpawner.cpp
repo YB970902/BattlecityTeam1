@@ -1,13 +1,12 @@
 #include "Config.h"
 #include "TankSpawner.h"
 #include "Tank.h"
-#include "Physcis.h"
 #include "TankController.h"
-#include "Collider.h"
+#include "GameManager.h"
 
-HRESULT TankSpawner::Init(Physcis* physics, SPAWN_INFO info, int leftCount, POINTFLOAT spawnPos)
+HRESULT TankSpawner::Init(GameManager* gameManager, SPAWN_INFO info, int leftCount, POINTFLOAT spawnPos)
 {
-	mPhysics = physics;
+	mGameManager = gameManager;
 	mInfo = info;
 	mLeftCount = leftCount;
 	mSpawnPosition = spawnPos;
@@ -20,7 +19,7 @@ void TankSpawner::Release()
 	SAFE_RELEASE(mController);
 	if (mCurTank)
 	{
-		mPhysics->DestroyCollider(mCurTank->GetCollider());
+		mGameManager->DestroyCollider(mCurTank->GetCollider());
 		SAFE_RELEASE(mCurTank);
 	}
 }
@@ -35,7 +34,7 @@ void TankSpawner::Update()
 		if (mCurTank->IsDead())
 		{
 			PART_MGR->CreateParticle(eParticleTag::BigBoom, mCurTank->GetPosition());
-			mPhysics->DestroyCollider(mCurTank->GetCollider());
+			mGameManager->DestroyCollider(mCurTank->GetCollider());
 			SAFE_RELEASE(mCurTank);
 			mCurTank = nullptr;
 			if (mController) { mController->SetTank(nullptr); }
@@ -53,13 +52,12 @@ void TankSpawner::Update()
 			--mLeftCount;
 			mElapsedSpawnTime = 0.0f;
 			mCurTank = new Tank();
-			Collider* collider = mPhysics->CreateCollider(mSpawnPosition, TANK_BODY_SIZE, mCurTank, mInfo.CollisionTag);
 			mCurTank->Init(mInfo.CollisionTag,
 				mInfo.Type,
 				mInfo.TankInfo,
 				mInfo.Color,
 				mSpawnPosition,
-				collider);
+				mGameManager->CreateCollider(mSpawnPosition, TANK_BODY_SIZE, mCurTank, mInfo.CollisionTag));
 			mCurTank->ChangeToInvencible();
 			if (mController) { mController->SetTank(mCurTank); }
 		}

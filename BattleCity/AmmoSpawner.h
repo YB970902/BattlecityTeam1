@@ -3,10 +3,11 @@
 
 class Ammo;
 class Physcis;
+class GameManager;
 class AmmoSpawner : public GameEntity
 {
 protected:
-	Physcis* mPhysics;
+	GameManager* mGameManager = nullptr;
 	vector<Ammo*> mVecAmmo;
 
 public:
@@ -17,5 +18,5 @@ public:
 
 	Ammo* Fire(eDir dir, eCollisionTag tag, float speed, POINTFLOAT pos);
 
-	void SetPhysics(Physcis* physics) { mPhysics = physics; }
+	void SetGameManager(GameManager* gameManager) { mGameManager = gameManager; }
 };

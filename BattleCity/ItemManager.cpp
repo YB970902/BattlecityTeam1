@@ -1,11 +1,7 @@
 #include "ItemManager.h"
 #include "Item.h"
-#include "Physcis.h"
-#include "TileManager.h"
 #include "Subject.h"
-#include "TankController.h"
-#include "AITankSpawner.h"
-#include "TankSpawner.h"
+#include "GameManager.h"
 
 HRESULT ItemManager::Init()
 {
@@ -39,7 +35,7 @@ void ItemManager::Update()
 		{
 			Item* item = (*it);
 			it = mVecItem.erase(it);
-			mPhysics->DestroyCollider(item->GetCollider());
+			mGameManager->DestroyCollider(item->GetCollider());
 			SAFE_RELEASE(item);
 		}
 		else { it++; }
@@ -57,8 +53,8 @@ void ItemManager::Render(HDC hdc)
 void ItemManager::CreateItem(eItemTag itemTag)
 {
 	Item* newItem = new Item;
-	POINTFLOAT pos = mTileManager->GetItemSpawnPosition();
-	newItem->Init(mPhysics->CreateCollider(pos, ITEM_BODY_SIZE, newItem, eCollisionTag::Item),
+	POINTFLOAT pos = mGameManager->GetItemSpawnPosition();
+	newItem->Init(mGameManager->CreateCollider(pos, ITEM_BODY_SIZE, newItem, eCollisionTag::Item),
 		mMapItemInfo[itemTag].ImageTag, itemTag);
 	newItem->GetSubject()->AddObserver(this);
 	newItem->SetPosition(pos);
@@ -72,25 +68,25 @@ void ItemManager::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag ev
 		switch (dynamic_cast<Item*>(obj)->GetItemTag())
 		{
 		case eItemTag::TankInvencible:
-			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { mFirstPlayerController->TurnToInvencible(); }
-			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mSecondPlayerController->TurnToInvencible(); }
+			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { mGameManager->FirstPlayerSetInvencible(); }
+			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mGameManager->SecondPlayerSetInvencible(); }
 			break;
 		case eItemTag::ProtectedWall:
-			mTileManager->ProtectNexus();
+			mGameManager->ProtectNexus();
 			break;
 		case eItemTag::TankStar:
-			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { mFirstPlayerController->AddStar(); }
-			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mSecondPlayerController->AddStar(); }
+			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { mGameManager->FirstPlayerAddStar(); }
+			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mGameManager->SecondPlayerAddStar(); }
 			break;
 		case eItemTag::DestroyAllEnemy:
-			mAISpawner->DestroyAll();
+			mGameManager->DestroyAllEnemy();
 			break;
 		case eItemTag::PauseAllEnemy:
-			mAISpawner->PauseAll();
+			mGameManager->PauseAllEnemy();
 			break;
 		case eItemTag::AddPlayerLife:
-			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { mFirstPlayerSpawner->AddLife(); }
-			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mSecondPlayerSpawner->AddLife(); }
+			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { mGameManager->FirstPlayerAddLife(); }
+			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mGameManager->SecondPlayerAddLife(); }
 			break;
 		}
 	}

@@ -2,15 +2,13 @@
 #include "Tank.h"
 #include "TankSpawner.h"
 #include "AITankSpawner.h"
-#include "Physcis.h"
 #include "AITankController.h"
-#include "AmmoSpawner.h"
-#include "ItemManager.h"
+#include "GameManager.h"
 #include "Subject.h"
 
-HRESULT AITankSpawner::Init(Physcis* physics, int maxCountInScreen)
+HRESULT AITankSpawner::Init(GameManager* gameManager, int maxCountInScreen)
 {
-	mPhysics = physics;
+	mGameManager = gameManager;
 	mMaxCountInScreen = maxCountInScreen;
 	return S_OK;
 }
@@ -28,7 +26,7 @@ void AITankSpawner::Release()
 	{
 		tank = (*it);
 		it = mVecTank.erase(it);
-		mPhysics->DestroyCollider(tank->GetCollider());
+		mGameManager->DestroyCollider(tank->GetCollider());
 		SAFE_RELEASE(tank);
 	}
 
@@ -114,7 +112,7 @@ void AITankSpawner::Update()
 				}
 			}
 			PART_MGR->CreateParticle(eParticleTag::BigBoom, delTank->GetPosition());
-			mPhysics->DestroyCollider(delTank->GetCollider());
+			mGameManager->DestroyCollider(delTank->GetCollider());
 			tankIt = mVecTank.erase(tankIt);
 
 			for (vector<AITankController*>::iterator ctrlIt = mVecTankController.begin(); ctrlIt != mVecTankController.end(); ++ctrlIt)
@@ -159,9 +157,9 @@ void AITankSpawner::Update()
 			mInfo.erase(mInfo.begin());
 			if (mInfo.size() <= 0) { mbIsSpawnEnd = true; }
 			newTank->Init(info.CollisionTag, info.Type, info.TankInfo, info.Color, mArrSpawnPosition[mCurSpawnPositionIndex],
-				mPhysics->CreateCollider(mArrSpawnPosition[mCurSpawnPositionIndex], TANK_BODY_SIZE, controller, eCollisionTag::PassedEnemyTank));
+				mGameManager->CreateCollider(mArrSpawnPosition[mCurSpawnPositionIndex], TANK_BODY_SIZE, controller, eCollisionTag::PassedEnemyTank));
 			controller->SetTank(newTank);
-			controller->SetAmmoSpawner(mAmmoSpawner);
+			controller->SetGameManager(mGameManager);
 			switch (++mSpawnedCount)
 			{
 			case 4:
@@ -226,7 +224,7 @@ void AITankSpawner::DestroyAll()
 		PART_MGR->CreateParticle(eParticleTag::SmallBoom, tank->GetPosition());
 		PART_MGR->CreateParticle(eParticleTag::BigBoom, tank->GetPosition());
 		it = mVecTank.erase(it);
-		mPhysics->DestroyCollider(tank->GetCollider());
+		mGameManager->DestroyCollider(tank->GetCollider());
 		SAFE_RELEASE(tank);
 	}
 
@@ -243,6 +241,6 @@ void AITankSpawner::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag 
 {
 	if (subjectTag == eSubjectTag::Tank && eventTag == eEventTag::DropItem)
 	{
-		mItemManager->CreateItem((eItemTag)RANDOM(1, 6));
+		mGameManager->CreateItem((eItemTag)RANDOM(1, 6));
 	}
 }
