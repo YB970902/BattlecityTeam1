@@ -44,6 +44,22 @@ void ImageManager::Init()
 
 	//Score
 	IMG_MGR->AddImage(eImageTag::OrangeNumber, "Image/Text/ScoreNumber.bmp", 120, 48, 5, 2, true, RGB(255, 0, 255));
+	AddImage(eImageTag::LeftArrow, "Image/Icon/Arrow_left.bmp", 23, 20, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::RightArrow, "Image/Icon/Arrow_right.bmp", 23, 20, 1, 1, true, RGB(255, 0, 255));
+
+	AddImage(eImageTag::PointsText, "Image/Text/PTS.bmp", 90, 40, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::PlayerText, "Image/Text/Player1.bmp", 230, 40, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::PlayerText2, "Image/Text/Player2.bmp", 212, 36, 1, 1, true, RGB(0, 0, 0));
+
+	AddImage(eImageTag::StageText, "Image/Text/Stage_w.bmp", 111, 21, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::TotalText, "Image/Text/TotalScore.bmp", 360, 40, 1, 1, true, RGB(255, 0, 255));
+	//AddImage(eImageTag::BonusText, "Image/Text/Player1.bmp", 23, 20, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::BonusText, "Image/Text/BONUS.bmp", 99, 17, 1, 1, true, RGB(255, 0, 255));
+
+
+
+
+
 }
 
 void ImageManager::Release()

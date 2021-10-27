@@ -11,6 +11,7 @@ enum class eSceneTag
 	BattleScene,
 	TitleScene,
 	SlateScene,
+	ScoreScene
 };
 
 
