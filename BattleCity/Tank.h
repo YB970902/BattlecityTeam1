@@ -65,7 +65,7 @@ public:
 	inline eTankType GetTankType() { return mType; }
 	inline void SetIsInvencible(bool set) { mbIsInvincible = set; if (set) { ChangeToInvencible(); } }
 	inline TANK_INFO GetInfo() { return mInfo; }
-	inline void AddStar() { if (mType == eTankType::Player && mStarCount < MAX_STAR_COUNT) { mStarCount++; } }
+	void AddStar();
 	inline void SetIsHaveItem(bool set) { mbIsHaveItem = set; }
 	inline int GetStartCount() { return mStarCount; }
 	inline bool IsCanFire() { return mbIsCanFire && mFiredAmmoCount < mInfo.MaxAmmoCount + mStarCount / 2 && !mbIsStun; }

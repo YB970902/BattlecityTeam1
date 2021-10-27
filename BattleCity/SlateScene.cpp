@@ -15,7 +15,7 @@ HRESULT SlateScene::Init()
 
 	mStageNum = new Score;
 	mStageNum->Init(eImageTag::WhiteNumber, WIN_SIZE_X / 2 + 50, WIN_SIZE_Y / 2);
-	mStageNum->SetScore(SCENE_MGR->GetSceneData("stage"));
+	mStageNum->SetScore(SCENE_MGR->GetSceneData("Stage") + 1);
 
     return S_OK;
 }

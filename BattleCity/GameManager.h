@@ -16,6 +16,8 @@ class ItemManager;
 class GameManager : public GameEntity, public Observer
 {
 protected:
+	const float MAX_DURATION_CHANGE_SCENE_TIME = 5.0f;
+
 	Image* mBackgroundGray = nullptr;
 	Image* mBackgroundBlack = nullptr;
 
@@ -41,6 +43,7 @@ protected:
 	bool mbIsFirstPlayerDead = false;
 	bool mbIsSecondPlayerDead = false;
 	bool mbIsGameEnd = false;
+	float mElaspedChangeSceneTime = 0.0f;
 public:
 	virtual HRESULT Init();
 	virtual void Release();

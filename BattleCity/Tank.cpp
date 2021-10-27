@@ -19,6 +19,9 @@ HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankCo
 
 	mCollider = collider;
 
+	if (mCollider->GetTag() == eCollisionTag::FirstPlayerTank) { mStarCount = SCENE_MGR->GetSceneData("FirstPlayerStar"); }
+	else if (mCollider->GetTag() == eCollisionTag::SecondPlayerTank) { mStarCount = SCENE_MGR->GetSceneData("SecondPlayerStar"); }
+
 	mSubject = new Subject();
 
 	if (mInfo.Health > 1)
@@ -142,14 +145,28 @@ void Tank::MoveForward()
 	Move(mDir);
 }
 
+void Tank::AddStar()
+{
+	if (mType == eTankType::Player && mStarCount < MAX_STAR_COUNT) 
+	{
+		if (mCollider->GetTag() == eCollisionTag::FirstPlayerTank)
+		{
+			SCENE_MGR->SetSceneData("FirstPlayerStar", ++mStarCount);
+		}
+		else if (mCollider->GetTag() == eCollisionTag::SecondPlayerTank)
+		{
+			SCENE_MGR->SetSceneData("SecondPlayerStar", ++mStarCount);
+		}
+	}
+}
+
 void Tank::OnCollided(eCollisionDir dir, int tag)
 {
 	if (mbIsInvincible) { return; }
 
 	if ((mCollisionTag == eCollisionTag::FirstPlayerTank && tag == (int)eCollisionTag::EnemyAmmo) ||
 		(mCollisionTag == eCollisionTag::SecondPlayerTank && tag == (int)eCollisionTag::EnemyAmmo) ||
-		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::FirstPlayerAmmo) ||
-		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::SecondPlayerAmmo))
+		(mCollisionTag == eCollisionTag::EnemyTank && IS_PLAYER_AMMO(tag)))
 	{
 		mCollidedTag = (eCollisionTag)tag;
 		OnDamaged();
@@ -180,7 +197,12 @@ void Tank::OnDamaged()
 {
 	if (mbIsHaveItem) { mSubject->Notify(this, eSubjectTag::Tank, eEventTag::DropItem); }
 	--mInfo.Health;
-	if (mInfo.Health == 0) { mbIsDead = true; }
+	if (mInfo.Health == 0)
+	{
+		if(mCollider->GetTag() == eCollisionTag::FirstPlayerTank) { SCENE_MGR->SetSceneData("FirstPlayerStar", 0); }
+		else if(mCollider->GetTag() == eCollisionTag::SecondPlayerTank) { SCENE_MGR->SetSceneData("SecondPlayerStar", 0); }
+		mbIsDead = true;
+	}
 	else
 	{
 		switch (mInfo.Health)

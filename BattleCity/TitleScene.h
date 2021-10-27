@@ -7,10 +7,11 @@ class Image;
 class TitleScene : public GameEntity
 {
 private:
-	Image* mBlackBG;
-	Image* mTileImage;
-	Image* mTitleCursor;
+	Image* mBlackBG = nullptr;
+	Image* mTileImage = nullptr;
+	Image* mTitleCursor = nullptr;
 
+	bool mbIsTitleAtCenter = false;
 	float mTitleRenderStartPos = 0.0f;
 
 	POINT mSelectAreaPos[2] = { };

@@ -36,11 +36,8 @@ Collider* Physcis::CreateCollider(POINTFLOAT pos, float bodySize, CollisionCheck
 
 void Physcis::DestroyCollider(Collider* col)
 {
-	if (col == NULL)
-	{
-		cout << "¿Ö ³Î?" << endl;
-		return;
-	}
+	if (col == nullptr) { return; }
+
 	vector<Collider*>::iterator it;
 	for (int i = 0; i < 4; i++)
 	{

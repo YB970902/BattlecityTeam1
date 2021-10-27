@@ -12,7 +12,6 @@ enum class eImageTag
 	EnemyOrderBox,
 	BattleSceneGrayBG,
 	BattleSceneBlackBG,
-	BattleSceneGrayBG,
 	Tank,
 	AmmoUp,
 	AmmoDown,

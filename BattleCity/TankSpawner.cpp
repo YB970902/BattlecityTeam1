@@ -54,7 +54,7 @@ void TankSpawner::Update()
 	{
 		if (mbIsSpawnEnd) { return; }
 		mElapsedSpawnTime += DELTA_TIME;
-		if (mElapsedSpawnTime >= TANK_SPAWNING_TIME)
+		if (mElapsedSpawnTime >= 0.5f)
 		{
 			--mLeftCount;
 			mElapsedSpawnTime = 0.0f;

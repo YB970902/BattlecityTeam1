@@ -52,7 +52,7 @@ using namespace std;
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
 
 const float ITEM_BODY_SIZE = 32.0f;
-const float TANK_SPAWNING_TIME = 0.5f;
+const float TANK_SPAWNING_TIME = 2.0f;
 const float PROTECT_ITEM_DURATION_TIME = 20.0f;
 const float INVENCIBLE_ITEM_DURATION_TIME = 10.0f;
 
@@ -63,6 +63,7 @@ enum class eEventTag
     Collided,
     DropItem,
     PlayerDown,
+    GameClear,
 };
 
 enum class eSubjectTag
@@ -73,6 +74,7 @@ enum class eSubjectTag
     Item,
     Nexus,
     Player,
+    Enemy,
 };
 
 enum class eItemTag

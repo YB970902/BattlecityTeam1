@@ -7,8 +7,13 @@ HRESULT TitleScene::Init()
 	mTileImage = IMG_MGR->FindImage(eImageTag::TitleScene);
 	mTitleCursor = IMG_MGR->FindImage(eImageTag::TitleSceneCursor);
 
+	SCENE_MGR->SetSceneData("FirstPlayerLife", 3);
+	SCENE_MGR->SetSceneData("SecondPlayerLife", 3);
+	SCENE_MGR->SetSceneData("Stage", 0);
+
 	mTitleCursor->SetCurrFrameX(6);
 
+	mbIsTitleAtCenter = false;
 	mTitleRenderStartPos = 400.0f;
 
 	for (int i = 0; i < 2; i++)
@@ -24,36 +29,37 @@ HRESULT TitleScene::Init()
 
 void TitleScene::Update()
 {
-	if ((mCursorToggleTime = float(mCursorToggleTime + DELTA_TIME)) >= 0.07)
+	if (!mbIsTitleAtCenter)
 	{
-		if (mbCursorFrameToggle == false) mbCursorFrameToggle = true;
-		else mbCursorFrameToggle = false;
-
-		mCursorToggleTime = 0.0f;
-	}
-
-	if (!(mTitleRenderStartPos == 0))
-	{
-		if (!(mTitleRenderStartPos <= 0)) mTitleRenderStartPos -= DELTA_TIME * 200;
-		else mTitleRenderStartPos = 0.0f;
-	}
-	else if (mTitleRenderStartPos == 0)
-	{
-		if (KEY_MGR->IsOnceKeyDown(VK_DOWN)
-			|| KEY_MGR->IsOnceKeyDown(VK_UP)){ mbSelectArea == true ? mbSelectArea = false : mbSelectArea = true; }
-			mTitleCursor->SetCurrFrameX(7 - mbCursorFrameToggle);
-	}
-	if (KEY_MGR->IsOnceKeyDown(VK_SPACE))
-	{
-		if (mbSelectArea == false)
+		mTitleRenderStartPos -= DELTA_TIME * 200;
+		if (mTitleRenderStartPos <= 0)
 		{
-			SCENE_MGR->SetSceneData("1P", (int)mbSelectArea);
+			mTitleRenderStartPos = 0;
+			mbIsTitleAtCenter = true;
 		}
-		else
+	}
+	else
+	{
+		mCursorToggleTime += DELTA_TIME;
+		if (mCursorToggleTime > 0.07f)
 		{
-			SCENE_MGR->SetSceneData("2P", (int)mbSelectArea);
+			mCursorToggleTime -= 0.07f;
+			mbCursorFrameToggle = !mbCursorFrameToggle;
 		}
-		SCENE_MGR->ChangeScene(eSceneTag::SlateScene);
+		mTitleCursor->SetCurrFrameX(7 - mbCursorFrameToggle);
+		if (KEY_MGR->IsOnceKeyDown(VK_DOWN))
+		{
+			mbSelectArea = true;
+		}
+		else if(KEY_MGR->IsOnceKeyDown(VK_UP))
+		{
+			mbSelectArea = false;
+		}
+		if (KEY_MGR->IsOnceKeyDown(VK_SPACE))
+		{
+			SCENE_MGR->SetSceneData("IsSoloMode", (int)mbSelectArea);
+			SCENE_MGR->ChangeScene(eSceneTag::SlateScene);
+		}
 	}
 }
 
@@ -61,10 +67,7 @@ void TitleScene::Render(HDC hdc)
 {
 	mBlackBG->Render(hdc);
 	mTileImage->Render(hdc, WIN_SIZE_X / 2, WIN_SIZE_Y / 2 + (mTitleRenderStartPos));
-	if (mTitleRenderStartPos == 0)
-	{
-		mTitleCursor->Render(hdc, mSelectAreaPos[0].x, mSelectAreaPos[mbSelectArea].y, mTitleCursor->GetCurrFrameX(), 1);
-	}
+	if (mbIsTitleAtCenter) { mTitleCursor->Render(hdc, mSelectAreaPos[0].x, mSelectAreaPos[mbSelectArea].y, mTitleCursor->GetCurrFrameX(), 1); }
 }
 
 void TitleScene::Release()

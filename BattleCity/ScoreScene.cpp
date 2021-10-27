@@ -25,10 +25,9 @@ HRESULT ScoreScene::Init()
     mBonusText = IMG_MGR->FindImage(eImageTag::BonusText);
     mPTSTextBo = IMG_MGR->FindImage(eImageTag::PointsText);
 
-    //SCENE_MGR->SetSceneData("Stage", 2);//지워도 되는 부분
     mStage = new Score;
     mStage->Init(eImageTag::OrangeNumber, 680, 145, 0, 1);
-    mStage->SetScore(SCENE_MGR->GetSceneData("Stage"));
+    mStage->SetScore(SCENE_MGR->GetSceneData("Stage") + 1);
 
     mTotalCnt = new Score;
     mTotalCnt->Init(eImageTag::WhiteNumber, 525, 640);
@@ -48,9 +47,6 @@ HRESULT ScoreScene::Init()
     mBonus2 = new Score;
     mBonus2->Init(eImageTag::WhiteNumber, 910, 700);
     mBonus2->SetScore(1000);
-
-    SCENE_MGR->SetSceneData("IsSoloMode", 1);
-    cout << SCENE_MGR->GetSceneData("IsSoloMode") << endl;
 
 
     for (int i = 0; i < 4; ++i)
@@ -77,25 +73,6 @@ HRESULT ScoreScene::Init()
         mTankCnt2[i]->Init(eImageTag::WhiteNumber, 735, 318 + (90 * i));
         
     }
-
-    //없애도 되는 부분(Test Count)
-    SCENE_MGR->SetSceneData(mFirstTankTypeCount[0], 10);
-    SCENE_MGR->SetSceneData(mSecondTankTypeCount[0], 13);
-
-    SCENE_MGR->SetSceneData(mFirstTankTypeCount[1], 5);
-    SCENE_MGR->SetSceneData(mSecondTankTypeCount[1], 2);
-
-    SCENE_MGR->SetSceneData(mFirstTankTypeCount[2], 21);
-    SCENE_MGR->SetSceneData(mSecondTankTypeCount[2], 13);
-
-    SCENE_MGR->SetSceneData(mFirstTankTypeCount[3], 6);
-    SCENE_MGR->SetSceneData(mSecondTankTypeCount[3], 8);
-
-    SCENE_MGR->SetSceneData("IsGameOver", 0);
-
-    SCENE_MGR->SetSceneData("FirstPlayerGrenadeItem",55);
-    SCENE_MGR->SetSceneData("SecondPlayerGrenadeItem", 55);
-    //여기까지
 
     if (!(SCENE_MGR->GetSceneData("Stage") == 1))
     {
@@ -183,7 +160,7 @@ void ScoreScene::Update()
 
     if (mElapedCount >= 1.5f && mCulCount == 5)
     {
-        if (SCENE_MGR->GetSceneData("IsGameOver"))
+        if (SCENE_MGR->GetSceneData("IsGameOver") || SCENE_MGR->GetSceneData("Stage") == 3)
         {
             for (int i = 0; i < 4; ++i)
             {
@@ -231,21 +208,21 @@ void ScoreScene::Render(HDC hdc)
         mPTSText[i]->Render(hdc, 360, 318 + (90 * i));
     }
     
-    if (SCENE_MGR->GetSceneData("IsSoloMode") != 0 && (mTotalPTS->GetScore() > mTotalPTS2->GetScore())&& mCulCount == 5)
-    {
-        mBonus->Render(hdc);
-        mBonusText->Render(hdc, 300, 670, 0, 0, 1.5f);
-        mPTSTextBo->Render(hdc, 400, 700);
-    }
-    
 
     if (SCENE_MGR->GetSceneData("IsSoloMode") != 0)
     {
+        if ((mTotalPTS->GetScore() > mTotalPTS2->GetScore()) && mCulCount == 5 && SCENE_MGR->GetSceneData("IsGameOver") == 0)
+        {
+            mBonus->Render(hdc);
+            mBonusText->Render(hdc, 300, 670, 0, 0, 1.5f);
+            mPTSTextBo->Render(hdc, 400, 700);
+        }
+
         mTotalCnt2->Render(hdc);
         mTotalPTS2->Render(hdc);
         mPlayer2Text->Render(hdc, 920, 195);
 
-        if (mTotalPTS->GetScore() < mTotalPTS2->GetScore())
+        if (mTotalPTS->GetScore() < mTotalPTS2->GetScore() && SCENE_MGR->GetSceneData("IsGameOver") == 0)
         {
             mBonus2->Render(hdc);
             mBonusText->Render(hdc, 880, 670, 0, 0, 1.5f);

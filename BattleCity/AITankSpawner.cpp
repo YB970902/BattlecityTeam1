@@ -10,11 +10,14 @@ HRESULT AITankSpawner::Init(GameManager* gameManager, int maxCountInScreen)
 {
 	mGameManager = gameManager;
 	mMaxCountInScreen = maxCountInScreen;
+	mSubject = new Subject();
 	return S_OK;
 }
 
 void AITankSpawner::Release()
 {
+	SAFE_DELETE(mSubject);
+
 	if (mArrSpawnPosition)
 	{
 		if (mMaxSpawnPosition > 1) { delete[] mArrSpawnPosition; }
@@ -43,6 +46,7 @@ void AITankSpawner::Release()
 
 void AITankSpawner::Update()
 {
+	if (mbIsSpawnEnd) { return; }
 	if (!mbIsPause)
 	{
 		for (int i = 0; i < mVecTankController.size(); ++i)
@@ -136,43 +140,60 @@ void AITankSpawner::Update()
 
 	if (mbIsSpawning)
 	{
-		mElapsedSpawnTime += DELTA_TIME;
-		if (mElapsedSpawnTime >= TANK_SPAWNING_TIME)
+		if (mbIsSpawnWaiting)
 		{
-			mbIsSpawning = false;
-			mElapsedSpawnTime = 0.0f;
-			AITankController* controller = new AITankController();
-			controller->Init();
-
-			Tank* newTank = new Tank();
-			SPAWN_INFO info = mInfo.front();
-			mInfo.erase(mInfo.begin());
-			if (mInfo.size() <= 0) { mbIsSpawnEnd = true; }
-			newTank->Init(info.CollisionTag, info.Type, info.TankInfo, info.Color, mArrSpawnPosition[mCurSpawnPositionIndex],
-				mGameManager->CreateCollider(mArrSpawnPosition[mCurSpawnPositionIndex], TANK_BODY_SIZE, controller, eCollisionTag::PassedEnemyTank));
-			controller->SetTank(newTank);
-			controller->SetGameManager(mGameManager);
-			switch (++mSpawnedCount)
+			mElapsedSpawnTime += DELTA_TIME;
+			if (mElapsedSpawnTime >= 0.5f)
 			{
-			case 4:
-			case 11:
-			case 18:
-				newTank->GetSubject()->AddObserver(this);
-				newTank->SetIsHaveItem(true);
-				break;
+				mbIsSpawnWaiting = false;
+				mbIsSpawning = false;
+				mElapsedSpawnTime = 0.0f;
+				AITankController* controller = new AITankController();
+				controller->Init();
+
+				Tank* newTank = new Tank();
+				SPAWN_INFO info = mInfo.front();
+				mInfo.erase(mInfo.begin());
+				if (mInfo.size() <= 0 && mVecTank.size() == 0)
+				{
+					mbIsSpawnEnd = true;
+					mSubject->Notify(this, eSubjectTag::Enemy, eEventTag::GameClear);
+				}
+				newTank->Init(info.CollisionTag, info.Type, info.TankInfo, info.Color, mArrSpawnPosition[mCurSpawnPositionIndex],
+					mGameManager->CreateCollider(mArrSpawnPosition[mCurSpawnPositionIndex], TANK_BODY_SIZE, controller, eCollisionTag::PassedEnemyTank));
+				controller->SetTank(newTank);
+				controller->SetGameManager(mGameManager);
+				switch (++mSpawnedCount)
+				{
+				case 4:
+				case 11:
+				case 18:
+					newTank->GetSubject()->AddObserver(this);
+					newTank->SetIsHaveItem(true);
+					break;
+				}
+
+				mVecTank.push_back(newTank);
+				mVecTankController.push_back(controller);
+
+				if (++mCurSpawnPositionIndex >= mMaxSpawnPosition) { mCurSpawnPositionIndex = 0; }
 			}
-
-			mVecTank.push_back(newTank);
-			mVecTankController.push_back(controller);
-
-			if (++mCurSpawnPositionIndex >= mMaxSpawnPosition) { mCurSpawnPositionIndex = 0; }
+		}
+		else
+		{
+			mElapsedSpawnTime += DELTA_TIME;
+			if (mElapsedSpawnTime >= TANK_SPAWNING_TIME)
+			{
+				mbIsSpawnWaiting = true;
+				mElapsedSpawnTime = 0.0f;
+				PART_MGR->CreateParticle(eParticleTag::Spawn, mArrSpawnPosition[mCurSpawnPositionIndex]);
+			}
 		}
 	}
 	else if (mVecTank.size() < mMaxCountInScreen && mInfo.size() > 0)
 	{
 		mbIsSpawning = true;
 		mElapsedSpawnTime = 0.0f;
-		PART_MGR->CreateParticle(eParticleTag::Spawn, mArrSpawnPosition[mCurSpawnPositionIndex]);
 	}
 }
 
