@@ -7,8 +7,6 @@ class Image;
 class ScoreScene : public GameEntity
 {
 private:
-	
-
 	Image* mScoreSceneBG;
 	Image* mTankImg[4];	
 	Image* mArrowLeft[4];	

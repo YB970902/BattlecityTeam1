@@ -179,6 +179,13 @@ void TileManager::LoadMap(int loadIndex)
 				{
 					mVecAroundTileInfo.push_back(make_pair<POINTFLOAT, POINT>(POINTFLOAT{ (float)newTile->GetPosition().x, (float)newTile->GetPosition().y }, POINT{ x, y }));
 				}
+
+				if (mArrTile[y * TILE_COUNT_X + x].Terrain == eTerrain::Grass)
+				{
+					mGameManager->DestroyCollider(newTile->GetCollider());
+					newTile->SetCollider(nullptr);
+					mVecBush.push_back(newTile);
+				}
 				mMapTile[x][y] = newTile;
 			}
 		}
@@ -207,6 +214,14 @@ void TileManager::LoadEnemyOrder(int loadIndex)
 	}
 
 	CloseHandle(hFile);
+}
+
+void TileManager::BushRender(HDC hdc)
+{
+	for (int i = 0; i < mVecBush.size(); ++i)
+	{
+		mVecBush[i]->Render(hdc);
+	}
 }
 
 void TileManager::ProtectNexus()

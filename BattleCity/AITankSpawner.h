@@ -5,12 +5,14 @@
 class Tank;
 class AITankController;
 class GameManager;
+class Subject;
 class AITankSpawner : public GameEntity, public Observer
 {
 protected:
 	const float MAX_PAUSE_TIME = 10.0f;
 
 	GameManager* mGameManager = nullptr;
+	Subject* mSubject = nullptr;
 	int mMaxCountInScreen = 0;
 	int mSpawnedCount = 0;
 
@@ -25,6 +27,7 @@ protected:
 	int mCurSpawnPositionIndex = 0;
 
 	bool mbIsSpawning = false;
+	bool mbIsSpawnWaiting = false;
 	bool mbIsSpawnEnd = false;
 
 	bool mbIsPause = false;
@@ -41,6 +44,8 @@ public:
 
 	void PauseAll();
 	void DestroyAll();
+
+	inline Subject* GetSubject() { return mSubject; }
 
 	inline bool IsSpawnEnd() { return mbIsSpawnEnd; }
 

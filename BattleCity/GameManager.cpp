@@ -37,7 +37,7 @@ HRESULT GameManager::Init()
 	mFirstPlayerController->Init(FIRST_PLAYER_KEY);
 	mFirstPlayerController->SetGameManager(this);
 	mFirstPlayerSpawner = new TankSpawner();
-	mFirstPlayerSpawner->Init(this, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 1, mTileManager->GetFirstPlayerSpawnPosition());
+	mFirstPlayerSpawner->Init(this, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), SCENE_MGR->GetSceneData("FirstPlayerLife"), mTileManager->GetFirstPlayerSpawnPosition());
 	mFirstPlayerSpawner->SetController(mFirstPlayerController);
 	mFirstPlayerSpawner->GetSubject()->AddObserver(this);
 
@@ -47,18 +47,19 @@ HRESULT GameManager::Init()
 		mSecondPlayerController->Init(SECOND_PLAYER_KEY);
 		mSecondPlayerController->SetGameManager(this);
 		mSecondPlayerSpawner = new TankSpawner();
-		mSecondPlayerSpawner->Init(this, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), 1, mTileManager->GetSecondPlayerSpawnPosition());
+		mSecondPlayerSpawner->Init(this, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), SCENE_MGR->GetSceneData("SecondPlayerLife"), mTileManager->GetSecondPlayerSpawnPosition());
 		mSecondPlayerSpawner->SetController(mSecondPlayerController);
 		mSecondPlayerSpawner->GetSubject()->AddObserver(this);
 	}
 
 	mAISpawner = new AITankSpawner();
 	mAISpawner->Init(this, 5);
+	mAISpawner->GetSubject()->AddObserver(this);
 	int size;
 	POINTFLOAT* enemySpawnPos = mTileManager->GetEnemySpawnPosition(size);
 	mAISpawner->SetSpawnPosition(enemySpawnPos, size);
 	pair<TankSpawnInfo*, int> enemyList = mTileManager->GetEnemyList();
-	for (int i = 0; i < enemyList.second; ++i)
+	for (int i = 0; i < 3/*enemyList.second*/; ++i)
 	{
 		mAISpawner->AddTankSpawnInfo(enemyList.first[i]);
 	}
@@ -80,6 +81,7 @@ void GameManager::Release()
 	SAFE_RELEASE(mPhysics);
 	SAFE_RELEASE(mTileManager);
 	SAFE_RELEASE(mItemManager);
+	PART_MGR->Release();
 }
 
 void GameManager::Update()
@@ -98,6 +100,15 @@ void GameManager::Update()
 		{
 			mItemManager->CreateItem((eItemTag)RANDOM(1, 6));
 		}
+		if (KEY_MGR->IsOnceKeyDown('R'))
+		{
+			DestroyAllEnemy();
+		}
+		if (KEY_MGR->IsOnceKeyDown('K'))
+		{
+			SCENE_MGR->SetSceneData("IsGameOver", 0);
+			mbIsGameEnd = true;
+		}
 	}
 
 	SAFE_UPDATE(mTileManager);
@@ -106,6 +117,12 @@ void GameManager::Update()
 	if (mFirstPlayerSpawner && !mbIsFirstPlayerDead) { mFirstPlayerSpawner->Update(); }
 	if (mSecondPlayerSpawner && !mbIsSecondPlayerDead) { mSecondPlayerSpawner->Update(); }
 	SAFE_UPDATE(mItemManager);
+
+	if (mbIsGameEnd)
+	{
+		mElaspedChangeSceneTime += DELTA_TIME;
+		if (mElaspedChangeSceneTime > MAX_DURATION_CHANGE_SCENE_TIME) { SCENE_MGR->ChangeScene(eSceneTag::ScoreScene); }
+	}
 }
 
 void GameManager::Render(HDC hdc)
@@ -113,12 +130,13 @@ void GameManager::Render(HDC hdc)
 	mBackgroundGray->Render(hdc);
 	mBackgroundBlack->Render(hdc, WIN_SIZE_X / 2, WIN_SIZE_Y / 2);
 	SAFE_RENDER(mAISpawner);
+	SAFE_RENDER(mTileManager);
 	SAFE_RENDER(mAmmoSpawner);
 
 	SAFE_RENDER(mFirstPlayerSpawner);
 	SAFE_RENDER(mSecondPlayerSpawner);
+	if (mTileManager) { mTileManager->BushRender(hdc); }
 
-	SAFE_RENDER(mTileManager);
 	SAFE_RENDER(mItemManager);
 
 	if (mbIsDebugMode) { SAFE_RENDER(mPhysics); }
@@ -233,10 +251,16 @@ void GameManager::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag ev
 		mbIsSecondPlayerDead = true;
 		SetGameOver();
 	}
+	else if (subjectTag == eSubjectTag::Enemy && eventTag == eEventTag::GameClear)
+	{
+		mbIsGameEnd = true;
+		SCENE_MGR->SetSceneData("IsGameOver", 0);
+	}
 }
 
 void GameManager::SetGameOver()
 {
+	SCENE_MGR->SetSceneData("IsGameOver", 1);
 	mTileManager->ChangeNexusImageToFlag();
 	UI_MGR->AddMovingUI(eImageTag::UIGameOver, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_START_POS_Y }, POINTFLOAT{ WIN_SIZE_X * 0.5f, WIN_SIZE_Y * 0.5f }, 2.0f, 1.0f);
 }

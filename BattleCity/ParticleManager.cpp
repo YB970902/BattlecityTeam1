@@ -7,7 +7,7 @@ HRESULT ParticleManager::Init()
 {
 	AddParticle(eParticleTag::SmallBoom, eImageTag::EffectSmallBoom, 4, 0.25, 0.175f);
 	AddParticle(eParticleTag::BigBoom, eImageTag::EffectBigBoom, 4, 0.5, 0.25f, 0.25f);
-	AddParticle(eParticleTag::Spawn, eImageTag::EffectSpawn, 4, TANK_SPAWNING_TIME, 0.25f);
+	AddParticle(eParticleTag::Spawn, eImageTag::EffectSpawn, 4, 0.5f, 0.25f);
 	AddParticle(eParticleTag::Shield, eImageTag::EffectShield, 4, INVENCIBLE_ITEM_DURATION_TIME, 0.1f);
 	return S_OK;
 }

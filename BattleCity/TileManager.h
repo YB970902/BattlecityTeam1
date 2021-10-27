@@ -37,6 +37,7 @@ private:
 	float mCurSparkleElapsedTime = 0.0f;
 	float mMaxSparkleDurationTime = 0.0f;
 	vector<pair<POINTFLOAT, POINT>> mVecAroundTileInfo;
+	vector<Tile*> mVecBush;
 	TagTile mArrTile[TILE_COUNT_X * TILE_COUNT_Y];
 
 	TagEnemyInfo* mEnemyInfo;
@@ -45,6 +46,7 @@ public:
 	void Release();
 	void Update();
 	void Render(HDC hdc);
+	void BushRender(HDC hdc);
 
 	void LoadMap(int loadIndex = 0);
 	void LoadEnemyOrder(int loadIndex = 0);

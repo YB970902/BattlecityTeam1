@@ -26,6 +26,7 @@ public:
 
 	virtual void OnCollided(eCollisionDir dir, int tag) override;
 
+	void SetCollider(Collider* collider) { this->mCollider = collider; }
 	Collider* GetCollider() { return this->mCollider; }
 	POINT GetPosition() { return this->mPos; }
 
