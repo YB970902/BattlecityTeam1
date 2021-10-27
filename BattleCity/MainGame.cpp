@@ -4,7 +4,9 @@
 #include "MapEditorScene.h"
 #include "BattleScene.h"
 #include "CommonFunction.h"
-
+#include "TitleScene.h"
+#include "SlateScene.h"
+#include "ScoreScene.h"
 #include "PhyscisScene.h"
 #include "TankScene.h"
 
@@ -33,10 +35,19 @@ HRESULT MainGame::Init()
 	SCENE_MGR->AddScene(eSceneTag::PhysicsScene, new PhyscisScene);
 	SCENE_MGR->AddScene(eSceneTag::BattleScene, new BattleScene);
 	SCENE_MGR->AddScene(eSceneTag::TankScene, new TankScene);
+	SCENE_MGR->AddScene(eSceneTag::TitleScene, new TitleScene);
+	SCENE_MGR->AddScene(eSceneTag::SlateScene, new SlateScene);
+	SCENE_MGR->AddScene(eSceneTag::ScoreScene, new ScoreScene);
+	
 	//SCENE_MGR->ChangeScene(eSceneTag::PhysicsScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
-	SCENE_MGR->ChangeScene(eSceneTag::BattleScene);
+	SCENE_MGR->ChangeScene(eSceneTag::ScoreScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TankScene);
+	
+	
+
+	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
+	//SCENE_MGR->ChangeScene(eSceneTag::TestScene);
 
 	return S_OK;
 }

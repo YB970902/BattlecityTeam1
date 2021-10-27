@@ -166,6 +166,9 @@
     <ClCompile Include="PhyscisScene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="MapEditor.cpp" />
+    <ClCompile Include="Score.cpp" />
+    <ClCompile Include="ScoreScene.cpp" />
+    <ClCompile Include="SlateScene.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="Tank.cpp" />
     <ClCompile Include="TankController.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AITankController.h" />
@@ -206,8 +210,11 @@
     <ClInclude Include="Physcis.h" />
     <ClInclude Include="PhyscisScene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Score.h" />
+    <ClInclude Include="ScoreScene.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="MapEditor.h" />
+    <ClInclude Include="SlateScene.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="TankController.h" />
@@ -218,6 +225,7 @@
     <ClInclude Include="TileManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerManager.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
