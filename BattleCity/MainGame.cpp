@@ -44,9 +44,8 @@ HRESULT MainGame::Init()
 	SCENE_MGR->ChangeScene(eSceneTag::ScoreScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TankScene);
 	
-	
 
-	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
+	SCENE_MGR->ChangeScene(eSceneTag::TitleScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TestScene);
 
 	return S_OK;
