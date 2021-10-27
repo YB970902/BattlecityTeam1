@@ -18,7 +18,6 @@ HRESULT TitleScene::Init()
 	mbSelectArea = false;
 	mbCursorFrameToggle = false;
 	mCursorToggleTime = 0.0f;
-	
 
 	return S_OK;
 }
@@ -43,6 +42,18 @@ void TitleScene::Update()
 		if (KEY_MGR->IsOnceKeyDown(VK_DOWN)
 			|| KEY_MGR->IsOnceKeyDown(VK_UP)){ mbSelectArea == true ? mbSelectArea = false : mbSelectArea = true; }
 			mTitleCursor->SetCurrFrameX(7 - mbCursorFrameToggle);
+	}
+	if (KEY_MGR->IsOnceKeyDown(VK_SPACE))
+	{
+		if (mbSelectArea == false)
+		{
+			SCENE_MGR->SetSceneData("1P", (int)mbSelectArea);
+		}
+		else
+		{
+			SCENE_MGR->SetSceneData("2P", (int)mbSelectArea);
+		}
+		SCENE_MGR->ChangeScene(eSceneTag::SlateScene);
 	}
 }
 

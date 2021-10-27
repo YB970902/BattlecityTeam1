@@ -10,6 +10,7 @@ enum class eImageTag
 	BlackBG,
 	TileButton,
 	EnemyOrderBox,
+	BattleSceneGrayBG,
 	BattleSceneBlackBG,
 	Tank,
 	AmmoUp,

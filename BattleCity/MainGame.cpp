@@ -38,11 +38,11 @@ HRESULT MainGame::Init()
 	SCENE_MGR->AddScene(eSceneTag::SlateScene, new SlateScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::PhysicsScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
-	SCENE_MGR->ChangeScene(eSceneTag::BattleScene);
+	//SCENE_MGR->ChangeScene(eSceneTag::BattleScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TankScene);
 	
 
-	SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
+	SCENE_MGR->ChangeScene(eSceneTag::TitleScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TestScene);
 
 	return S_OK;
