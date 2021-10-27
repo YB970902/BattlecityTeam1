@@ -59,7 +59,7 @@ HRESULT GameManager::Init()
 	POINTFLOAT* enemySpawnPos = mTileManager->GetEnemySpawnPosition(size);
 	mAISpawner->SetSpawnPosition(enemySpawnPos, size);
 	pair<TankSpawnInfo*, int> enemyList = mTileManager->GetEnemyList();
-	for (int i = 0; i < 3/*enemyList.second*/; ++i)
+	for (int i = 0; i < enemyList.second; ++i)
 	{
 		mAISpawner->AddTankSpawnInfo(enemyList.first[i]);
 	}

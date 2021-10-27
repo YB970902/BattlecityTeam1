@@ -32,8 +32,10 @@ protected:
 
 	bool mbIsPause = false;
 	float mElapsedPauseTime = 0.0f;
+
 public:
 	virtual ~AITankSpawner() {}
+
 	HRESULT Init(GameManager* gameManager, int maxCountInScreen);
 	void Release();
 	void Update();
@@ -44,6 +46,8 @@ public:
 
 	void PauseAll();
 	void DestroyAll();
+
+	inline int GetLeftSpawnCount() { return mInfo.size(); }
 
 	inline Subject* GetSubject() { return mSubject; }
 
