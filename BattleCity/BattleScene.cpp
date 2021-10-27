@@ -68,6 +68,7 @@ HRESULT BattleScene::Init()
 
 void BattleScene::Update()
 {
+	SCENE_MGR->ChangeScene(eSceneTag::ScoreScene);
 	if (KEY_MGR->IsOnceKeyDown(VK_TAB))
 	{
 		mbIsDebugMode = !mbIsDebugMode;

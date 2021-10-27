@@ -11,6 +11,7 @@ enum class eImageTag
 	TileButton,
 	EnemyOrderBox,
 	BattleSceneBlackBG,
+	BattleSceneGrayBG,
 	Tank,
 	AmmoUp,
 	AmmoDown,
@@ -31,6 +32,17 @@ enum class eImageTag
 	SlateSceneStage,
 	WhiteNumber,
 	OrangeNumber,
+
+	LeftArrow,
+	RightArrow,
+	PointsText,
+	PlayerText,
+	PlayerText2,
+	StageText,
+	TotalText,
+	BonusText
+
+
 };
 
 class Image;

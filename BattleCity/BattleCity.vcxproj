@@ -163,6 +163,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="MapEditor.cpp" />
     <ClCompile Include="Score.cpp" />
+    <ClCompile Include="ScoreScene.cpp" />
     <ClCompile Include="SlateScene.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="Tank.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="PhyscisScene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Score.h" />
+    <ClInclude Include="ScoreScene.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="MapEditor.h" />
     <ClInclude Include="SlateScene.h" />

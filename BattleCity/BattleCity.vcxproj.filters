@@ -171,6 +171,9 @@
     <ClCompile Include="Score.cpp">
       <Filter>2DFrameWork\Score</Filter>
     </ClCompile>
+    <ClCompile Include="ScoreScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImageManager.h">
@@ -286,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="Score.h">
       <Filter>2DFrameWork\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreScene.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
