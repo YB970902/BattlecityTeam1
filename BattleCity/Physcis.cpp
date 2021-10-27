@@ -99,6 +99,7 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 
 	if (collidedTag > 1)
 	{
+		// 내가 가려는 방향의 반대방향의 힘이 작용한다면 보정을 막는다.
 		if ((dir.x > 0 && addedForce.x < 0) || (dir.x < 0 && addedForce.x > 0))
 		{
 			addedForce.y = 0;
@@ -108,29 +109,30 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 			addedForce.x = 0;
 		}
 
+		// 움직이게 함
 		col->AddPlayerPos(addedForce);
 
-		// 여기에 들어가면 보정을 하지 않음.
+		// 이동후에 충돌검사를 하고 충돌을 했을경우 잘못 된것이므로 수정한다.
+		// 수정방법은 상대 충돌체와 딱 붙도록 수정해준다.
 		if (IsCollided(col))
 		{
-			if ((dir.x > 0 && oldOverlapped.x < 0) || (dir.x < 0 && oldOverlapped.x > 0))
+			// oldOverlapped는 충돌면적이다.
+			
+			// 충돌면적이 세로로 길쭉함
+			if (fabs(oldOverlapped.x) < fabs(oldOverlapped.y))
 			{
-				oldPos.x = col->GetPlayerPos().x + oldOverlapped.x;
-				if (dir.x > 0) { col->OnCollided(eCollisionDir::Left, collidedTag); }
-				else { col->OnCollided(eCollisionDir::Right, collidedTag); }
+				if (oldOverlapped.x < 0) { col->OnCollided(eCollisionDir::Right, collidedTag); }
+				else { col->OnCollided(eCollisionDir::Left, collidedTag); }
+				oldPos.x += oldOverlapped.x;
 			}
-			else if ((dir.y > 0 && oldOverlapped.y < 0) || (dir.y < 0 && oldOverlapped.y > 0))
-			{
-				oldPos.y = col->GetPlayerPos().y + oldOverlapped.y;
-				if (dir.y > 0) { col->OnCollided(eCollisionDir::Top, collidedTag); }
-				else { col->OnCollided(eCollisionDir::Bottom, collidedTag); }
-			}
-			// 이외엔 무조건 위에서 박음
+			// 충돌면적이 가로로 길쭉함
 			else
 			{
-				col->OnCollided(eCollisionDir::Top, collidedTag);
+				if (oldOverlapped.y < 0) { col->OnCollided(eCollisionDir::Bottom, collidedTag); }
+				else { col->OnCollided(eCollisionDir::Top, collidedTag); }
+				oldPos.y += oldOverlapped.y;
 			}
-			col->SetPlayerPos({ oldPos.x,oldPos.y });
+			col->SetPlayerPos(oldPos);
 		}
 		//여기는 보정이 됨
 		else
@@ -145,7 +147,6 @@ void Physcis::CheckCollider(Collider* col, POINTFLOAT dir, POINTFLOAT oldPos)
 				if (addedForce.x < 0) { col->OnCollided(eCollisionDir::Right, collidedTag); }
 				else { col->OnCollided(eCollisionDir::Left, collidedTag); }
 			}
-			//col->AddPlayerPos(addedForce);
 		}
 	}
 	// 이동시키지는 않지만 충돌했다고 말은 해줌
@@ -239,15 +240,12 @@ bool Physcis::IsCollided(Collider* col1, Collider* col2)
 
 bool Physcis::IsCollided(Collider* col)
 {
-	//if ((((int)col->GetTag()) & 4) == 4)		//탱크일경우에만
+	for (int i = 0; i < 4; i++)
 	{
-		for (int i = 0; i < 4; i++)
+		for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
 		{
-			for (int j = 0; j < mGridMap[mCheckGrid[i].x][mCheckGrid[i].y].size(); j++)
-			{
-				if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
-				if (IsCollided(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j])) { return true; }
-			}
+			if (mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j] == col) { continue; }
+			if (IsCollided(col, mGridMap[mCheckGrid[i].x][mCheckGrid[i].y][j])) { return true; }
 		}
 	}
 	return false;
@@ -294,16 +292,14 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 			overlappedY = col2->GetPlayerBody().bottom - col1->GetPlayerBody().top;
 		}
 
-		oldOverlapped = { overlappedX,overlappedY };
-
 		if (((col1Tag | col2Tag) & 0b1010) == 0b1010)
 		{
-			if (fabs(overlappedX) < fabs(overlappedY) && addedForce.x < fabs(overlappedX))
+			if (fabs(overlappedX) < fabs(overlappedY) && fabs(addedForce.x) < fabs(overlappedX))
 			{
 				addedForce.x = overlappedX;
 			}
 			// 상하이동
-			else if (fabs(overlappedX) > fabs(overlappedY) && addedForce.y < fabs(overlappedY))
+			else if (fabs(overlappedX) > fabs(overlappedY) && fabs(addedForce.y) < fabs(overlappedY))
 			{
 				addedForce.y = overlappedY;
 			}
@@ -320,15 +316,14 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 			if (overlappedX < 0)
 			{
 				// 쪽에서 박음
-				//col1->OnCollided(eCollisionDir::Right, col2->GetTag());
 				col2->OnCollided(eCollisionDir::Left, (int)col1->GetTag());
 			}
 			else
 			{
 				// 오른쪽에서 박음
-				//col1->OnCollided(eCollisionDir::Left, col2->GetTag());
 				col2->OnCollided(eCollisionDir::Right, (int)col1->GetTag());
 			}
+			if (fabs(oldOverlapped.x) < fabs(overlappedX)) { oldOverlapped.x = overlappedX; }
 		}
 		else
 		{
@@ -336,47 +331,80 @@ int Physcis::PreventOverlapped(Collider* col1, Collider* col2, POINTFLOAT& added
 			if (overlappedY < 0)
 			{
 				// 위쪽에서 박음
-				//col1->OnCollided(eCollisionDir::Bottom, col2->GetTag());
 				col2->OnCollided(eCollisionDir::Top, (int)col1->GetTag());
 			}
 			else
 			{
 				// 아래쪽에서 박음
-				//col1->OnCollided(eCollisionDir::Top, col2->GetTag());
 				col2->OnCollided(eCollisionDir::Bottom, (int)col1->GetTag());
 			}
+			if (fabs(oldOverlapped.y) < fabs(overlappedY)) { oldOverlapped.y = overlappedY; }
 		}
-		// 겹친 영역이 세로로 길쭉한 형태이고 보정하기에 딱 좋은 상태
-		//바디 사이즈의 3분의 1 보다 작게 겹친경우 보는 방향에 따라 Y위치 보정을 해 준다.
-		if (fabs(overlappedX) < fabs(overlappedY) &&
-			fabs(overlappedY) < (col2->GetPlayerBodySize() * 0.5f) &&
-			((overlappedX > 0 && dir.x < 0) || (overlappedX < 0 && dir.x > 0)))
+
+		// 충돌면적이 세로로 길쭉함
+		if (fabs(overlappedX) < fabs(overlappedY))
 		{
-			if (addedForce.y < fabs(overlappedY))
+			// 세로 길이가 상대 충돌체의 크기의 절반보다 적음(보정될만한 크기)
+			// 겹친 가로면적이 0보다 적고(왼쪽으로 강제이동하려고 함) 왼쪽을 향해 움직이고 있거나
+			// 겹친 가로면적이 0보다 크고(오른쪽으로 강제이동하려고 함) 왼쪽을 향해 움직이고 있음
+			if (fabs(overlappedY) < (col2->GetPlayerBodySize() * 0.5f) &&
+				((overlappedX > 0 && dir.x < 0) || (overlappedX < 0 && dir.x > 0)))
 			{
-				addedForce.y = overlappedY;
+				// 상대 충돌체가 나보다 위에 있으면 아래로 내려주고
+				// 나보다 아래에 있으면 위로 올려줘야 함
+
+				// 상대가 나보다 아래에 있음
+				if (overlappedY < 0)
+				{
+					if (addedForce.y > overlappedY) { addedForce.y = overlappedY; }
+				}
+				// 상대가 나보다 위에 있음
+				else
+				{
+					if (addedForce.y < overlappedY) { addedForce.y = overlappedY; }
+				}
+			}
+			// 보정하지 않아도 될만함
+			else
+			{
+				// 좌우이동
+				if (fabs(overlappedX) < fabs(overlappedY) && fabs(addedForce.x) < fabs(overlappedX))
+				{
+					addedForce.x = overlappedX;
+				}
 			}
 		}
-		// 겹친 영역이 가로로 길쭉한 형태이고 보정하기에 딱 좋은 상태
-		// 바디 사이즈의 3분의 1보자 작게 겹친경우 보는 방향에 따라 X위치 보정을 해 준다.
-		else if (fabs(overlappedX) > fabs(overlappedY) &&
-			fabs(overlappedX) < (col2->GetPlayerBodySize() * 0.5f) &&
-			((overlappedY < 0 && dir.y > 0) || (overlappedY > 0 && dir.y < 0)))
+		// 충돌면적이 가로로 길쭉함
+		else
 		{
-			if (addedForce.x < fabs(overlappedX))
+			// 가로 길이가 상대 충돌체의 크기의 절반보다 적음(보정될만한 크기)
+			// 겹친 세로면적이 0보다 적고(위쪽으로 강제이동하려고 함) 아래쪽을 향해 움직이고 있거나
+			// 겹친 세로면적이 0보다 크고(아래쪽으로 강제이동하려고 함) 위쪽을 향해 움직이고 있음
+			if (fabs(overlappedX) < (col2->GetPlayerBodySize() * 0.5f) &&
+				((overlappedY < 0 && dir.y > 0) || (overlappedY > 0 && dir.y < 0)))
 			{
-				addedForce.x = overlappedX;
+				// 상대 충돌체가 나보다 왼쪽에 있으면 오른쪽으로 밀어주고
+				// 나보다 오른쪽에 있으면 왼쪽으로 밀어줘야 함
+
+				// 상대가 나보다 오른쪽에 있음
+				if (overlappedX < 0)
+				{
+					if (addedForce.x > overlappedX) { addedForce.x = overlappedX; }
+				}
+				// 상대가 나보다 왼쪽에 있음
+				else
+				{
+					if (addedForce.x < overlappedX) { addedForce.x = overlappedX; }
+				}
 			}
-		}
-		// 좌우이동
-		else if (fabs(overlappedX) < fabs(overlappedY) && addedForce.x < fabs(overlappedX))
-		{
-			addedForce.x = overlappedX;
-		}
-		// 상하이동
-		else if (fabs(overlappedX) > fabs(overlappedY) && addedForce.y < fabs(overlappedY))
-		{
-			addedForce.y = overlappedY;
+			else
+			{
+				// 상하이동
+				if (fabs(overlappedX) > fabs(overlappedY) && fabs(addedForce.y) < fabs(overlappedY))
+				{
+					addedForce.y = overlappedY;
+				}
+			}
 		}
 
 		return (int)col2->GetTag();

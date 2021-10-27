@@ -12,6 +12,7 @@ enum class eImageTag
 	EnemyOrderBox,
 	BattleSceneGrayBG,
 	BattleSceneBlackBG,
+	BattleSceneGrayBG,
 	Tank,
 	AmmoUp,
 	AmmoDown,
@@ -21,6 +22,12 @@ enum class eImageTag
 	EffectBigBoom,
 	EffectShield,
 	EffectSpawn,
+	UIScore100,
+	UIScore200,
+	UIScore300,
+	UIScore400,
+	UIScore500,
+	UIGameOver,
 	ItemInvencible,
 	ItemProtect,
 	ItemStar,
@@ -32,6 +39,17 @@ enum class eImageTag
 	SlateSceneStage,
 	WhiteNumber,
 	OrangeNumber,
+
+	LeftArrow,
+	RightArrow,
+	PointsText,
+	PlayerText,
+	PlayerText2,
+	StageText,
+	TotalText,
+	BonusText
+
+
 };
 
 class Image;

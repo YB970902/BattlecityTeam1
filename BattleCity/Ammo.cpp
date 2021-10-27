@@ -3,9 +3,11 @@
 #include "Image.h"
 #include "Tank.h"
 #include "Collider.h"
+#include "Subject.h"
 
 HRESULT Ammo::Init(eDir dir, eCollisionTag tag, float speed)
 {
+	mSubject = new Subject();
 	mDir = dir;
 	mCollisionTag = tag;
 	mSpeed = speed;
@@ -27,11 +29,8 @@ HRESULT Ammo::Init(eDir dir, eCollisionTag tag, float speed)
 
 void Ammo::Release()
 {
-	if (mOwner)
-	{
-		mOwner->OnAmmoCollided(this);
-		mOwner = nullptr;
-	}
+	if (mSubject) { mSubject->Notify(this, eSubjectTag::Ammo, eEventTag::Released); }
+	SAFE_DELETE(mSubject);
 	mbIsFire = false;
 	mImage = nullptr;
 	mbIsDead = true;
@@ -61,6 +60,21 @@ void Ammo::OnCollided(eCollisionDir dir, int tag)
 	PART_MGR->CreateParticle(eParticleTag::SmallBoom, mPos);
 }
 
+void Ammo::AddObserver(Observer* obs)
+{
+	mSubject->AddObserver(obs);
+	mSubject->Notify(dynamic_cast<GameEntity*>(this), eSubjectTag::Ammo, eEventTag::Added);
+}
+
 void Ammo::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag)
 {
+	if (subjectTag == eSubjectTag::Tank)
+	{
+		switch (eventTag)
+		{
+		case eEventTag::Released:
+			mSubject->RemoveObserver(dynamic_cast<Observer*>(obj));
+			break;
+		}
+	}
 }

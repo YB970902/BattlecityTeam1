@@ -17,6 +17,8 @@ private:
 	int count;
 	bool mSort;
 	float mScale;
+
+	float mRenderTime;
 	
 public:
 	HRESULT Init() override;
@@ -27,6 +29,7 @@ public:
 
 	void SetScore(int score);
 	inline void SetScorePos(POINTFLOAT pos) { this->mScorePos = pos; }
+	inline int GetScore() { return this->mTotalScore; }
 	void AddScore(int score);
 
 

@@ -25,6 +25,13 @@ void ImageManager::Init()
 	IMG_MGR->AddImage(eImageTag::TileButton, "Image/button02.bmp", 60, 270, 2, 9, true, RGB(255, 0, 255));
 	IMG_MGR->AddImage(eImageTag::EnemyOrderBox, "Image/Enemy/Enemy.bmp", (32 * 8), (32 * 6), 8, 6, true, RGB(255, 0, 255));
 
+	AddImage(eImageTag::UIScore100, "Image/Text/Score100.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore200, "Image/Text/Score200.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore300, "Image/Text/Score300.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore400, "Image/Text/Score400.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore500, "Image/Text/Score500.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIGameOver, "Image/Text/Game_Over.bmp", 64, 30, true, RGB(255, 0, 255));
+
 	AddImage(eImageTag::ItemInvencible, "Image/Item/Item1.bmp", 32, 32, true, RGB(255, 0, 255));
 	AddImage(eImageTag::ItemProtect, "Image/Item/Item3.bmp", 32, 32, true, RGB(255, 0, 255));
 	AddImage(eImageTag::ItemStar, "Image/Item/Item4.bmp", 32, 32, true, RGB(255, 0, 255));
@@ -44,6 +51,22 @@ void ImageManager::Init()
 
 	//Score
 	IMG_MGR->AddImage(eImageTag::OrangeNumber, "Image/Text/ScoreNumber.bmp", 120, 48, 5, 2, true, RGB(255, 0, 255));
+	AddImage(eImageTag::LeftArrow, "Image/Icon/Arrow_left.bmp", 23, 20, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::RightArrow, "Image/Icon/Arrow_right.bmp", 23, 20, 1, 1, true, RGB(255, 0, 255));
+
+	AddImage(eImageTag::PointsText, "Image/Text/PTS.bmp", 90, 40, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::PlayerText, "Image/Text/Player1.bmp", 230, 40, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::PlayerText2, "Image/Text/Player2.bmp", 212, 36, 1, 1, true, RGB(0, 0, 0));
+
+	AddImage(eImageTag::StageText, "Image/Text/Stage_w.bmp", 111, 21, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::TotalText, "Image/Text/TotalScore.bmp", 360, 40, 1, 1, true, RGB(255, 0, 255));
+	//AddImage(eImageTag::BonusText, "Image/Text/Player1.bmp", 23, 20, 1, 1, true, RGB(255, 0, 255));
+	AddImage(eImageTag::BonusText, "Image/Text/BONUS.bmp", 99, 17, 1, 1, true, RGB(255, 0, 255));
+
+
+
+
+
 }
 
 void ImageManager::Release()

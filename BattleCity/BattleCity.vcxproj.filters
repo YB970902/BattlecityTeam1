@@ -64,6 +64,9 @@
     <Filter Include="2DFrameWork\Score">
       <UniqueIdentifier>{2289326f-6e53-47e4-8893-d71c69a104d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2DFrameWork\UI">
+      <UniqueIdentifier>{2bcbb078-5866-47c5-aa4f-85536fc4cdc0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -170,6 +173,24 @@
     </ClCompile>
     <ClCompile Include="Score.cpp">
       <Filter>2DFrameWork\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>2DFrameWork\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedUI.cpp">
+      <Filter>2DFrameWork\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="MovingUI.cpp">
+      <Filter>2DFrameWork\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>2DFrameWork\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="NexusTile.cpp">
+      <Filter>2DFrameWork\MapEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -286,6 +307,24 @@
     </ClInclude>
     <ClInclude Include="Score.h">
       <Filter>2DFrameWork\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>2DFrameWork\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedUI.h">
+      <Filter>2DFrameWork\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingUI.h">
+      <Filter>2DFrameWork\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>2DFrameWork\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="NexusTile.h">
+      <Filter>2DFrameWork\MapEditor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

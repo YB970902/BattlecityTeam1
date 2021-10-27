@@ -3,12 +3,12 @@
 #include "CollisionChecker.h"
 
 class Tank;
-class AmmoSpawner;
+class GameManager;
 class AITankController : public GameEntity, public CollisionChecker
 {
 private:
 	Tank* mTank = nullptr;
-	AmmoSpawner* mAmmoSpawner = nullptr;
+	GameManager* mGameManager = nullptr;
 
 	float mElapsedRotateTime = 0.0f;
 	float mMaxRotateTime = 0.0f;
@@ -25,7 +25,7 @@ public:
 	void SetTank(Tank* tank) { mTank = tank; if (mTank) { Rotate(); } }
 
 	void OnCollided(eCollisionDir dir, int tag) override;
-	void SetAmmoSpawner(AmmoSpawner* spawner) { mAmmoSpawner = spawner; }
+	void SetGameManager(GameManager* gameManager) { mGameManager = gameManager; }
 
 private:
 	void InitTimer();

@@ -10,13 +10,11 @@ struct ItemInfo
 };
 
 class Item;
-class Physcis;
-class TileManager;
+class GameManager;
 class ItemManager : public GameEntity, public Observer
 {
 private:
-	Physcis* mPhysics = nullptr;
-	TileManager* mTileManager = nullptr;
+	GameManager* mGameManager = nullptr;
 
 	vector<Item*> mVecItem;
 	map<eItemTag, ItemInfo> mMapItemInfo;
@@ -29,8 +27,7 @@ public:
 
 	void CreateItem(eItemTag itemTag);
 
-	void SetPhysics(Physcis* physics) { mPhysics = physics; }
-	void SetTileManager(TileManager* tileManager) { mTileManager = tileManager; };
+	void SetGameManager(GameManager* gameManager) { mGameManager = gameManager; }
 
 	virtual ~ItemManager() {}
 

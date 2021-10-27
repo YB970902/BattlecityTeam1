@@ -13,6 +13,7 @@ HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankCo
 	mType = type;
 	mInfo = info;
 	mColor = color;
+	mDefaultColor = color;
 
 	mPos = pos;
 
@@ -20,16 +21,18 @@ HRESULT Tank::Init(eCollisionTag colTag, eTankType type, TANK_INFO info, eTankCo
 
 	mSubject = new Subject();
 
+	if (mInfo.Health > 1)
+	{
+		mbIsChangeColor = true;
+		mMainColor = eTankColor::Green;
+		mSubColor = eTankColor::White;
+	}
+
 	return S_OK;
 }
 
 void Tank::Release()
 {
-	for (int i = 0; i < mVecAmmo.size(); ++i)
-	{
-		mVecAmmo[i]->SetOwner(nullptr);
-	}
-
 	mSubject->Notify(this, eSubjectTag::Tank, eEventTag::Released);
 	SAFE_DELETE(mSubject);
 
@@ -38,6 +41,26 @@ void Tank::Release()
 
 void Tank::Update()
 {
+	if (mbIsChangeColor)
+	{
+		mElapsedChangeColorTime += DELTA_TIME;
+		if (mElapsedChangeColorTime >= MAX_CHANGE_COLOR_TIME)
+		{
+			mElapsedChangeColorTime -= MAX_CHANGE_COLOR_TIME;
+			swap<eTankColor>(mMainColor, mSubColor);
+		}
+	}
+
+	if (mbIsHaveItem)
+	{
+		mElapsedItemSparkleTime += DELTA_TIME;
+		if (mElapsedItemSparkleTime >= MAX_ITEM_SPARKLE_TIME)
+		{
+			mElapsedItemSparkleTime -= MAX_ITEM_SPARKLE_TIME;
+			swap<eTankColor>(mDefaultColor, mItemColor);
+		}
+	}
+
 	if (mbIsInvincible)
 	{
 		mElapsedInvencibleTime += DELTA_TIME;
@@ -78,9 +101,25 @@ void Tank::Render(HDC hdc)
 {
 	if (mbIsDead) { return; }
 	if (mbIsSparkle) { return; }
-	mImage->Render(hdc, mPos.x, mPos.y,
-		COLOR_START_FRAME[(int)mColor].x + (int)mDir * 2 + mCurAnim,
-		COLOR_START_FRAME[(int)mColor].y + (int)mType + mStarCount);
+	if (mbIsHaveItem)
+	{
+		mImage->Render(hdc, mPos.x, mPos.y,
+			COLOR_START_FRAME[(int)mItemColor].x + (int)mDir * 2 + mCurAnim,
+			COLOR_START_FRAME[(int)mItemColor].y + (int)mType + mStarCount);
+	}
+	else if (mbIsChangeColor)
+	{
+		mImage->Render(hdc, mPos.x, mPos.y,
+			COLOR_START_FRAME[(int)mMainColor].x + (int)mDir * 2 + mCurAnim,
+			COLOR_START_FRAME[(int)mMainColor].y + (int)mType + mStarCount);
+	}
+	else
+	{
+		mImage->Render(hdc, mPos.x, mPos.y,
+			COLOR_START_FRAME[(int)mColor].x + (int)mDir * 2 + mCurAnim,
+			COLOR_START_FRAME[(int)mColor].y + (int)mType + mStarCount);
+	}
+	
 }
 
 void Tank::Move(eDir dir)
@@ -112,41 +151,53 @@ void Tank::OnCollided(eCollisionDir dir, int tag)
 		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::FirstPlayerAmmo) ||
 		(mCollisionTag == eCollisionTag::EnemyTank && tag == (int)eCollisionTag::SecondPlayerAmmo))
 	{
-		--mInfo.Health;
-		if (mInfo.Health == 0) { mbIsDead = true; }
+		mCollidedTag = (eCollisionTag)tag;
+		OnDamaged();
 	}
 	else if ((mCollisionTag == eCollisionTag::FirstPlayerTank && tag == (int)eCollisionTag::SecondPlayerAmmo) ||
 		(mCollisionTag == eCollisionTag::SecondPlayerTank && tag == (int)eCollisionTag::FirstPlayerAmmo))
 	{
-		TurnOnStun();
+		ChangeToStun();
 	}
 }
 
-void Tank::AddAmmo(Ammo* ammo)
-{
-	mVecAmmo.push_back(ammo);
-	ammo->SetOwner(this);
-}
-
-void Tank::OnAmmoCollided(Ammo* ammo)
-{
-	mVecAmmo.erase(find(mVecAmmo.begin(), mVecAmmo.end(), ammo));
-	ammo->SetOwner(nullptr);
-}
-
-void Tank::TurnOnInvencible()
+void Tank::ChangeToInvencible()
 {
 	mbIsInvincible = true;
 	mElapsedInvencibleTime = 0.0f;
 	PART_MGR->CreateParticle(eParticleTag::Shield, this);
 }
 
-void Tank::TurnOnStun()
+void Tank::ChangeToStun()
 {
 	mbIsStun = true;
 	mbIsSparkle = true;
 	mElapsedStunTime = 0.0f;
 	mElapsedSparkleTime = 0.0f;
+}
+
+void Tank::OnDamaged()
+{
+	if (mbIsHaveItem) { mSubject->Notify(this, eSubjectTag::Tank, eEventTag::DropItem); }
+	--mInfo.Health;
+	if (mInfo.Health == 0) { mbIsDead = true; }
+	else
+	{
+		switch (mInfo.Health)
+		{
+		case 3:
+			mMainColor = eTankColor::Yellow;
+			mSubColor = eTankColor::White;
+			break;
+		case 2:
+			mMainColor = eTankColor::Yellow;
+			mSubColor = eTankColor::Green;
+			break;
+		case 1:
+			mbIsChangeColor = false;
+			break;
+		}
+	}
 }
 
 void Tank::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag)
@@ -161,6 +212,19 @@ void Tank::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag eventTag)
 			break;
 		case eEventTag::Released:
 			mSubject->RemoveObserver(dynamic_cast<Observer*>(obj));
+			break;
+		}
+		break;
+	case eSubjectTag::Ammo:
+		switch (eventTag)
+		{
+		case eEventTag::Added:
+			mSubject->AddObserver(dynamic_cast<Observer*>(obj));
+			++mFiredAmmoCount;
+			break;
+		case eEventTag::Released:
+			mSubject->RemoveObserver(dynamic_cast<Observer*>(obj));
+			--mFiredAmmoCount;
 			break;
 		}
 		break;

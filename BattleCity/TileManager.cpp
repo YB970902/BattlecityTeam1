@@ -1,10 +1,12 @@
 #include "Config.h"
 #include "TileManager.h"
 #include "Tile.h"
+#include "NexusTile.h"
 #include "MapEditor.h"
 #include "Image.h"
-#include "Physcis.h"
 #include "Collider.h"
+#include "GameManager.h"
+#include "Subject.h"
 
 HRESULT TileManager::Init(POINT startPos, POINT backgroundSize)
 {
@@ -35,7 +37,7 @@ void TileManager::Update()
 			{
 				Tile* temp = (*itY).second;
 				itY = (*itX).second.erase(itY);
-				mPhysics->DestroyCollider(temp->GetCollider());
+				mGameManager->DestroyCollider(temp->GetCollider());
 				SAFE_RELEASE(temp);
 			}
 			else { itY++; }
@@ -88,7 +90,10 @@ void TileManager::Update()
 			for (int i = 0; i < mVecAroundTileInfo.size(); ++i)
 			{
 				tileIndex = mVecAroundTileInfo[i].second;
-				mMapTile[tileIndex.x][tileIndex.y]->GetCollider()->SetTag(eCollisionTag::Block);
+				if (mMapTile.find(tileIndex.x) != mMapTile.end() && mMapTile[tileIndex.x].find(tileIndex.y) != mMapTile[tileIndex.x].end() && mMapTile[tileIndex.x][tileIndex.y] != nullptr)
+				{
+					mMapTile[tileIndex.x][tileIndex.y]->GetCollider()->SetTag(eCollisionTag::Block);
+				}
 			}
 		}
 	}
@@ -143,15 +148,32 @@ void TileManager::LoadMap(int loadIndex)
 					tileTag = eCollisionTag::Block;
 					break;
 				}
-				newTile = new Tile;
-				newTile->Init(mArrTile[y * TILE_COUNT_X + x],
-					mPhysics->CreateCollider({ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + TILE_SIZE * 0.5f,
-						mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + TILE_SIZE * 0.5f },
-						TILE_SIZE,
-						newTile,
-						tileTag),
-					{ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + (int)(TILE_SIZE * 0.5f),
-						mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + static_cast<int>(TILE_SIZE * 0.5f) });
+				if (mArrTile[y * TILE_COUNT_X + x].Terrain == eTerrain::Nexus)
+				{
+					newTile = new NexusTile;
+					newTile->Init(mArrTile[y * TILE_COUNT_X + x],
+						mGameManager->CreateCollider({ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + TILE_SIZE * 0.5f,
+							mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + TILE_SIZE * 0.5f },
+							TILE_SIZE,
+							newTile,
+							tileTag),
+						{ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + (int)(TILE_SIZE * 0.5f),
+							mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + static_cast<int>(TILE_SIZE * 0.5f) });
+					dynamic_cast<NexusTile*>(newTile)->GetSubject()->AddObserver(mGameManager);
+					mVecNexusTile.push_back(static_cast<NexusTile*>(newTile));
+				}
+				else
+				{
+					newTile = new Tile;
+					newTile->Init(mArrTile[y * TILE_COUNT_X + x],
+						mGameManager->CreateCollider({ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + TILE_SIZE * 0.5f,
+							mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + TILE_SIZE * 0.5f },
+							TILE_SIZE,
+							newTile,
+							tileTag),
+						{ mStartPos.x + mArrTile[y * TILE_COUNT_X + x].TileShape.left + (int)(TILE_SIZE * 0.5f),
+							mStartPos.y + mArrTile[y * TILE_COUNT_X + x].TileShape.top + static_cast<int>(TILE_SIZE * 0.5f) });
+				}
 
 				if (mArrTile[y * TILE_COUNT_X + x].NexusAroundTile)
 				{
@@ -160,7 +182,6 @@ void TileManager::LoadMap(int loadIndex)
 				mMapTile[x][y] = newTile;
 			}
 		}
-		cout << endl;
 	}
 
 	CloseHandle(hFile);
@@ -203,7 +224,7 @@ void TileManager::ProtectNexus()
 		{
 			mMapTile[tileIndex.x][tileIndex.y] = new Tile();
 			mMapTile[tileIndex.x][tileIndex.y]->Init(mArrTile[tileIndex.y * TILE_COUNT_X + tileIndex.x],
-				mPhysics->CreateCollider(mVecAroundTileInfo[i].first,
+				mGameManager->CreateCollider(mVecAroundTileInfo[i].first,
 					TILE_SIZE,
 					mMapTile[tileIndex.x][tileIndex.y],
 					eCollisionTag::NexusBlock),
@@ -211,6 +232,7 @@ void TileManager::ProtectNexus()
 		}
 
 		mMapTile[tileIndex.x][tileIndex.y]->GetCollider()->SetTag(eCollisionTag::NexusBlock);
+		mMapTile[tileIndex.x][tileIndex.y]->GetTileInfo()->TileState = 0;
 		TurnProtectBlockImage(true);
 		mbIsOnProtectBlock = true;
 	}
@@ -337,40 +359,48 @@ void TileManager::CreateEdgeBlock()
 {
 	for (int x = 0; x < TILE_COUNT_X; ++x)
 	{
-		mPhysics->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y - (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
-		mPhysics->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y + (float)mBackgroundSize.y + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mGameManager->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y - (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mGameManager->CreateCollider(POINTFLOAT{ mStartPos.x + (float)x * TILE_SIZE + (TILE_SIZE * 0.5f), (float)mStartPos.y + (float)mBackgroundSize.y + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
 	}
 
 	for (int y = 0; y < TILE_COUNT_Y; ++y)
 	{
-		mPhysics->CreateCollider(POINTFLOAT{ (float)mStartPos.x - (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
-		mPhysics->CreateCollider(POINTFLOAT{ (float)mStartPos.x + (float)mBackgroundSize.x + (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mGameManager->CreateCollider(POINTFLOAT{ (float)mStartPos.x - (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
+		mGameManager->CreateCollider(POINTFLOAT{ (float)mStartPos.x + (float)mBackgroundSize.x + (TILE_SIZE * 0.5f), mStartPos.y + (float)y * TILE_SIZE + (TILE_SIZE * 0.5f) }, TILE_SIZE, nullptr, eCollisionTag::Block);
 	}
 }
 
-vector<TankSpawnInfo>* TileManager::GetEnemyList()
+void TileManager::ChangeNexusImageToFlag()
 {
-	vector<TankSpawnInfo>* result = new vector<TankSpawnInfo>();
+	for (int i = 0; i < mVecNexusTile.size(); ++i)
+	{
+		mVecNexusTile[i]->SetImagePos(POINT{ mVecNexusTile[i]->GetTileInfo()->TilePos.x + 2, mVecNexusTile[i]->GetTileInfo()->TilePos.y });
+	}
+}
+
+pair<TankSpawnInfo*, int> TileManager::GetEnemyList()
+{
+	TankSpawnInfo* result = new TankSpawnInfo[mEnemyInfo->mEnemyOrderCount];
 	for (int i = 0; i < mEnemyInfo->mEnemyOrderCount; ++i)
 	{
 		switch (mEnemyInfo->mEnemyOrderType[i])
 		{
 		case eTankType::NormalEnemy:
-			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, NORMAL_TANK_INFO));
+			result[i] = (TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, NORMAL_TANK_INFO));
 			break;
 		case eTankType::QuickEnemy:
-			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, QUICK_TANK_INFO));
+			result[i] = (TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, QUICK_TANK_INFO));
 			break;
 		case eTankType::RapidFireEnemy:
-			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, RAPID_FIRE_TANK_INFO));
+			result[i] = (TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, RAPID_FIRE_TANK_INFO));
 			break;
 		case eTankType::DefenceEnemy:
-			result->push_back(TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, DEFENCE_TANK_INFO));
+			result[i] = (TankSpawnInfo(eCollisionTag::EnemyTank, mEnemyInfo->mEnemyOrderType[i], eTankColor::White, DEFENCE_TANK_INFO));
 			break;
 		}
 	}
 
-	return result;
+	return pair<TankSpawnInfo*, int>(result, mEnemyInfo->mEnemyOrderCount);
 }
 
 POINTFLOAT TileManager::GetFirstPlayerSpawnPosition()
@@ -485,6 +515,9 @@ void TileManager::TurnProtectBlockImage(bool set)
 	for (int i = 0; i < mVecAroundTileInfo.size(); ++i)
 	{
 		tileIndex = mVecAroundTileInfo[i].second;
-		mMapTile[tileIndex.x][tileIndex.y]->SetImagePos(POINT{ 0, (int)set * 2 });
+		if (mMapTile.find(tileIndex.x) != mMapTile.end() && mMapTile[tileIndex.x].find(tileIndex.y) != mMapTile[tileIndex.x].end() && mMapTile[tileIndex.x][tileIndex.y] != nullptr)
+		{
+			mMapTile[tileIndex.x][tileIndex.y]->SetImagePos(POINT{ 0, (int)set * 2 });
+		}
 	}
 }

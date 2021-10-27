@@ -17,6 +17,12 @@ private:
 
 	eCollisionTag mCollidedObjectTag = eCollisionTag::Block;
 
+	float mDurationTime = 20.0f;
+	float mElapsedTime = 0.0f;
+	float mDurationSparkleTime = 0.125f;
+	float mElapsedSparkleTime = 0.0f;
+	bool mbIsSparkle = false;
+
 	bool mbIsDead = false;
 public:
 	HRESULT Init(Collider* collider, eImageTag imageTag, eItemTag itemTag);
@@ -27,7 +33,7 @@ public:
 	Collider* GetCollider() { return mCollider; }
 	Subject* GetSubject() { return mSubject; }
 	eItemTag GetItemTag() { return mItemTag; }
-	eCollisionTag GetCollisionTag() { return mCollidedObjectTag; }
+	eCollisionTag GetCollidedTag() { return mCollidedObjectTag; }
 	POINTFLOAT GetPosition() { return mPos; }
 	void SetPosition(POINTFLOAT pos) { mPos = pos; }
 	bool IsDead() { return mbIsDead; }

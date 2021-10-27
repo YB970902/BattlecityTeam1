@@ -6,7 +6,7 @@
 #include "CommonFunction.h"
 #include "TitleScene.h"
 #include "SlateScene.h"
-
+#include "ScoreScene.h"
 #include "PhyscisScene.h"
 #include "TankScene.h"
 
@@ -17,6 +17,7 @@ HRESULT MainGame::Init()
 	TIMER_MGR->Init();
 	SCENE_MGR->Init();
 	PART_MGR->Init();
+	UI_MGR->Init();
 
 	srand((unsigned int) time(nullptr));
 
@@ -36,9 +37,11 @@ HRESULT MainGame::Init()
 	SCENE_MGR->AddScene(eSceneTag::TankScene, new TankScene);
 	SCENE_MGR->AddScene(eSceneTag::TitleScene, new TitleScene);
 	SCENE_MGR->AddScene(eSceneTag::SlateScene, new SlateScene);
+	SCENE_MGR->AddScene(eSceneTag::ScoreScene, new ScoreScene);
+	
 	//SCENE_MGR->ChangeScene(eSceneTag::PhysicsScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::MapToolScene);
-	//SCENE_MGR->ChangeScene(eSceneTag::BattleScene);
+	SCENE_MGR->ChangeScene(eSceneTag::ScoreScene);
 	//SCENE_MGR->ChangeScene(eSceneTag::TankScene);
 	
 
@@ -55,6 +58,8 @@ void MainGame::Update()
 	SCENE_MGR->Update();
 
 	PART_MGR->Update();
+
+	UI_MGR->Update();
 	
 	KEY_MGR->Update();
 
@@ -68,8 +73,10 @@ void MainGame::Render(HDC hdc)
 	SCENE_MGR->Render(hBackBufferDC);
 
 	PART_MGR->Render(hBackBufferDC);
+
+	UI_MGR->Render(hBackBufferDC);
 	
-	TIMER_MGR->Render(hBackBufferDC);
+	//TIMER_MGR->Render(hBackBufferDC);
 	
 	backBuffer->Render(hdc);
 
@@ -93,6 +100,9 @@ void MainGame::Release()
 
 	PART_MGR->Release();
 	PART_MGR->ReleaseSingleton();
+
+	UI_MGR->Release();
+	UI_MGR->ReleaseSingleton();
 
 	KillTimer(g_hWnd, 0);
 }
