@@ -130,7 +130,6 @@ void MapEditor::Update()
 					if (KEY_MGR->IsOnceKeyDown(VK_LBUTTON))
 					{
 						cout << (int)mTileInfo[i * TILE_COUNT_X + j].Terrain << endl;
-
 					}
 				}
 			}

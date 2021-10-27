@@ -1,8 +1,7 @@
 #include "ItemManager.h"
 #include "Item.h"
-#include "Physcis.h"
-#include "TileManager.h"
 #include "Subject.h"
+#include "GameManager.h"
 
 HRESULT ItemManager::Init()
 {
@@ -31,11 +30,12 @@ void ItemManager::Update()
 {
 	for (vector<Item*>::iterator it = mVecItem.begin(); it != mVecItem.end();)
 	{
+		(*it)->Update();
 		if ((*it)->IsDead())
 		{
 			Item* item = (*it);
 			it = mVecItem.erase(it);
-			mPhysics->DestroyCollider(item->GetCollider());
+			mGameManager->DestroyCollider(item->GetCollider());
 			SAFE_RELEASE(item);
 		}
 		else { it++; }
@@ -53,8 +53,8 @@ void ItemManager::Render(HDC hdc)
 void ItemManager::CreateItem(eItemTag itemTag)
 {
 	Item* newItem = new Item;
-	POINTFLOAT pos = mTileManager->GetItemSpawnPosition();
-	newItem->Init(mPhysics->CreateCollider(pos, ITEM_BODY_SIZE, newItem, eCollisionTag::Item),
+	POINTFLOAT pos = mGameManager->GetItemSpawnPosition();
+	newItem->Init(mGameManager->CreateCollider(pos, ITEM_BODY_SIZE, newItem, eCollisionTag::Item),
 		mMapItemInfo[itemTag].ImageTag, itemTag);
 	newItem->GetSubject()->AddObserver(this);
 	newItem->SetPosition(pos);
@@ -68,28 +68,28 @@ void ItemManager::OnNotify(GameEntity* obj, eSubjectTag subjectTag, eEventTag ev
 		switch (dynamic_cast<Item*>(obj)->GetItemTag())
 		{
 		case eItemTag::TankInvencible:
-			// TankSpawner를 알아야 함
-			cout << "탱크 무적" << endl;
+			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { mGameManager->FirstPlayerSetInvencible(); }
+			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mGameManager->SecondPlayerSetInvencible(); }
 			break;
 		case eItemTag::ProtectedWall:
-			mTileManager->ProtectNexus();
-			cout << "넥서스 보호" << endl;
+			mGameManager->ProtectNexus();
 			break;
 		case eItemTag::TankStar:
-			// TankSpawner를 알아야 함
-			cout << "탱크 별 획득" << endl;
+			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { mGameManager->FirstPlayerAddStar(); }
+			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mGameManager->SecondPlayerAddStar(); }
 			break;
 		case eItemTag::DestroyAllEnemy:
-			// AISpawner를 알아야 함
-			cout << "모든 적 파괴" << endl;
+			UI_MGR->AddStayUI(eImageTag::UIScore500, dynamic_cast<Item*>(obj)->GetPosition(), 0.5f);
+			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { SCENE_MGR->SetSceneData("FirstPlayerGrenadeItem", SCENE_MGR->GetSceneData("FirstPlayerGrenadeItem") + 1); }
+			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { SCENE_MGR->SetSceneData("SecondPlayerGrenadeItem", SCENE_MGR->GetSceneData("SecondPlayerGrenadeItem") + 1); }
+			mGameManager->DestroyAllEnemy();
 			break;
 		case eItemTag::PauseAllEnemy:
-			// AISpawner를 알아야 함
-			cout << "모든 적 일시정지" << endl;
+			mGameManager->PauseAllEnemy();
 			break;
 		case eItemTag::AddPlayerLife:
-			// TankSpawner를 알아야 함
-			cout << "플레이어 목숨 추가" << endl;
+			if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::FirstPlayerTank) { mGameManager->FirstPlayerAddLife(); }
+			else if (dynamic_cast<Item*>(obj)->GetCollidedTag() == eCollisionTag::SecondPlayerTank) { mGameManager->SecondPlayerAddLife(); }
 			break;
 		}
 	}

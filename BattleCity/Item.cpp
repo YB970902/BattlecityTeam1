@@ -19,11 +19,23 @@ void Item::Release()
 
 void Item::Update()
 {
+	mElapsedTime += DELTA_TIME;
+	if (mElapsedTime >= mDurationTime)
+	{
+		mbIsDead = true;
+	}
+	mElapsedSparkleTime += DELTA_TIME;
+	if (mElapsedSparkleTime >= mDurationSparkleTime)
+	{
+		mElapsedSparkleTime -= mDurationSparkleTime;
+		mbIsSparkle = !mbIsSparkle;
+	}
 }
 
 void Item::Render(HDC hdc)
 {
 	if (mbIsDead) { return; }
+	if (mbIsSparkle) { return; }
 	mImage->Render(hdc, mPos.x, mPos.y);
 }
 

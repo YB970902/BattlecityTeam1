@@ -37,45 +37,18 @@ HRESULT TankScene::Init()
 
 	mAmmoSpawner = new AmmoSpawner();
 	mAmmoSpawner->Init();
-	mAmmoSpawner->SetPhysics(mPhysics);
 
 	mFirstPlayerController = new TankController();
 	mFirstPlayerController->Init(FIRST_PLAYER_KEY);
-	mFirstPlayerController->SetAmmoSpawner(mAmmoSpawner);
 
 	mFirstPlayerTankSpawner = new TankSpawner();
-	mFirstPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::FirstPlayerTank, eTankType::Player, eTankColor::Yellow, PLAYER_TANK_INFO), 5, POINTFLOAT{ WIN_SIZE_X * 0.5f - 100.0f, WIN_SIZE_Y * 0.9f });
 	mFirstPlayerTankSpawner->SetController(mFirstPlayerController);
 
 	mSecondPlayerController = new TankController();
 	mSecondPlayerController->Init(SECOND_PLAYER_KEY);
-	mSecondPlayerController->SetAmmoSpawner(mAmmoSpawner);
 
 	mSecondPlayerTankSpawner = new TankSpawner();
-	mSecondPlayerTankSpawner->Init(mPhysics, SPAWN_INFO(eCollisionTag::SecondPlayerTank, eTankType::Player, eTankColor::Green, PLAYER_TANK_INFO), 5, POINTFLOAT{ WIN_SIZE_X * 0.5f + 100.0f, WIN_SIZE_Y * 0.9f });
 	mSecondPlayerTankSpawner->SetController(mSecondPlayerController);
-
-	mAISpawner = new AITankSpawner();
-	mAISpawner->Init(mPhysics, 8);
-	mAISpawner->SetAmmoSpawner(mAmmoSpawner);
-
-	POINTFLOAT* arrPoint = new POINTFLOAT[3];
-	arrPoint[0].x = 300.0f;
-	arrPoint[0].y = 200.0f;
-	arrPoint[1].x = WIN_SIZE_X * 0.5f;
-	arrPoint[1].y = 200.0f;
-	arrPoint[2].x = WIN_SIZE_X - 300.0f;
-	arrPoint[2].y = 200.0f;
-
-	mAISpawner->SetSpawnPosition(arrPoint, 3);
-	mAISpawner->AddTankSpawnInfo(TankSpawnInfo(eCollisionTag::EnemyTank, eTankType::NormalEnemy, eTankColor::White, NORMAL_TANK_INFO));
-	mAISpawner->AddTankSpawnInfo(TankSpawnInfo(eCollisionTag::EnemyTank, eTankType::NormalEnemy, eTankColor::White, NORMAL_TANK_INFO));
-	mAISpawner->AddTankSpawnInfo(TankSpawnInfo(eCollisionTag::EnemyTank, eTankType::QuickEnemy, eTankColor::White, QUICK_TANK_INFO));
-	mAISpawner->AddTankSpawnInfo(TankSpawnInfo(eCollisionTag::EnemyTank, eTankType::QuickEnemy, eTankColor::White, QUICK_TANK_INFO));
-	mAISpawner->AddTankSpawnInfo(TankSpawnInfo(eCollisionTag::EnemyTank, eTankType::RapidFireEnemy, eTankColor::White, RAPID_FIRE_TANK_INFO));
-	mAISpawner->AddTankSpawnInfo(TankSpawnInfo(eCollisionTag::EnemyTank, eTankType::RapidFireEnemy, eTankColor::White, RAPID_FIRE_TANK_INFO));
-	mAISpawner->AddTankSpawnInfo(TankSpawnInfo(eCollisionTag::EnemyTank, eTankType::DefenceEnemy, eTankColor::White, DEFENCE_TANK_INFO));
-	mAISpawner->AddTankSpawnInfo(TankSpawnInfo(eCollisionTag::EnemyTank, eTankType::DefenceEnemy, eTankColor::White, DEFENCE_TANK_INFO));
 
 	return S_OK;
 }

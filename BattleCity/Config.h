@@ -31,18 +31,23 @@ using namespace std;
 #include "KeyManager.h"
 #include "SceneManager.h"
 #include "ParticleManager.h"
+#include "UIManager.h"
 
 #define TIMER_MGR TimerManager::GetSingleton()
 #define KEY_MGR KeyManager::GetSingleton()
 #define SCENE_MGR SceneManager::GetSingleton()
 #define IMG_MGR ImageManager::GetSingleton()
 #define PART_MGR ParticleManager::GetSingleton()
+#define UI_MGR UIManager::GetSingleton()
 
 #define DELTA_TIME TIMER_MGR->GetDeltaTime()
 
 
 #define TILE_COUNT_X 26
 #define TILE_COUNT_Y 26
+
+#define TILE_START_POS_X ((WIN_SIZE_X - (TILE_SIZE * TILE_COUNT_X)) / 2)
+#define TILE_START_POS_Y ((WIN_SIZE_Y - (TILE_SIZE * TILE_COUNT_Y)) / 2)
 
 #define RANDOM(min, max) (rand() % ((max) - (min) + 1) + (min))
 
@@ -56,6 +61,8 @@ enum class eEventTag
     Released,
     Added,
     Collided,
+    DropItem,
+    PlayerDown,
 };
 
 enum class eSubjectTag
@@ -64,6 +71,8 @@ enum class eSubjectTag
     Tank,
     Particle,
     Item,
+    Nexus,
+    Player,
 };
 
 enum class eItemTag
@@ -100,7 +109,8 @@ enum class eCollisionTag
     SecondPlayerTank       =0b1000000101,  //517
     FirstPlayerAmmo        =0b0000000011,  //3
     SecondPlayerAmmo       =0b1000000011,  //515
-    PlayerSpecialAmmo      =0b0000010011,  //19
+    FirstPlayerSpecialAmmo =0b0000010011,  //19
+    SecondPlayerSpecialAmmo=0b1000010011,  //531
     EnemyTank              =0b0000000100,  //4
     EnemyAmmo              =0b0000000010,  //2
     EnemySpecialAmmo       =0b0000010010,  //18
@@ -113,6 +123,10 @@ enum class eCollisionTag
 };
 
 #define IS_PLAYER_TANK(bit) ((bool)((bit & 0b101) == 0b101))
+#define IS_PLAYER_AMMO(bit) ((bool)((bit & 0b11) == 0b11))
+#define IS_FIRST_PLAYER(bit) ((bool)((bit & 0b1) == 0b1))
+#define IS_SECOND_PLAYER(bit) ((bool)((bit & 0b1000000001) == 0b1000000001))
+#define IS_SPECIAL_AMMO(bit) ((bool)((bit & 0b10010) == 0b10010))
 
 enum class eTerrain { None, Wall, Water, Grass, UnbreakableWall, Iron, Nexus, FlagNormal, FlagEnemy, FlagFirstPlayer, NexusAroundTile, FlagSecondPlayer };
 
@@ -163,11 +177,11 @@ typedef struct TankInfo
     float AmmoSpeed;
 } TANK_INFO;
 
-const TANK_INFO PLAYER_TANK_INFO{ 100.0f, 0.0f, 1, 1, 300.0f };
+const TANK_INFO PLAYER_TANK_INFO{ 100.0f, 0.5f, 1, 1, 300.0f };
 const TANK_INFO NORMAL_TANK_INFO{ 100.0f, 1.0f, 1, 1, 300.0f };
 const TANK_INFO QUICK_TANK_INFO{ 200.0f, 1.0f, 1, 1, 300.0f };
 const TANK_INFO RAPID_FIRE_TANK_INFO{ 100.0f, 0.5f, 1, 2, 300.0f };
-const TANK_INFO DEFENCE_TANK_INFO{ 100.0f, 1.0f, 1, 1, 300.0f };
+const TANK_INFO DEFENCE_TANK_INFO{ 100.0f, 1.0f, 4, 1, 300.0f };
 
 typedef struct TankSpawnInfo
 {

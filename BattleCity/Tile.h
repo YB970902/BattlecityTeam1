@@ -11,7 +11,7 @@ class Collider;
 class Image;
 class Tile : public GameEntity, public CollisionChecker
 {
-private:
+protected:
 	Image* mImg;
 	TagTile mTileInfo;
 	Collider* mCollider;
@@ -19,12 +19,12 @@ private:
 	bool mbIsBroken = false;
 
 public:
-	HRESULT Init(TagTile info, Collider* collider, POINT pos);
-	void Release();
-	void Update();
-	void Render(HDC hdc);
+	virtual HRESULT Init(TagTile info, Collider* collider, POINT pos);
+	virtual void Release();
+	virtual void Update();
+	virtual void Render(HDC hdc);
 
-	void OnCollided(eCollisionDir dir, int tag) override;
+	virtual void OnCollided(eCollisionDir dir, int tag) override;
 
 	Collider* GetCollider() { return this->mCollider; }
 	POINT GetPosition() { return this->mPos; }
@@ -36,7 +36,7 @@ public:
 
 	TagTile* GetTileInfo() { return &mTileInfo; }
 
-private:
+protected:
 	void CalcBroken(eCollisionDir dir);
 };
 

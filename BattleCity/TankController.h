@@ -5,11 +5,11 @@ const int FIRST_PLAYER_KEY[5] = { 'A', 'D', 'W', 'S', VK_SPACE };
 const int SECOND_PLAYER_KEY[5] = { VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN, VK_RETURN };
 
 class Tank;
-class AmmoSpawner;
+class GameManager;
 class TankController : public GameEntity
 {
 private:
-	AmmoSpawner* mAmmoSpawner;
+	GameManager* mGameManager = nullptr;
 	Tank* mTank = nullptr;
 
 	int mLeftKey = 0;
@@ -25,7 +25,10 @@ public:
 	void Update();
 	void Render(HDC hdc);
 
+	void AddStar();
+	void TurnToInvencible();
+
 	inline void SetTank(Tank* tank) { mTank = tank; }
-	inline void SetAmmoSpawner(AmmoSpawner* spawner) { mAmmoSpawner = spawner; }
+	inline void SetGameManager(GameManager* gameManager) { mGameManager = gameManager; }
 };
 

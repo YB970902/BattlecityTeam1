@@ -17,6 +17,7 @@ HRESULT MainGame::Init()
 	TIMER_MGR->Init();
 	SCENE_MGR->Init();
 	PART_MGR->Init();
+	UI_MGR->Init();
 
 	srand((unsigned int) time(nullptr));
 
@@ -58,6 +59,8 @@ void MainGame::Update()
 	SCENE_MGR->Update();
 
 	PART_MGR->Update();
+
+	UI_MGR->Update();
 	
 	KEY_MGR->Update();
 
@@ -71,8 +74,10 @@ void MainGame::Render(HDC hdc)
 	SCENE_MGR->Render(hBackBufferDC);
 
 	PART_MGR->Render(hBackBufferDC);
+
+	UI_MGR->Render(hBackBufferDC);
 	
-	TIMER_MGR->Render(hBackBufferDC);
+	//TIMER_MGR->Render(hBackBufferDC);
 	
 	backBuffer->Render(hdc);
 
@@ -96,6 +101,9 @@ void MainGame::Release()
 
 	PART_MGR->Release();
 	PART_MGR->ReleaseSingleton();
+
+	UI_MGR->Release();
+	UI_MGR->ReleaseSingleton();
 
 	KillTimer(g_hWnd, 0);
 }

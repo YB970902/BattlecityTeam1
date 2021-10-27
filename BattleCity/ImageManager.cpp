@@ -25,6 +25,13 @@ void ImageManager::Init()
 	IMG_MGR->AddImage(eImageTag::TileButton, "Image/button02.bmp", 60, 270, 2, 9, true, RGB(255, 0, 255));
 	IMG_MGR->AddImage(eImageTag::EnemyOrderBox, "Image/Enemy/Enemy.bmp", (32 * 8), (32 * 6), 8, 6, true, RGB(255, 0, 255));
 
+	AddImage(eImageTag::UIScore100, "Image/Text/Score100.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore200, "Image/Text/Score200.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore300, "Image/Text/Score300.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore400, "Image/Text/Score400.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIScore500, "Image/Text/Score500.bmp", 32, 32, true, RGB(255, 0, 255));
+	AddImage(eImageTag::UIGameOver, "Image/Text/Game_Over.bmp", 64, 30, true, RGB(255, 0, 255));
+
 	AddImage(eImageTag::ItemInvencible, "Image/Item/Item1.bmp", 32, 32, true, RGB(255, 0, 255));
 	AddImage(eImageTag::ItemProtect, "Image/Item/Item3.bmp", 32, 32, true, RGB(255, 0, 255));
 	AddImage(eImageTag::ItemStar, "Image/Item/Item4.bmp", 32, 32, true, RGB(255, 0, 255));

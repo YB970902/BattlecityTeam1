@@ -2,8 +2,9 @@
 #include "GameObject.h"
 #include "AITankController.h"
 #include "Tank.h"
-#include "AmmoSpawner.h"
+#include "Ammo.h"
 #include "Collider.h"
+#include "GameManager.h"
 
 HRESULT AITankController::Init()
 {
@@ -25,9 +26,9 @@ void AITankController::Update()
 	mTank->Update();
 	if (mTank->IsCanFire())
 	{
-		mTank->AddAmmo(mAmmoSpawner->Fire(mTank->GetDirection(),
+		mGameManager->Fire(mTank->GetDirection(),
 			eCollisionTag::EnemyAmmo,
-			mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition()));
+			mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition())->AddObserver(mTank);
 		mTank->SetIsCanFire(false);
 	}
 
@@ -47,7 +48,7 @@ void AITankController::Render(HDC hdc)
 
 void AITankController::OnCollided(eCollisionDir dir, int tag)
 {
-	Rotate();
+	if (!IS_PLAYER_AMMO(tag)) { Rotate(); }
 	mTank->OnCollided(dir, tag);
 }
 

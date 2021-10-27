@@ -10,17 +10,19 @@ enum class eBrokenStyle
 	BrokenBottom
 };
 
-class Physcis;
+class GameManager;
 class Tile;
+class NexusTile;
 struct TagEnemyInfo;
 class TileManager : public GameEntity
 {
 private:
 	const int CHANGE_WATER_TILE_TIME = 1;
 
-	Physcis* mPhysics = nullptr;
+	GameManager* mGameManager = nullptr;
 
 	map<int, map<int, Tile*>> mMapTile = {};
+	vector<NexusTile*> mVecNexusTile;
 
 	POINT mStartPos = {};
 	POINT mBackgroundSize = {};
@@ -47,13 +49,14 @@ public:
 	void LoadMap(int loadIndex = 0);
 	void LoadEnemyOrder(int loadIndex = 0);
 
-	void SetPhysics(Physcis* physcis) { mPhysics = physcis; }
+	void SetGameManager(GameManager* gameManager) { mGameManager = gameManager; }
 
 	void ProtectNexus();
 
 	void CreateEdgeBlock();
+	void ChangeNexusImageToFlag();
 
-	vector<TankSpawnInfo>* GetEnemyList();
+	pair<TankSpawnInfo*, int> GetEnemyList();
 	POINTFLOAT* GetEnemySpawnPosition(int& size);
 	POINTFLOAT GetFirstPlayerSpawnPosition();
 	POINTFLOAT GetSecondPlayerSpawnPosition();

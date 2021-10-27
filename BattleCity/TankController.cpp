@@ -1,7 +1,8 @@
 #include "Config.h"
 #include "TankController.h"
 #include "Tank.h"
-#include "AmmoSpawner.h"
+#include "Ammo.h"
+#include "GameManager.h"
 
 HRESULT TankController::Init(int leftKey, int rightKey, int upKey, int downKey, int fireKey)
 {
@@ -33,12 +34,31 @@ void TankController::Update()
     else if (KEY_MGR->IsStayKeyDown(mDownKey)) { mTank->Move(eDir::Down); }
     if (KEY_MGR->IsOnceKeyDown(mFireKey) && mTank->IsCanFire())
     {
-        mTank->AddAmmo(mAmmoSpawner->Fire(mTank->GetDirection(),
-            mTank->GetCollisionTag() == eCollisionTag::FirstPlayerTank ? eCollisionTag::FirstPlayerAmmo : eCollisionTag::SecondPlayerAmmo,
-            mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition()));
+        if (mTank->GetStartCount() == 3)
+        {
+            mGameManager->Fire(mTank->GetDirection(),
+                mTank->GetCollisionTag() == eCollisionTag::FirstPlayerTank ? eCollisionTag::FirstPlayerSpecialAmmo : eCollisionTag::SecondPlayerSpecialAmmo,
+                mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition())->AddObserver(mTank);
+        }
+        else
+        {
+            mGameManager->Fire(mTank->GetDirection(),
+                mTank->GetCollisionTag() == eCollisionTag::FirstPlayerTank ? eCollisionTag::FirstPlayerAmmo : eCollisionTag::SecondPlayerAmmo,
+                mTank->GetInfo().AmmoSpeed, mTank->GetBarrelPosition())->AddObserver(mTank);
+        }
     }
 }
 
 void TankController::Render(HDC hdc)
 {
+}
+
+void TankController::AddStar()
+{
+    if (mTank) { mTank->AddStar(); }
+}
+
+void TankController::TurnToInvencible()
+{
+    if (mTank) { mTank->ChangeToInvencible(); }
 }
